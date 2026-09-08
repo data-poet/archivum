@@ -1,0 +1,164 @@
+---
+/**
+ * religions/[...slug].astro — Dynamic article route
+ *
+ * Handles every entry in the religions collection.
+ * Selects the correct infobox component based on entry.data.type.
+ */
+import { getCollection, type CollectionEntry } from 'astro:content';
+import TableOfContents      from '@/components/TableOfContents.astro';
+import CollapsibleHeadings  from '@/components/CollapsibleHeadings.astro';
+import WikiLayout            from '@/layouts/WikiLayout.astro';
+import ArticleFooter         from '@/components/ArticleFooter.astro';
+import PantheonInfobox       from '@/components/infoboxes/religions/PantheonInfobox';
+import GodInfobox            from '@/components/infoboxes/religions/GodInfobox';
+import ChurchInfobox         from '@/components/infoboxes/religions/ChurchInfobox';
+import OrderInfobox          from '@/components/infoboxes/religions/OrderInfobox';
+import RelicInfobox          from '@/components/infoboxes/religions/RelicInfobox';
+import RitualInfobox         from '@/components/infoboxes/religions/RitualInfobox';
+import CreationMythInfobox   from '@/components/infoboxes/religions/CreationMythInfobox';
+import MediaInfobox          from '@/components/infoboxes/MediaInfobox';
+import { typeLabel, isRootType } from '@/content/meta';
+import { getArticleData } from '@/utils/articleData';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('religions', ({ data }) => !data.draft);
+  return entries.map((entry) => ({
+    params: { slug: entry.slug },
+    props:  { entry },
+  }));
+}
+
+interface Props { entry: CollectionEntry<'religions'> }
+
+const { entry } = Astro.props;
+const { Content, headings } = await entry.render();
+const { data, validSlugs, images } = await getArticleData(entry);
+---
+
+<WikiLayout
+  title={data.title}
+  description={data.description}
+  section="religions"
+  sectionLabel="Religiões"
+  typeLabel={typeLabel(data.type)}
+  publishedAt={entry.data.publishedAt}
+  updatedAt={entry.data.updatedAt}
+  isRootPage={isRootType('religions', data.type)}
+>
+
+  <Fragment slot="toc">
+    <TableOfContents headings={headings} />
+  </Fragment>
+
+  <Fragment slot="infobox">
+
+    <div class="space-y-4">
+
+      {data.type === 'pantheon' && (
+        <PantheonInfobox
+          name={data.title}
+          pantheonMyth={data.pantheonMyth}
+          pantheonDeities={data.pantheonDeities}
+          validSlugs={validSlugs}
+        >
+          <MediaInfobox client:load images={images} title={data.title} />
+        </PantheonInfobox>
+      )}
+
+      {data.type === 'god' && (
+        <GodInfobox
+          name={data.title}
+          symbol={data.symbol}
+          worshipers={data.worshipers}
+          realm={data.realm}
+          domains={data.domains}
+          alterEgos={data.alterEgos}
+          pantheon={data.pantheon}
+          worshipedBy={data.worshipedBy}
+          honoredBy={data.honoredBy}
+          createdRelics={data.createdRelics}
+          validSlugs={validSlugs}
+        >
+          <MediaInfobox client:load images={images} title={data.title} />
+        </GodInfobox>
+      )}
+
+      {data.type === 'church' && (
+        <ChurchInfobox
+          name={data.title}
+          deity={data.deity}
+          leader={data.leader}
+          founded={data.founded}
+          headquarters={data.headquarters}
+          performs={data.performs}
+          guards={data.guards}
+        >
+          <MediaInfobox client:load images={images} title={data.title} />
+        </ChurchInfobox>
+      )}
+
+      {data.type === 'order' && (
+        <OrderInfobox
+          name={data.title}
+          orderDeity={data.orderDeity}
+          parentChurch={data.parentChurch}
+          relatedReligions={data.relatedReligions}
+          leader={data.leader}
+          founded={data.founded}
+          headquarters={data.headquarters}
+          orderPerforms={data.orderPerforms}
+          orderGuards={data.orderGuards}
+        >
+          <MediaInfobox client:load images={images} title={data.title} />
+        </OrderInfobox>
+      )}
+
+      {data.type === 'relic' && (
+        <RelicInfobox
+          name={data.title}
+          relicType={data.relicType}
+          origin={data.origin}
+          powers={data.powers}
+          createdBy={data.createdBy}
+          heldBy={data.heldBy}
+        >
+          <MediaInfobox client:load images={images} title={data.title} />
+        </RelicInfobox>
+      )}
+
+      {data.type === 'ritual' && (
+        <RitualInfobox
+          name={data.title}
+          participants={data.participants}
+          frequency={data.frequency}
+          purpose={data.purpose}
+          conductedBy={data.conductedBy}
+          honoredGod={data.honoredGod}
+        >
+          <MediaInfobox client:load images={images} title={data.title} />
+        </RitualInfobox>
+      )}
+
+      {data.type === 'creation-myth' && (
+        <CreationMythInfobox
+          name={data.title}
+          pantheon={data.pantheonRef}
+          validSlugs={validSlugs}
+        >
+          <MediaInfobox client:load images={images} title={data.title} />
+        </CreationMythInfobox>
+      )}
+
+    </div>
+
+  </Fragment>
+
+  <CollapsibleHeadings />
+  <Content />
+
+  <Fragment slot="footer">
+    <ArticleFooter tags={data.tags} />
+  </Fragment>
+
+</WikiLayout>

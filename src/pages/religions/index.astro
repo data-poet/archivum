@@ -1,0 +1,174 @@
+---
+/**
+ * religions/index.astro — Religions listing page
+ *
+ * Displays all entries grouped by type with anchor links for quick navigation.
+ */
+import { getCollection } from 'astro:content';
+import SiteHeader from '@/components/SiteHeader.astro';
+import '../../styles/global.css';
+
+const all = await getCollection('religions', ({ data }) => !data.draft);
+all.sort((a, b) => a.data.title.localeCompare(b.data.title));
+
+// Section definitions — type values match the Zod enum in config.ts
+const sections = [
+  { type: 'pantheon',      label: 'Panteões',         icon: '✦', color: '#3a2a5a', bg: '#ede8f5' },
+  { type: 'god',           label: 'Deuses',           icon: '☀', color: '#7a5c1e', bg: '#fdf3d8' },
+  { type: 'church',        label: 'Igrejas',          icon: '⛪', color: '#4a3060', bg: '#f0eaf8' },
+  { type: 'relic',         label: 'Relíquias',        icon: '⚔', color: '#1e3a5a', bg: '#e8f0f8' },
+  { type: 'ritual',        label: 'Rituais',          icon: '🔥', color: '#4a2020', bg: '#f8eaea' },
+  { type: 'creation-myth', label: 'Mitos da Criação', icon: '📖', color: '#1a1a2e', bg: '#e8e8f5' },
+] as const;
+
+// Returns a short subtitle string for each entry type.
+// Field names here must match the actual schema in content/config.ts —
+// this previously referenced fields that don't exist (pantheonOrigin,
+// domain, era) and stringified a relation object directly for church
+// (rendering "Culto a [object Object]"). Fixed to use the real fields.
+function subtitle(data: any): string | null {
+  switch (data.type) {
+    case 'pantheon':      return data.pantheonDeities?.length
+      ? `${data.pantheonDeities.length} divindades`
+      : null;
+    case 'god':           return data.domains?.length ? data.domains.join(', ') : null;
+    case 'church':        return data.deity ? `Culto a ${data.deity.label}` : null;
+    case 'relic':         return data.relicType ?? null;
+    case 'ritual':        return data.frequency ?? null;
+    case 'creation-myth': return data.pantheonRef ? data.pantheonRef.label : null;
+    default:              return null;
+  }
+}
+---
+
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Religiões – Archivum</title>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <SiteHeader activeSection="religions" />
+
+  <main class="max-w-4xl mx-auto px-4 py-8">
+
+    <h1 class="font-serif text-3xl font-bold border-b border-border pb-2 mb-2">Religiões</h1>
+    <p class="font-sans text-sm text-ink-light mb-6">{all.length} artigos</p>
+
+    <!-- Quick-jump filter pills -->
+    <div class="flex flex-wrap gap-2 mb-8">
+      {sections.map(({ type, label, color, bg }) => {
+        const c = all.filter((e) => e.data.type === type).length;
+        return (
+          <a
+            href={`#${type}`}
+            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-sans font-semibold border transition-opacity hover:opacity-70"
+            style={`color:${color}; background-color:${bg}; border-color:${color}40`}
+          >
+            {label}
+            <span class="text-xs opacity-70">({c})</span>
+          </a>
+        );
+      })}
+    </div>
+
+    <!-- Sections grouped by type -->
+    <div class="space-y-6">
+
+      {sections.map(({ type, label, icon, color }) => {
+
+        const entries = all.filter((e) => e.data.type === type);
+
+        return (
+
+          <details
+            id={type}
+            class="group"
+            open
+          >
+
+            <!-- Expandable Header -->
+            <summary
+              class="list-none cursor-pointer select-none"
+            >
+
+              <div
+                class="flex items-center gap-2 px-4 py-2 rounded font-serif font-bold text-white text-base"
+                style={`background-color:${color}`}
+              >
+
+                <!-- Arrow -->
+                <span class="transition-transform group-open:rotate-90">
+                  ▶
+                </span>
+
+                <span>{icon}</span>
+
+                <span>{label}</span>
+
+                <span class="font-sans font-normal text-xs opacity-80 ml-1">
+                  ({entries.length})
+                </span>
+
+              </div>
+
+            </summary>
+
+            <!-- Expandable Content -->
+            <ul class="divide-y divide-border border border-t-0 border-border rounded-b bg-parchment-100">
+
+              {entries.map((entry) => {
+
+                const sub = subtitle(entry.data);
+
+                return (
+                  <li>
+
+                    <a
+                      href={`/religions/${entry.slug}`}
+                      class="flex items-baseline gap-3 px-5 py-3 hover:bg-parchment-200 transition-colors"
+                    >
+
+                      <span class="font-serif font-bold text-accent">
+                        {entry.data.title}
+                      </span>
+
+                      {sub && (
+                        <span class="text-ink-light font-sans text-sm">
+                          {sub}
+                        </span>
+                      )}
+
+                      {entry.data.description && (
+                        <span class="text-ink-muted font-sans text-sm ml-auto truncate max-w-xs">
+                          {entry.data.description}
+                        </span>
+                      )}
+
+                    </a>
+
+                  </li>
+                );
+              })}
+
+              {entries.length === 0 && (
+                <li class="px-5 py-4 font-sans text-ink-light italic">
+                  Nenhum artigo ainda.
+                </li>
+              )}
+
+            </ul>
+
+          </details>
+
+        );
+      })}
+
+    </div>
+
+  </main>
+</body>
+</html>
