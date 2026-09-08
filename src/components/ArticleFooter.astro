@@ -1,0 +1,22 @@
+---
+/**
+ * ArticleFooter.astro — Tags line shown at the bottom of every article page.
+ */
+interface Props {
+  tags: string[];
+}
+
+const { tags } = Astro.props;
+---
+
+{tags.length > 0 && (
+  <p>
+    <strong>Categorias:</strong>{' '}
+    {tags.map((tag: string, i: number) => (
+      <>
+        <a href={`/tags/${tag}`} class="text-accent hover:underline">{tag}</a>
+        {i < tags.length - 1 && ' · '}
+      </>
+    ))}
+  </p>
+)}
