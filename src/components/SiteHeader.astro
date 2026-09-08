@@ -1,0 +1,124 @@
+---
+/**
+ * SiteHeader.astro — Site-wide nav bar, used by every page.
+ *
+ * Previously six pages (home, WikiLayout, religions/index, races/index,
+ * search, tags/[tag]) each hand-rolled their own near-identical header —
+ * same classes, same logo, but subtly different nav links (some static,
+ * one built client-side via script). Adding a nav item meant editing six
+ * files and likely missing one. This is the single replacement.
+ *
+ * Collection links are generated from content/meta.ts's COLLECTION_META —
+ * add a collection there and it shows up in the nav everywhere automatically,
+ * no header file needs to change.
+ *
+ * Usage:
+ *   <SiteHeader />                          — no link highlighted (e.g. /search, /tags/[tag])
+ *   <SiteHeader activeSection="religions" /> — highlights "Religiões"
+ *   <SiteHeader maxWidthClass="max-w-screen-2xl xl:px-6 2xl:px-8" /> — wider layout (article pages)
+ *   <SiteHeader activeSection="religions" isRootPage={false} /> — restricted nav:
+ *     only the "Religiões" link, no Timeline/Mapas, no other collections.
+ *     Used on article pages that are nested under a section root (e.g. a
+ *     god page nested under its religion's pantheon) rather than the root
+ *     page itself (e.g. the pantheon page). See WikiLayout.astro.
+ */
+import { collections as collectionConfig } from '@/content/config';
+import { metaFor } from '@/content/meta';
+
+interface Props {
+  /** Collection key to highlight as the current section, if any. */
+  activeSection?: string;
+  /** Overrides the header's inner max-width/padding classes. */
+  maxWidthClass?: string;
+  /**
+   * Pass `false` on nested/sub-pages to show only a link back to their own
+   * section instead of the full site nav (Timeline/Mapas + all collections).
+   * Omitted (or `true`) means "show the full nav" — the default for the
+   * homepage, collection indexes, search, tags, and section root pages.
+   */
+  isRootPage?: boolean;
+}
+
+const { activeSection, maxWidthClass = 'max-w-6xl', isRootPage = true } = Astro.props;
+
+const collectionKeys = Object.keys(collectionConfig);
+---
+
+<header class="border-b border-border bg-white/70 backdrop-blur sticky top-0 z-50">
+  <div class={`${maxWidthClass} mx-auto px-4 flex items-center gap-6 h-12`}>
+
+    <a
+      href="/"
+      class="font-serif font-bold text-accent text-lg tracking-tight no-underline hover:no-underline"
+    >
+      📜 Archivum
+    </a>
+
+    <nav class="flex gap-4 text-sm text-ink-muted font-sans">
+
+      {isRootPage ? (
+        <>
+          {/*
+            Feature links — future dedicated pages (not content collections).
+            Placeholders until the Timeline and Map features exist; shown
+            disabled/muted with a tooltip so they don't look broken.
+          */}
+          <span
+            class="text-ink-light/60 cursor-not-allowed select-none"
+            title="Em desenvolvimento"
+          >
+            Linha do Tempo
+          </span>
+
+          <span
+            class="text-ink-light/60 cursor-not-allowed select-none"
+            title="Em desenvolvimento"
+          >
+            Mapas
+          </span>
+
+          {collectionKeys.map((key) => {
+            const meta = metaFor(key);
+            const isActive = key === activeSection;
+            return (
+              <a
+                href={meta.href}
+                class={isActive ? 'text-accent font-semibold' : 'hover:text-accent transition-colors'}
+              >
+                {meta.label}
+              </a>
+            );
+          })}
+        </>
+      ) : (
+        /*
+          Sub-page (nested article, e.g. a god page): show only a way back
+          to its own section root, not the full site nav.
+        */
+        activeSection && (
+          <a href={metaFor(activeSection).href} class="hover:text-accent transition-colors">
+            {metaFor(activeSection).label}
+          </a>
+        )
+      )}
+    </nav>
+
+    <div class="ml-auto">
+      <form action="/search" method="get" class="flex">
+        <input
+          name="q"
+          type="search"
+          placeholder="Buscar…"
+          class="border border-border rounded-l px-3 py-1 text-sm font-sans bg-parchment-50 focus:outline-none focus:ring-1 focus:ring-accent w-48"
+        />
+        <button
+          type="submit"
+          class="border border-l-0 border-border rounded-r px-3 py-1 text-sm font-sans bg-parchment-100 hover:bg-parchment-200 transition-colors"
+        >
+          Ir
+        </button>
+      </form>
+    </div>
+
+  </div>
+</header>
