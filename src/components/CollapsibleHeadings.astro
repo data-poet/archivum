@@ -1,0 +1,163 @@
+<script>
+  // Which heading levels start expanded when the page first loads.
+  // Flip any of these to change the default — no CSS changes needed,
+  // since global.css only reacts to whichever class is present.
+  const START_OPEN: Record<string, boolean> = {
+    H2: true,
+    H3: false,
+    H4: false,
+  };
+
+  function setupCollapsibleHeadings() {
+    const article = document.querySelector("article");
+
+    if (!article) return;
+
+    const headings = article.querySelectorAll<HTMLElement>("h2, h3, h4");
+
+    headings.forEach((heading) => {
+      // Prevent duplicate init
+      if (heading.dataset.collapsibleInitialized) return;
+
+      heading.dataset.collapsibleInitialized = "true";
+
+      const level = heading.tagName;
+
+      // Create wrapper section
+      const section = document.createElement("section");
+      section.className = `collapsible-section ${level.toLowerCase()}`;
+
+      // Create trigger button
+      const button = document.createElement("button");
+      button.className = "collapsible-trigger";
+
+      // Create content wrapper
+      const content = document.createElement("div");
+      content.className = "collapsible-content";
+
+      // Insert wrapper before heading
+      if (!heading.parentNode) return;
+      heading.parentNode.insertBefore(section, heading);
+
+      // Move ORIGINAL heading into trigger
+      // (preserves ids and anchor links naturally)
+      button.appendChild(heading);
+
+      // Build structure
+      section.appendChild(button);
+      section.appendChild(content);
+
+      // Apply the configured default state for this heading level.
+      if (START_OPEN[level]) {
+        section.classList.add("open");
+      }
+
+      // Determine which headings stop the section
+      // Each level swallows everything below it until the next
+      // heading of the same or higher level; the swallowed
+      // sub-headings then wrap themselves on their own turn below,
+      // which is what produces the nesting.
+      const headingLevels = ["H2", "H3", "H4"];
+      const levelIndex = headingLevels.indexOf(level);
+      const stopTags =
+        levelIndex === -1
+          ? headingLevels
+          : headingLevels.slice(0, levelIndex + 1);
+
+      // Move following nodes into collapsible content
+      let next = section.nextSibling;
+
+      while (next) {
+        const current = next;
+        next = next.nextSibling;
+
+        if (
+          current.nodeType === 1 &&
+          stopTags.includes((current as Element).tagName)
+        ) {
+          break;
+        }
+
+        content.appendChild(current);
+      }
+
+      // Toggle section open/closed
+      button.addEventListener("click", () => {
+        section.classList.toggle("open");
+      });
+    });
+
+    // ─────────────────────────────────────────────
+    // TOC LINK HANDLING
+    // ─────────────────────────────────────────────
+
+    document.addEventListener("click", (event) => {
+      const link = (event.target as Element | null)?.closest(".toc-link");
+
+      if (!link) return;
+
+      const href = link.getAttribute("href");
+
+      if (!href?.startsWith("#")) return;
+
+      const targetId = href.slice(1);
+      const target = document.getElementById(targetId);
+
+      if (!target) return;
+
+      // Prevent default browser jump
+      event.preventDefault();
+
+      // Open target section + all parents
+      let section = target.closest(".collapsible-section");
+
+      while (section) {
+        section.classList.add("open");
+
+        section =
+          section.parentElement?.closest(".collapsible-section") ?? null;
+      }
+
+      // Wait for layout update before scrolling
+      requestAnimationFrame(() => {
+        target.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+
+        // Update URL hash
+        history.replaceState(null, "", href);
+      });
+    });
+
+    // ─────────────────────────────────────────────
+    // OPEN SECTION FROM URL HASH ON PAGE LOAD
+    // ─────────────────────────────────────────────
+
+    const hash = window.location.hash;
+
+    if (hash) {
+      const targetId = hash.slice(1);
+      const target = document.getElementById(targetId);
+
+      if (target) {
+        let section = target.closest(".collapsible-section");
+
+        while (section) {
+          section.classList.add("open");
+
+          section =
+            section.parentElement?.closest(".collapsible-section") ?? null;
+        }
+
+        requestAnimationFrame(() => {
+          target.scrollIntoView({
+            block: "start",
+          });
+        });
+      }
+    }
+  }
+
+  window.addEventListener("load", setupCollapsibleHeadings);
+</script>

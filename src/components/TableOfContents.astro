@@ -1,0 +1,91 @@
+---
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface TocGroup {
+  h2: Heading;
+  children: Heading[];
+}
+
+interface Props {
+  headings: Heading[];
+}
+
+const { headings } = Astro.props;
+
+const filteredHeadings = headings.filter(
+  (heading) => heading.depth === 2 || heading.depth === 3
+);
+
+const groups: TocGroup[] = [];
+
+let currentGroup: TocGroup | null = null;
+
+for (const heading of filteredHeadings) {
+  if (heading.depth === 2) {
+    currentGroup = {
+      h2: heading,
+      children: [],
+    };
+
+    groups.push(currentGroup);
+  }
+
+  if (heading.depth === 3 && currentGroup) {
+    currentGroup.children.push(heading);
+  }
+}
+---
+
+{
+  groups.length > 0 && (
+    <nav class="toc">
+
+      <h2 class="toc-title">
+        Conteúdo
+      </h2>
+
+      <ul class="toc-list">
+
+        {groups.map((group) => (
+          <li class="toc-group">
+
+            <details class="toc-section">
+
+              <summary class="toc-summary">
+                <a
+                  href={`#${group.h2.slug}`}
+                  class="toc-link toc-h2"
+                >
+                  {group.h2.text}
+                </a>
+              </summary>
+
+              {group.children.length > 0 && (
+                <ul class="toc-sublist">
+                  {group.children.map((child) => (
+                    <li>
+                      <a
+                        href={`#${child.slug}`}
+                        class="toc-link toc-h3"
+                      >
+                        {child.text}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              )}
+
+            </details>
+
+          </li>
+        ))}
+
+      </ul>
+
+    </nav>
+  )
+}
