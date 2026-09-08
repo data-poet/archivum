@@ -1,0 +1,141 @@
+---
+import { getCollection } from 'astro:content';
+import { metaFor, typeLabel } from '../../content/meta';
+import SiteHeader from '@/components/SiteHeader.astro';
+import '../../styles/global.css';
+
+// ── Static path generation ────────────────────────────────────────────────────
+export async function getStaticPaths() {
+  const collectionConfig = (await import('../../content/config')).collections;
+  const collectionKeys = Object.keys(collectionConfig);
+
+  // Gather every entry from every collection
+  const allEntries: { collection: string; entry: any }[] = [];
+
+  for (const col of collectionKeys) {
+    const entries = await getCollection(col as any, ({ data }: any) => !data.draft);
+    for (const entry of entries) {
+      allEntries.push({ collection: col, entry });
+    }
+  }
+
+  // Collect unique tags
+  const tagSet = new Set<string>();
+  for (const { entry } of allEntries) {
+    for (const tag of (entry.data.tags ?? [])) {
+      tagSet.add(tag);
+    }
+  }
+
+  // One path per tag, passing the filtered entries as props
+  return Array.from(tagSet).map((tag) => {
+    const matching = allEntries.filter(({ entry }) =>
+      (entry.data.tags ?? []).includes(tag)
+    );
+    return {
+      params: { tag },
+      props:  { tag, matching },
+    };
+  });
+}
+
+interface MatchEntry { collection: string; entry: any }
+interface Props { tag: string; matching: MatchEntry[] }
+
+const { tag, matching } = Astro.props;
+
+// Group by collection
+const groups: Record<string, MatchEntry[]> = {};
+for (const m of matching) {
+  if (!groups[m.collection]) groups[m.collection] = [];
+  groups[m.collection].push(m);
+}
+---
+
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>#{tag} – Archivum</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+<body>
+
+  <!-- Navigation -->
+  <SiteHeader />
+
+  <main class="max-w-4xl mx-auto px-4 py-10">
+
+    <!-- Breadcrumb -->
+    <p class="text-sm font-sans text-ink-light mb-2">
+      <a href="/" class="text-accent hover:underline">Página Principal</a>
+      {' › '}
+      <span>Categoria</span>
+      {' › '}
+      <span class="font-semibold">#{tag}</span>
+    </p>
+
+    <h1 class="font-serif text-3xl font-bold border-b border-border pb-2 mb-1">
+      #{tag}
+    </h1>
+    <p class="font-sans text-sm text-ink-light mb-8">
+      {matching.length} {matching.length === 1 ? 'artigo' : 'artigos'} com esta categoria
+    </p>
+
+    <!-- Results grouped by collection -->
+    <div class="space-y-6">
+      {Object.entries(groups).map(([col, entries]) => {
+        const meta = metaFor(col);
+        return (
+          <details class="border border-border rounded overflow-hidden group" open>
+
+            <summary class="list-none cursor-pointer select-none">
+              <div
+                class="px-4 py-2 font-serif font-bold text-white text-base flex items-center gap-2"
+                style={`background-color: ${meta.color}`}
+              >
+                <span class="transition-transform group-open:rotate-90">▶</span>
+                <a
+                  href={meta.href}
+                  class="hover:underline"
+                  onclick="event.stopPropagation()"
+                >
+                  {meta.label}
+                </a>
+                <span class="font-sans font-normal text-xs opacity-80">({entries.length})</span>
+              </div>
+            </summary>
+
+            <ul class="divide-y divide-border bg-parchment-100">
+              {entries.map(({ entry }) => (
+                <li>
+                  <a
+                    href={`/${col}/${entry.slug}`}
+                    class="flex items-baseline gap-3 px-5 py-3 hover:bg-parchment-200 transition-colors no-underline"
+                  >
+                    <span class="font-serif font-bold text-accent">
+                      {entry.data.title}
+                    </span>
+                    <span class="font-sans text-xs text-ink-light">
+                      {typeLabel(entry.data.type)}
+                    </span>
+                    {entry.data.description && (
+                      <span class="font-sans text-xs text-ink-muted ml-auto truncate max-w-xs">
+                        {entry.data.description}
+                      </span>
+                    )}
+                  </a>
+                </li>
+              ))}
+            </ul>
+
+          </details>
+        );
+      })}
+    </div>
+
+  </main>
+
+</body>
+</html>
