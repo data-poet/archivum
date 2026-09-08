@@ -1,0 +1,106 @@
+---
+/**
+ * races/[...slug].astro — Dynamic article route
+ *
+ * Handles every entry in the races collection.
+ * Selects RaceInfobox or SubRaceInfobox based on entry.data.type.
+ */
+import { getCollection, type CollectionEntry } from 'astro:content';
+import TableOfContents     from '@/components/TableOfContents.astro';
+import CollapsibleHeadings from '@/components/CollapsibleHeadings.astro';
+import WikiLayout          from '@/layouts/WikiLayout.astro';
+import ArticleFooter       from '@/components/ArticleFooter.astro';
+import RaceInfobox         from '@/components/infoboxes/races/RaceInfobox';
+import SubRaceInfobox      from '@/components/infoboxes/races/SubRaceInfobox';
+import MediaInfobox        from '@/components/infoboxes/MediaInfobox';
+import { typeLabel, isRootType } from '@/content/meta';
+import { getArticleData } from '@/utils/articleData';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('races', ({ data }) => !data.draft);
+  return entries.map((entry) => ({
+    params: { slug: entry.slug },
+    props:  { entry },
+  }));
+}
+
+interface Props { entry: CollectionEntry<'races'> }
+
+const { entry } = Astro.props;
+const { Content, headings } = await entry.render();
+const { data, validSlugs, images } = await getArticleData(entry);
+---
+
+<WikiLayout
+  title={data.title}
+  description={data.description}
+  section="races"
+  sectionLabel="Raças"
+  typeLabel={typeLabel(data.type)}
+  publishedAt={entry.data.publishedAt}
+  updatedAt={entry.data.updatedAt}
+  isRootPage={isRootType('races', data.type)}
+>
+
+  <Fragment slot="toc">
+    <TableOfContents headings={headings} />
+  </Fragment>
+
+  <Fragment slot="infobox">
+
+    <div class="space-y-4">
+
+      {data.type === 'race' && (
+        <RaceInfobox
+          name={data.title}
+          vision={data.vision}
+          languages={data.languages}
+          physicalMaturity={data.physicalMaturity}
+          mentalMaturity={data.mentalMaturity}
+          lifeExpectancy={data.lifeExpectancy}
+          averageHeight={data.averageHeight}
+          averageWeight={data.averageWeight}
+          skinColors={data.skinColors}
+          eyeColors={data.eyeColors}
+          distinctions={data.distinctions}
+        >
+          <MediaInfobox client:load images={images} title={data.title} />
+        </RaceInfobox>
+      )}
+
+      {data.type === 'sub-race' && (
+        <SubRaceInfobox
+          name={data.title}
+          parentRace={data.parentRace}
+          validSlugs={validSlugs}
+          vision={data.vision}
+          languages={data.languages}
+          homeland={data.homeland}
+          regionOfOrigin={data.regionOfOrigin}
+          physicalMaturity={data.physicalMaturity}
+          mentalMaturity={data.mentalMaturity}
+          lifeExpectancy={data.lifeExpectancy}
+          averageHeight={data.averageHeight}
+          averageWeight={data.averageWeight}
+          skinColors={data.skinColors}
+          eyeColors={data.eyeColors}
+          distinctions={data.distinctions}
+          innateAdvantages={data.innateAdvantages}
+          innateDisadvantages={data.innateDisadvantages}
+        >
+          <MediaInfobox client:load images={images} title={data.title} />
+        </SubRaceInfobox>
+      )}
+
+    </div>
+
+  </Fragment>
+
+  <CollapsibleHeadings />
+  <Content />
+
+  <Fragment slot="footer">
+    <ArticleFooter tags={data.tags} />
+  </Fragment>
+
+</WikiLayout>
