@@ -1,0 +1,69 @@
+---
+/**
+ * WikiLink.astro
+ *
+ * Renders an internal wiki link.
+ * - Live link: accent-coloured anchor pointing to the target page.
+ * - Dead link: greyed-out dashed text when the target page does not exist yet.
+ *
+ * Validity is checked across every collection registered in
+ * content/config.ts (not just religions), so a link from a religion article
+ * to a race page — or any future collection — resolves correctly instead of
+ * always rendering dead.
+ *
+ * Usage inside any .mdx file:
+ *   import WikiLink from '@/components/WikiLink.astro'
+ *   <WikiLink href="/religions/draconic-faith/gods/bahamut">Solaris</WikiLink>
+ *   <WikiLink href="/races/dragonborn/dragonborn">Draconato</WikiLink>
+ *
+ * Prefer Ref.astro (./Ref.astro) over calling this directly when the link
+ * text should just be the target's own title — it wraps WikiLink and
+ * resolves that label automatically, so it never drifts out of sync with
+ * the target's frontmatter. Use WikiLink directly only when the link needs
+ * bespoke inline text (e.g. an inflected or partial phrase).
+ */
+
+interface Props {
+  href: string;
+}
+
+const { href } = Astro.props;
+
+import { getCollection, type CollectionEntry, type CollectionKey } from 'astro:content';
+import { collections as collectionConfig } from '@/content/config';
+
+type AnyEntry = CollectionEntry<CollectionKey>;
+
+const collectionKeys = Object.keys(collectionConfig);
+
+// Draft entries (e.g. stub pages created only to satisfy a reference()
+// relation elsewhere) are excluded from every other listing (search, tags,
+// index pages, getStaticPaths) — exclude them here too, or a WikiLink to a
+// draft-only slug would render as a live link to a page that doesn't
+// actually get built.
+const allEntries = (
+  await Promise.all(
+    collectionKeys.map((key) => getCollection(key as any, ({ data }: any) => !data.draft))
+  )
+).flat() as AnyEntry[];
+
+// Build the set of all valid URL paths across every collection.
+const validPaths = new Set(
+  allEntries.map((entry) => `/${entry.collection}/${entry.slug}`)
+);
+
+const isDead = !validPaths.has(href);
+---
+
+{isDead ? (
+  <span
+    class="text-ink-light cursor-not-allowed border-b border-dashed border-ink-light"
+    title={`"${href}" ainda não existe`}
+  >
+    <slot />
+  </span>
+) : (
+  <a href={href} class="text-accent hover:underline">
+    <slot />
+  </a>
+)}
