@@ -1,0 +1,181 @@
+---
+/**
+ * WikiLayout.astro
+ *
+ * Main two-column Wikipedia-style layout used by all article pages.
+ * Left column: article body. Right column: infobox slot.
+ */
+import '../styles/global.css';
+import SiteHeader from '@/components/SiteHeader.astro';
+
+interface Props {
+  title:         string;
+  description?:  string;
+  section?:      string;
+  sectionLabel?: string;
+  typeLabel?:    string;
+  publishedAt?:  string | Date;
+  updatedAt?:    string | Date;
+  /**
+   * Whether this entry is the "root" page of its section (e.g. a pantheon
+   * or a base race) as opposed to a nested sub-page (a god, a sub-race, …).
+   * Root pages get the full site nav in the header; sub-pages only get a
+   * link back to their own section. Defaults to true so pages that don't
+   * pass it (or collections without the concept) keep the full nav.
+   */
+  isRootPage?:   boolean;
+}
+
+const {
+  title,
+  description,
+  section,
+  sectionLabel,
+  typeLabel,
+  publishedAt,
+  updatedAt,
+  isRootPage = true
+} = Astro.props;
+
+function formatDate(dateInput: string | Date) {
+  return new Date(dateInput).toLocaleDateString('pt-BR', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric'
+  });
+}
+---
+
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{title} – Archivum</title>
+
+  {description && (
+    <meta name="description" content={description} />
+  )}
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+
+<body>
+
+  <!-- Top navigation bar -->
+  <SiteHeader
+    activeSection={section}
+    isRootPage={isRootPage}
+    maxWidthClass="max-w-screen-2xl xl:px-6 2xl:px-8"
+  />
+
+  <!-- Page wrapper -->
+  <div class="w-full max-w-screen-2xl mx-auto px-4 xl:px-6 2xl:px-8 py-6">
+
+    <!-- Breadcrumb -->
+    {section && (
+      <p class="text-sm font-sans text-ink-light mb-1">
+
+        <a href="/" class="text-accent hover:underline">
+          Página Principal
+        </a>
+
+        {' › '}
+
+        <a
+          href={`/${section}`}
+          class="text-accent hover:underline"
+        >
+          {sectionLabel ?? section}
+        </a>
+
+        {typeLabel && (
+          <>
+            {' › '}
+            <span>{typeLabel}</span>
+          </>
+        )}
+
+      </p>
+    )}
+
+    <!-- Article title -->
+    <h1 class="font-serif text-3xl font-bold text-ink border-b border-border pb-2 mb-4">
+      {title}
+    </h1>
+
+    <!-- Article Metadata -->
+    {(publishedAt || updatedAt) && (
+
+      <div class="text-sm text-ink-light font-sans mb-6 flex flex-wrap gap-4">
+
+        {publishedAt && (
+          <span>
+            Publicado em {formatDate(publishedAt)}
+          </span>
+        )}
+
+        {updatedAt && (
+          <span>
+            Atualizado em {formatDate(updatedAt)}
+          </span>
+        )}
+
+      </div>
+
+    )}
+
+    <!-- Three-column layout: toc + article body + infobox -->
+    <div class="flex gap-6 2xl:gap-10 items-start">
+
+      <!-- Left sidebar: TOC -->
+      <aside
+        class="
+          hidden xl:block
+          w-56 2xl:w-64
+          sticky top-20
+          self-start
+          max-h-[calc(100vh-6rem)]
+          overflow-y-auto
+          shrink-0
+        "
+      >
+        <slot name="toc" />
+      </aside>
+
+      <!-- Main article -->
+      <article
+        class="
+          flex-1
+          min-w-0
+          max-w-4xl
+          prose
+          prose-wiki
+        "
+      >
+        <slot />
+      </article>
+
+      <!-- Right sidebar: infobox -->
+      <aside
+        class="
+          hidden lg:block
+          w-72 2xl:w-80
+          shrink-0
+          self-start
+        "
+      >
+        <slot name="infobox" />
+      </aside>
+
+    </div>
+
+    <!-- Footer: tags / categories -->
+    <footer class="mt-10 pt-4 border-t border-border text-sm font-sans text-ink-light">
+      <slot name="footer" />
+    </footer>
+
+  </div>
+
+</body>
+</html>
