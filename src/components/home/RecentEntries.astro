@@ -1,0 +1,99 @@
+---
+/**
+ * RecentEntries.astro — "Artigos Recentes" collapsible box on the homepage.
+ * Renders the 5 most recently updated/published entries, across every
+ * collection, computed by homeData.ts.
+ */
+import { typeLabel } from '@/content/meta';
+import type { RecentEntry } from './homeData';
+
+interface Props {
+  recent: RecentEntry[];
+}
+
+const { recent } = Astro.props;
+---
+
+{recent.length > 0 && (
+
+  <details
+    class="border border-border rounded bg-parchment-100 overflow-hidden mb-6 group"
+  >
+
+    <!-- Expandable header -->
+    <summary
+      class="list-none cursor-pointer select-none"
+    >
+
+      <div
+        class="px-4 py-2 font-serif font-bold text-white text-base flex items-center"
+        style="background-color: #5a3e2b"
+      >
+
+        <!-- Arrow -->
+        <span class="mr-2 transition-transform group-open:rotate-90">
+          ▶
+        </span>
+
+        Artigos Recentes
+
+        <span class="font-sans font-normal text-xs ml-2 opacity-80">
+          ({recent.length})
+        </span>
+
+      </div>
+
+    </summary>
+
+    <!-- Expandable content -->
+    <ul class="divide-y divide-border">
+
+      {recent.map((entry) => {
+
+        const displayDate =
+          entry.data.updatedAt ??
+          entry.data.publishedAt;
+
+        return (
+          <li>
+
+            <a
+              href={`${entry.collectionHref}/${entry.slug}`}
+              class="flex items-baseline gap-3 px-4 py-2 hover:bg-parchment-200 transition-colors"
+            >
+
+              <span class="font-serif text-sm font-bold text-accent">
+                {entry.data.title}
+              </span>
+
+              <span class="font-sans text-xs text-ink-light">
+                {typeLabel(entry.data.type)}
+              </span>
+
+              <span class="font-sans text-xs text-ink-light">
+                • {entry.collectionLabel}
+              </span>
+
+              {displayDate && (
+                <span class="font-sans text-xs text-ink-light">
+                  • {new Date(displayDate).toLocaleDateString('pt-BR')}
+                </span>
+              )}
+
+              {entry.data.description && (
+                <span class="font-sans text-xs text-ink-muted ml-auto truncate max-w-xs">
+                  {entry.data.description}
+                </span>
+              )}
+
+            </a>
+
+          </li>
+        );
+      })}
+
+    </ul>
+
+  </details>
+
+)}

@@ -1,0 +1,95 @@
+---
+/**
+ * CollectionCard.astro — One collapsible card on the homepage, one per
+ * collection listed in homeCollections.ts. Shows the collection's total
+ * entry count in the header, and a self-organizing grid of subtype tiles
+ * (each showing its own count) when expanded.
+ */
+import { gridColsFor } from '@/utils/grid';
+import type { HomeCollectionData } from './homeData';
+
+interface Props {
+  collection: HomeCollectionData;
+}
+
+const { collection } = Astro.props;
+---
+
+<details
+  class="border border-border rounded bg-parchment-100 overflow-hidden mb-6 group"
+>
+
+  <!-- Expandable header -->
+  <summary
+    class="list-none cursor-pointer select-none"
+  >
+
+    <div
+      class="px-4 py-2 font-serif font-bold text-white text-base flex items-center"
+      style={`background-color: ${collection.color}`}
+    >
+
+      <!-- Arrow -->
+      <span class="mr-2 transition-transform group-open:rotate-90">
+        ▶
+      </span>
+
+      <!-- Collection link -->
+      <a
+        href={collection.href}
+        class="hover:underline"
+        onclick="event.stopPropagation()"
+      >
+        ✦ {collection.label}
+      </a>
+
+      <span class="font-sans font-normal text-xs ml-2 opacity-80">
+        ({collection.entries.length})
+      </span>
+
+    </div>
+
+  </summary>
+
+  <!-- Expandable content -->
+  <div>
+
+    <!-- Sub-type tiles -->
+    {collection.subtypes?.length > 0 && (
+
+      <div class={`grid ${gridColsFor(collection.subtypes.length)} border-t border-l border-border`}>
+
+        {collection.subtypes.map(({ type, label, color }) => {
+
+          const count = collection.entries.filter(
+            (e) => e.data.type === type
+          ).length;
+
+          return (
+            <a
+              href={`${collection.href}#${type}`}
+              class="block px-4 py-3 hover:bg-parchment-200 transition-colors border-r border-b border-border"
+            >
+
+              <div
+                class="font-sans text-xs font-semibold mb-0.5"
+                style={`color: ${color}`}
+              >
+                {label}
+              </div>
+
+              <div class="font-serif text-lg font-bold text-ink">
+                {count}
+              </div>
+
+            </a>
+          );
+        })}
+
+      </div>
+
+    )}
+
+  </div>
+
+</details>

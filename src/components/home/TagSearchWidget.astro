@@ -1,0 +1,342 @@
+---
+/**
+ * TagSearchWidget.astro — "Buscar por Tags" collapsible box on the homepage.
+ *
+ * GitHub-topics-style tag search: type into the input, matching tags (that
+ * aren't already selected) appear as a dropdown of suggestions. Clicking a
+ * suggestion adds it as a removable chip and re-filters the results.
+ *
+ * Selection logic: OR (an entry matches if it has ANY of the selected tags).
+ * This mirrors how the /tags/[tag] pages already work per-tag and is the
+ * more forgiving default for browsing — AND would be easy to add later if
+ * preferred, just switch `.some(...)` to `.every(...)` in the script below.
+ *
+ * Self-contained: fetches /search-index.json itself at runtime (same
+ * endpoint /search uses), so it needs no props from index.astro.
+ *
+ * NOTE: no `overflow-hidden` on the <details> below — the suggestion
+ * dropdown is absolutely positioned and needs to render outside the box's
+ * natural (short) height. Rounded corners are applied directly to the
+ * header and content instead, so the box still looks clipped/rounded
+ * without actually clipping content.
+ */
+---
+
+<details
+  class="border border-border rounded bg-parchment-100 mb-6 group"
+  id="tag-search-details"
+>
+
+  <!-- Expandable header -->
+  <summary
+    class="list-none cursor-pointer select-none"
+  >
+
+    <div
+      class="px-4 py-2 font-serif font-bold text-white text-base flex items-center rounded-t"
+      style="background-color: #1f4b6e"
+    >
+
+      <!-- Arrow -->
+      <span class="mr-2 transition-transform group-open:rotate-90">
+        ▶
+      </span>
+
+      Buscar por Tags
+
+      <span
+        id="tag-selected-count"
+        class="font-sans font-normal text-xs ml-2 opacity-80"
+      ></span>
+
+    </div>
+
+  </summary>
+
+  <!-- Expandable content -->
+  <div class="bg-white p-5 rounded-b">
+
+    <!-- Label + clear action -->
+    <div class="flex items-center justify-between mb-2">
+      <label
+        for="tag-search-input"
+        class="font-sans text-xs font-semibold text-ink-muted uppercase tracking-wide"
+      >
+        Digite para buscar tags
+      </label>
+
+      <button
+        id="tag-clear-btn"
+        type="button"
+        class="font-sans text-xs text-accent hover:underline hidden"
+      >
+        Limpar seleção
+      </button>
+    </div>
+
+    <!-- Autocomplete input -->
+    <div class="relative">
+      <input
+        id="tag-search-input"
+        type="text"
+        placeholder="ex: dragões, panteão…"
+        autocomplete="off"
+        class="w-full border border-border rounded px-3 py-2 text-sm font-sans bg-parchment-50 focus:outline-none focus:ring-2 focus:ring-accent"
+      />
+
+      <!-- Suggestions dropdown, populated by script -->
+      <ul
+        id="tag-suggestion-list"
+        class="hidden absolute left-0 right-0 top-full mt-1 border border-border rounded bg-white shadow-lg z-20 max-h-56 overflow-y-auto"
+      ></ul>
+    </div>
+
+    <!-- Selected tags, shown as removable chips -->
+    <div id="tag-chip-list" class="flex flex-wrap gap-2 mt-3 empty:mt-0"></div>
+
+    <!-- Status line -->
+    <p id="tag-search-status" class="font-sans text-xs text-ink-light mt-4 empty:mt-0"></p>
+
+    <!-- Results, populated by script -->
+    <div id="tag-search-results" class="mt-3 empty:mt-0"></div>
+
+  </div>
+
+</details>
+
+<script>
+import { COLLECTION_META, TYPE_LABELS } from '@/content/meta';
+import { normalise } from '@/utils/text';
+
+interface SearchRecord {
+  slug: string;
+  collection: string;
+  href: string;
+  title: string;
+  type: string;
+  description: string;
+  tags: string[];
+}
+
+const inputEl        = document.getElementById('tag-search-input') as HTMLInputElement;
+const suggestionListEl = document.getElementById('tag-suggestion-list')!;
+const chipListEl     = document.getElementById('tag-chip-list')!;
+const resultsEl       = document.getElementById('tag-search-results')!;
+const statusEl        = document.getElementById('tag-search-status')!;
+const clearBtn        = document.getElementById('tag-clear-btn')!;
+const selectedCountEl = document.getElementById('tag-selected-count')!;
+const detailsEl       = document.getElementById('tag-search-details') as HTMLDetailsElement;
+
+let allRecords: SearchRecord[] = [];
+let allTags: string[] = [];
+let selectedTags: string[] = []; // ordered, preserves selection order for chip display
+let loaded = false;
+
+// ── Results ────────────────────────────────────────────────────────────────
+function renderResults() {
+  if (selectedTags.length === 0) {
+    statusEl.textContent = '';
+    resultsEl.innerHTML  = '';
+    selectedCountEl.textContent = '';
+    return;
+  }
+
+  selectedCountEl.textContent = `(${selectedTags.length} selecionada${selectedTags.length !== 1 ? 's' : ''})`;
+
+  const selectedSet = new Set(selectedTags);
+  const matches = allRecords.filter((r) =>
+    r.tags.some((t) => selectedSet.has(t))
+  );
+
+  if (!matches.length) {
+    statusEl.textContent = 'Nenhum artigo encontrado com as tags selecionadas.';
+    resultsEl.innerHTML  = '';
+    return;
+  }
+
+  statusEl.textContent = `${matches.length} artigo${matches.length !== 1 ? 's' : ''} encontrado${matches.length !== 1 ? 's' : ''}`;
+
+  // Group by collection
+  const groups: Record<string, SearchRecord[]> = {};
+  for (const r of matches) {
+    if (!groups[r.collection]) groups[r.collection] = [];
+    groups[r.collection].push(r);
+  }
+
+  // Groups are rendered as flat, static sections (no nested <details>) —
+  // this box already lives inside the "Buscar por Tags" expander, so a
+  // second layer of collapsible arrows just made the results harder to
+  // scan. A plain colored header bar keeps the grouping without the clutter.
+  let html = '';
+  for (const [col, entries] of Object.entries(groups)) {
+    const meta = COLLECTION_META[col] ?? { label: col, color: '#555' };
+    html += `
+      <div class="border border-border rounded overflow-hidden mb-3">
+        <div class="px-4 py-2 font-serif font-bold text-white text-sm flex items-center gap-2"
+             style="background-color: ${meta.color}">
+          ${meta.label}
+          <span class="font-sans font-normal text-xs opacity-80">(${entries.length})</span>
+        </div>
+        <ul class="divide-y divide-border bg-parchment-50">
+          ${entries.map((e) => `
+            <li>
+              <a href="${e.href}"
+                 class="flex items-baseline gap-3 px-4 py-2 hover:bg-parchment-200 transition-colors no-underline">
+                <span class="font-serif font-bold text-accent text-sm">${e.title}</span>
+                <span class="font-sans text-xs text-ink-light">${TYPE_LABELS[e.type] ?? e.type}</span>
+                ${e.description
+                  ? `<span class="font-sans text-xs text-ink-muted ml-auto truncate max-w-xs">${e.description}</span>`
+                  : ''}
+              </a>
+            </li>
+          `).join('')}
+        </ul>
+      </div>`;
+  }
+
+  resultsEl.innerHTML = html;
+}
+
+// ── Chips (selected tags) ─────────────────────────────────────────────────────
+function renderChips() {
+  clearBtn.classList.toggle('hidden', selectedTags.length === 0);
+
+  chipListEl.innerHTML = '';
+  for (const tag of selectedTags) {
+    const chip = document.createElement('span');
+    chip.className =
+      'inline-flex items-center gap-1 font-sans text-xs px-3 py-1 rounded-full border border-accent bg-accent text-white';
+    chip.innerHTML = `#${tag}`;
+
+    const removeBtn = document.createElement('button');
+    removeBtn.type = 'button';
+    removeBtn.textContent = '✕';
+    removeBtn.className = 'ml-1 hover:opacity-70';
+    removeBtn.setAttribute('aria-label', `Remover tag ${tag}`);
+    removeBtn.addEventListener('click', () => removeTag(tag));
+
+    chip.appendChild(removeBtn);
+    chipListEl.appendChild(chip);
+  }
+}
+
+function addTag(tag: string) {
+  if (selectedTags.includes(tag)) return;
+  selectedTags.push(tag);
+  renderChips();
+  renderResults();
+  inputEl.value = '';
+  hideSuggestions();
+  inputEl.focus();
+}
+
+function removeTag(tag: string) {
+  selectedTags = selectedTags.filter((t) => t !== tag);
+  renderChips();
+  renderResults();
+}
+
+clearBtn.addEventListener('click', () => {
+  selectedTags = [];
+  renderChips();
+  renderResults();
+});
+
+// ── Suggestions (autocomplete dropdown) ───────────────────────────────────────
+function hideSuggestions() {
+  suggestionListEl.classList.add('hidden');
+  suggestionListEl.innerHTML = '';
+}
+
+function showSuggestions(query: string) {
+  const normalisedQuery = normalise(query.trim());
+
+  const candidates = allTags
+    .filter((tag) => !selectedTags.includes(tag))
+    .filter((tag) => normalisedQuery === '' || normalise(tag).includes(normalisedQuery))
+    .slice(0, 8);
+
+  if (!candidates.length) {
+    hideSuggestions();
+    return;
+  }
+
+  suggestionListEl.innerHTML = candidates
+    .map(
+      (tag) => `
+        <li>
+          <button
+            type="button"
+            data-tag="${tag}"
+            class="w-full text-left px-3 py-2 text-sm font-sans text-ink hover:bg-parchment-200 transition-colors"
+          >
+            #${tag}
+          </button>
+        </li>`
+    )
+    .join('');
+
+  suggestionListEl.classList.remove('hidden');
+
+  suggestionListEl.querySelectorAll('button[data-tag]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      addTag((btn as HTMLButtonElement).dataset.tag!);
+    });
+  });
+}
+
+inputEl.addEventListener('input', () => showSuggestions(inputEl.value));
+inputEl.addEventListener('focus', () => showSuggestions(inputEl.value));
+
+// Enter picks the top suggestion, if any
+inputEl.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const first = suggestionListEl.querySelector('button[data-tag]') as HTMLButtonElement | null;
+    if (first) addTag(first.dataset.tag!);
+  } else if (e.key === 'Escape') {
+    hideSuggestions();
+  }
+});
+
+// Close the dropdown when clicking outside it
+document.addEventListener('click', (e) => {
+  const target = e.target as Node;
+  if (!inputEl.contains(target) && !suggestionListEl.contains(target)) {
+    hideSuggestions();
+  }
+});
+
+// ── Load index ─────────────────────────────────────────────────────────────
+function loadIndex() {
+  if (loaded) return;
+  loaded = true;
+
+  fetch('/search-index.json')
+    .then((r) => r.json())
+    .then((records: SearchRecord[]) => {
+      allRecords = records;
+
+      const tagSet = new Set<string>();
+      for (const r of records) {
+        for (const t of r.tags) tagSet.add(t);
+      }
+      allTags = Array.from(tagSet).sort((a, b) => a.localeCompare(b, 'pt-BR'));
+
+      inputEl.placeholder = allTags.length
+        ? 'Buscar tags…'
+        : 'Nenhuma tag cadastrada ainda';
+      inputEl.disabled = allTags.length === 0;
+    })
+    .catch(() => {
+      statusEl.textContent = 'Erro ao carregar as tags.';
+    });
+}
+
+// Load lazily the first time the expander is opened, and eagerly if it's
+// already open on page load (e.g. browser restoring scroll/details state).
+detailsEl.addEventListener('toggle', () => {
+  if (detailsEl.open) loadIndex();
+});
+if (detailsEl.open) loadIndex();
+</script>

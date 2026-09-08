@@ -1,0 +1,46 @@
+---
+/**
+ * Hero.astro — Homepage title block + the large, prominent search bar
+ * beneath it. (The small search box in SiteHeader is separate — this is
+ * the "main" search entry point front and center on the page.)
+ */
+interface Props {
+  totalArticles: number;
+}
+
+const { totalArticles } = Astro.props;
+---
+
+<div class="text-center mb-10 border-b border-border pb-8">
+
+  <h1 class="font-serif text-4xl font-bold text-ink mb-3">
+    Archivum
+  </h1>
+
+  <p class="font-sans text-ink-muted text-lg">
+    Toda lenda precisa de um guardião. O Archivum preserva as histórias,
+    os segredos e a alma do meu universo - porque conhecimento é poder.
+    Arquive-o.
+  </p>
+
+  <p class="font-sans text-sm text-ink-light mt-2">
+    {totalArticles}{' '}
+    {totalArticles === 1 ? 'artigo' : 'artigos'} publicados
+  </p>
+
+</div>
+
+<form action="/search" method="get" class="flex gap-2 mb-8">
+  <input
+    name="q"
+    type="search"
+    placeholder="O que você procura?"
+    class="flex-1 border border-border rounded px-4 py-2 text-base font-sans bg-parchment-50 focus:outline-none focus:ring-2 focus:ring-accent"
+  />
+  <button
+    type="submit"
+    class="border border-border rounded px-5 py-2 text-sm font-sans font-semibold bg-accent text-white hover:opacity-90 transition-opacity"
+  >
+    Buscar
+  </button>
+</form>
