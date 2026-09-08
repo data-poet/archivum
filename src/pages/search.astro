@@ -1,0 +1,184 @@
+---
+import SiteHeader from '@/components/SiteHeader.astro';
+import '../styles/global.css';
+
+// Read initial query from URL so it can be pre-filled in the input
+const rawQ = Astro.url.searchParams.get('q') ?? '';
+---
+
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Busca – Archivum</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+<body>
+
+  <!-- Navigation -->
+  <SiteHeader />
+
+  <main class="max-w-4xl mx-auto px-4 py-10">
+
+    <h1 class="font-serif text-3xl font-bold border-b border-border pb-2 mb-4">
+      Busca
+    </h1>
+
+    <!-- Search bar (large, prominent) -->
+    <form id="search-form-main" class="flex gap-2 mb-8">
+      <input
+        id="search-input-main"
+        name="q"
+        type="search"
+        placeholder="O que você procura?"
+        value={rawQ}
+        autofocus
+        class="flex-1 border border-border rounded px-4 py-2 text-base font-sans bg-parchment-50 focus:outline-none focus:ring-2 focus:ring-accent"
+      />
+      <button
+        type="submit"
+        class="border border-border rounded px-5 py-2 text-sm font-sans font-semibold bg-accent text-white hover:opacity-90 transition-opacity"
+      >
+        Buscar
+      </button>
+    </form>
+
+    <!-- Status line -->
+    <p id="search-status" class="font-sans text-sm text-ink-light mb-6"></p>
+
+    <!-- Results container -->
+    <div id="search-results"></div>
+
+  </main>
+
+</body>
+</html>
+
+<script>
+import { COLLECTION_META, TYPE_LABELS } from '../content/meta';
+import { normalise } from '../utils/text';
+
+// ── Score a single record against the query tokens ───────────────────────────
+function score(record: any, tokens: string[]): number {
+  const title       = normalise(record.title);
+  const description = normalise(record.description);
+  const type        = normalise(TYPE_LABELS[record.type] ?? record.type);
+  const tags        = (record.tags as string[]).map(normalise).join(' ');
+
+  let total = 0;
+  for (const token of tokens) {
+    if (title.includes(token))       total += 3;
+    if (tags.includes(token))        total += 2;
+    if (description.includes(token)) total += 1;
+    if (type.includes(token))        total += 1;
+  }
+  return total;
+}
+
+// ── DOM refs ─────────────────────────────────────────────────────────────────
+const statusEl  = document.getElementById('search-status')!;
+const resultsEl = document.getElementById('search-results')!;
+const inputMain = document.getElementById('search-input-main') as HTMLInputElement;
+
+// ── Main search form navigates to /search?q=… ─────────────────────────────────
+// (SiteHeader's own small search box is a plain <form method="get"> with no
+// id — it needs no JS, a normal browser submit already lands here correctly.)
+function submitSearch(q: string) {
+  const url = new URL('/search', window.location.origin);
+  url.searchParams.set('q', q.trim());
+  window.location.href = url.toString();
+}
+
+document.getElementById('search-form-main')!.addEventListener('submit', (e) => {
+  e.preventDefault();
+  submitSearch(inputMain.value);
+});
+
+// ── Render ────────────────────────────────────────────────────────────────────
+function render(records: any[], query: string) {
+  const tokens = normalise(query).split(/\s+/).filter(Boolean);
+
+  if (!tokens.length) {
+    statusEl.textContent = 'Digite algo para buscar.';
+    resultsEl.innerHTML  = '';
+    return;
+  }
+
+  // Score and filter
+  const scored = records
+    .map((r) => ({ ...r, _score: score(r, tokens) }))
+    .filter((r) => r._score > 0)
+    .sort((a, b) => b._score - a._score);
+
+  if (!scored.length) {
+    statusEl.textContent = `Nenhum resultado para "${query}".`;
+    resultsEl.innerHTML  = '';
+    return;
+  }
+
+  statusEl.textContent = `${scored.length} resultado${scored.length !== 1 ? 's' : ''} para "${query}"`;
+
+  // Group by collection preserving score order
+  const groups: Record<string, any[]> = {};
+  for (const r of scored) {
+    if (!groups[r.collection]) groups[r.collection] = [];
+    groups[r.collection].push(r);
+  }
+
+  let html = '';
+  for (const [col, entries] of Object.entries(groups)) {
+    const meta = COLLECTION_META[col] ?? { label: col, color: '#555' };
+    html += `
+      <details class="border border-border rounded overflow-hidden mb-6 group" open>
+        <summary class="list-none cursor-pointer select-none">
+          <div class="px-4 py-2 font-serif font-bold text-white text-base flex items-center gap-2"
+               style="background-color: ${meta.color}">
+            <span class="transition-transform group-open:rotate-90">▶</span>
+            ${meta.label}
+            <span class="font-sans font-normal text-xs opacity-80">(${entries.length})</span>
+          </div>
+        </summary>
+        <ul class="divide-y divide-border bg-parchment-100">
+          ${entries.map((e) => `
+            <li>
+              <a href="${e.href}"
+                 class="flex items-baseline gap-3 px-5 py-3 hover:bg-parchment-200 transition-colors no-underline">
+                <span class="font-serif font-bold text-accent">${e.title}</span>
+                <span class="font-sans text-xs text-ink-light">${TYPE_LABELS[e.type] ?? e.type}</span>
+                ${e.description
+                  ? `<span class="font-sans text-xs text-ink-muted ml-auto truncate max-w-xs">${e.description}</span>`
+                  : ''}
+              </a>
+            </li>
+          `).join('')}
+        </ul>
+      </details>`;
+  }
+
+  resultsEl.innerHTML = html;
+}
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+const initialQuery = new URLSearchParams(window.location.search).get('q') ?? '';
+
+fetch('/search-index.json')
+  .then((r) => r.json())
+  .then((records) => {
+    if (initialQuery) {
+      render(records, initialQuery);
+    } else {
+      statusEl.textContent = 'Digite algo para buscar.';
+    }
+
+    // Live search as user types (debounced)
+    let timer: ReturnType<typeof setTimeout>;
+    inputMain.addEventListener('input', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => render(records, inputMain.value), 250);
+    });
+  })
+  .catch(() => {
+    statusEl.textContent = 'Erro ao carregar o índice de busca.';
+  });
+</script>

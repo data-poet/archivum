@@ -1,0 +1,53 @@
+---
+/**
+ * index.astro — Home page
+ *
+ * Composition only. All the actual logic lives in src/components/home/:
+ *   - homeCollections.ts / homeData.ts  — what to show, and the data for it
+ *   - Hero / TagSearchWidget / RecentEntries / CollectionCard — the pieces
+ *
+ * SiteHeader is shared site-wide (src/components/SiteHeader.astro), not
+ * homepage-specific — see its own header comment.
+ */
+import '../styles/global.css';
+import { getHomeData } from '@/components/home/homeData';
+import SiteHeader     from '@/components/SiteHeader.astro';
+import Hero            from '@/components/home/Hero.astro';
+import TagSearchWidget from '@/components/home/TagSearchWidget.astro';
+import RecentEntries   from '@/components/home/RecentEntries.astro';
+import CollectionCard  from '@/components/home/CollectionCard.astro';
+
+const { collectionData, totalArticles, recent } = await getHomeData();
+---
+
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Archivum</title>
+
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+
+<body>
+
+  <SiteHeader />
+
+  <main class="max-w-4xl mx-auto px-4 py-10">
+
+    <Hero totalArticles={totalArticles} />
+
+    <TagSearchWidget />
+
+    <RecentEntries recent={recent} />
+
+    {collectionData.map((collection) => (
+      <CollectionCard collection={collection} />
+    ))}
+
+  </main>
+
+</body>
+</html>
