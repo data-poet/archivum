@@ -17,6 +17,7 @@ export interface FeatureMeta {
 }
 
 export const FEATURES: FeatureMeta[] = [
+  { key: "graphs", label: "Grafos", href: "/graph", available: true },
   { key: "timeline", label: "Linha do Tempo", href: "/timeline", available: false },
   { key: "maps", label: "Mapas", href: "/maps", available: false },
 ];

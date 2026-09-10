@@ -1,0 +1,237 @@
+---
+/**
+ * graph/[collection]/[...slug].astro — mention graph for one article.
+ * Rendered client-side as an interactive force-directed canvas (force-graph):
+ * physics-based layout, drag, and edges are the library's job now — this
+ * page just hands it the {center, neighbors} data from getGraphData().
+ */
+import { getCollection, type CollectionEntry, type CollectionKey } from 'astro:content';
+import { collections as collectionConfig } from '@/content/config';
+import SiteHeader from '@/components/SiteHeader.astro';
+import { getGraphData } from '@/components/graph/graphData';
+import '../../../styles/global.css';
+
+export async function getStaticPaths() {
+  const collectionKeys = Object.keys(collectionConfig);
+  const paths: { params: { collection: string; slug: string }; props: { entry: CollectionEntry<CollectionKey> } }[] = [];
+
+  for (const collection of collectionKeys) {
+    const entries = (await getCollection(collection as any, ({ data }: any) => !data.draft)) as CollectionEntry<CollectionKey>[];
+    for (const entry of entries) {
+      paths.push({ params: { collection, slug: entry.slug }, props: { entry } });
+    }
+  }
+
+  return paths;
+}
+
+interface Props { entry: CollectionEntry<CollectionKey> }
+
+const { entry } = Astro.props;
+const { center, neighbors } = await getGraphData(entry);
+---
+
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grafo de {center.title} – Archivum</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+<body>
+
+  <SiteHeader activeFeature="graphs" />
+
+  <main class="relative w-full" style="height: calc(100vh - 3rem);">
+    <div id="graph-canvas" class="absolute inset-0"></div>
+  </main>
+
+  {/* Data island, not define:vars — a plain <script> with imports (force-graph,
+      the shared link-behavior setting) can't also use define:vars, since that
+      forces is:inline and disables module/import processing. */}
+  <script is:inline type="application/json" id="graph-data" set:html={JSON.stringify({ center, neighbors }).replace(/</g, '\\u003c')} />
+
+</body>
+</html>
+
+<script>
+import ForceGraph from 'force-graph';
+import type { NodeObject, LinkObject } from 'force-graph';
+import { forceX, forceY, forceCollide } from 'd3-force-3d';
+import { OPEN_CONTENT_LINKS_IN_NEW_TAB } from '@/shared/linkBehavior';
+
+interface GNode extends NodeObject {
+  id: string;
+  title: string;
+  exists: boolean;
+  isCenter?: boolean;
+  groupTargetX?: number;
+  groupTargetY?: number;
+  boxWidth: number;
+  boxHeight: number;
+}
+
+interface GLink extends LinkObject<GNode> {
+  exists: boolean;
+}
+
+interface GraphNodeData { href: string; title: string; exists: boolean }
+interface GraphPayload { center: GraphNodeData; neighbors: GraphNodeData[] }
+
+const { center, neighbors }: GraphPayload = JSON.parse(document.getElementById('graph-data')!.textContent!);
+
+const GRID_SIZE = 40;
+const GROUP_RADIUS = 220;
+const ACCENT = '#8b1a1a';
+const BORDER = '#c8c0a8';
+const INK = '#2a2418';
+const INK_LIGHT = '#8a8272';
+
+// Groups by path-prefix, not schema type — "religions/draconic-faith/gods/x"
+// and "religions/demonic-faith/gods/y" share a `type` ("god") but shouldn't
+// cluster together, and it works the same for targets that don't exist yet.
+function groupKeyFor(href: string): string {
+  const segments = href.replace(/^\//, '').split('/');
+  return segments.length > 1 ? segments.slice(0, -1).join('/') : segments[0];
+}
+
+// Groups only organize node position — no label is ever drawn for them.
+const groupKeys = [...new Set(neighbors.map((n) => groupKeyFor(n.href)))].sort();
+const groupAngle = (key: string) => (2 * Math.PI * groupKeys.indexOf(key)) / groupKeys.length;
+
+// Members of the same group fan out around their shared angle instead of all
+// aiming at one exact point, so a 13-node group reads as a wedge, not a dot.
+const membersByGroup = new Map<string, GraphNodeData[]>();
+for (const n of neighbors) {
+  const key = groupKeyFor(n.href);
+  if (!membersByGroup.has(key)) membersByGroup.set(key, []);
+  membersByGroup.get(key)!.push(n);
+}
+
+function targetFor(n: GraphNodeData): { x: number; y: number } {
+  const key = groupKeyFor(n.href);
+  const members = membersByGroup.get(key)!;
+  const base = groupAngle(key);
+  const step = (2 * Math.PI) / groupKeys.length / (members.length + 1);
+  const indexInGroup = members.indexOf(n);
+  const angle = base + (indexInGroup - (members.length - 1) / 2) * step;
+  return { x: GROUP_RADIUS * Math.cos(angle), y: GROUP_RADIUS * Math.sin(angle) };
+}
+
+// Measured once per node (not per render frame) so the collision force below
+// and the actual drawn box always agree on the same size.
+const measureCtx = document.createElement('canvas').getContext('2d')!;
+function boxSizeFor(title: string): { boxWidth: number; boxHeight: number } {
+  measureCtx.font = '600 12px sans-serif';
+  const boxWidth = Math.max(measureCtx.measureText(title).width + 24, 60);
+  return { boxWidth, boxHeight: 28 };
+}
+
+const nodes: GNode[] = [
+  { id: center.href, title: center.title, exists: true, isCenter: true, fx: 0, fy: 0, ...boxSizeFor(center.title) },
+  ...neighbors.map((n) => {
+    const target = targetFor(n);
+    return { id: n.href, title: n.title, exists: n.exists, groupTargetX: target.x, groupTargetY: target.y, ...boxSizeFor(n.title) };
+  }),
+];
+const links: GLink[] = neighbors.map((n) => ({ source: center.href, target: n.href, exists: n.exists }));
+
+const container = document.getElementById('graph-canvas')!;
+
+const graph = new ForceGraph<GNode, GLink>(container)
+  .graphData({ nodes, links })
+  .nodeId('id')
+  .linkSource('source')
+  .linkTarget('target')
+  .onRenderFramePre((ctx, globalScale) => {
+    // Cover comfortably more than the viewport so panning doesn't reveal gaps.
+    const span = 4000;
+    ctx.strokeStyle = '#00000008';
+    ctx.lineWidth = 1 / globalScale;
+    for (let x = -span; x <= span; x += GRID_SIZE) {
+      ctx.beginPath();
+      ctx.moveTo(x, -span);
+      ctx.lineTo(x, span);
+      ctx.stroke();
+    }
+    for (let y = -span; y <= span; y += GRID_SIZE) {
+      ctx.beginPath();
+      ctx.moveTo(-span, y);
+      ctx.lineTo(span, y);
+      ctx.stroke();
+    }
+  })
+  .d3Force('groupX', forceX((n: GNode) => (n.isCenter ? 0 : n.groupTargetX ?? 0)).strength(0.2))
+  .d3Force('groupY', forceY((n: GNode) => (n.isCenter ? 0 : n.groupTargetY ?? 0)).strength(0.2))
+  // Half-diagonal as an approximate circular radius for each rectangular box,
+  // plus a little padding — keeps boxes from overlapping/hiding each other,
+  // on top of (not instead of) the group/link/charge forces above.
+  .d3Force('collide', forceCollide((n: GNode) => Math.hypot(n.boxWidth, n.boxHeight) / 2 + 6).iterations(2))
+  .linkColor((link) => (link.exists ? ACCENT : INK_LIGHT))
+  .linkLineDash((link) => (link.exists ? null : [4, 3]))
+  .linkWidth(1.5)
+  .nodeCanvasObject((node, ctx) => {
+    const { boxWidth: width, boxHeight: height } = node;
+    const nx = node.x ?? 0;
+    const ny = node.y ?? 0;
+    const x = nx - width / 2;
+    const y = ny - height / 2;
+
+    ctx.save();
+    ctx.setLineDash(node.exists ? [] : [3, 2]);
+    ctx.lineWidth = node.isCenter ? 2 : 1;
+    ctx.strokeStyle = node.isCenter ? ACCENT : node.exists ? BORDER : INK_LIGHT;
+    ctx.fillStyle = '#faf6ec';
+    ctx.beginPath();
+    ctx.roundRect(x, y, width, height, 6);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.font = '600 12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = node.exists ? INK : INK_LIGHT;
+    ctx.fillText(node.title, nx, ny);
+  })
+  .nodePointerAreaPaint((node, color, ctx) => {
+    const { boxWidth: width, boxHeight: height } = node;
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.roundRect((node.x ?? 0) - width / 2, (node.y ?? 0) - height / 2, width, height, 6);
+    ctx.fill();
+  })
+  .onNodeClick((node) => {
+    if (node.isCenter || !node.exists) return;
+    if (OPEN_CONTENT_LINKS_IN_NEW_TAB) {
+      window.open(node.id, '_blank', 'noopener,noreferrer');
+    } else {
+      window.location.href = node.id;
+    }
+  })
+  .onNodeDragEnd((node) => {
+    if (node.isCenter) {
+      // Always the fixed anchor group angles are computed relative to —
+      // dragging it shouldn't relocate the graph's frame of reference.
+      node.fx = 0;
+      node.fy = 0;
+      return;
+    }
+    node.fx = Math.round((node.x ?? 0) / GRID_SIZE) * GRID_SIZE;
+    node.fy = Math.round((node.y ?? 0) / GRID_SIZE) * GRID_SIZE;
+  });
+
+// force-graph's default link distance is 30 — with the center pinned via
+// fx/fy, that alone was pulling every neighbor to within ~30px of it,
+// overpowering the group bias above. Matching it to GROUP_RADIUS makes the
+// link force and the group force agree on where a node belongs instead of
+// fighting each other.
+(graph.d3Force('link') as any)?.distance(GROUP_RADIUS);
+
+function resize() {
+  graph.width(container.clientWidth).height(container.clientHeight);
+}
+resize();
+window.addEventListener('resize', resize);
+</script>

@@ -45,6 +45,7 @@ const { data, validSlugs, images, coverImage } = await getArticleData(entry);
   publishedAt={entry.data.publishedAt}
   updatedAt={entry.data.updatedAt}
   image={coverImage?.src}
+  graphHref={`/graph/religions/${entry.slug}`}
 >
 
   <Fragment slot="toc">

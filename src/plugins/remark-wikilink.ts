@@ -30,8 +30,9 @@
 import { Parser } from "acorn";
 import { visit } from "unist-util-visit";
 import type { Node, Parent } from "unist";
-
-const WIKILINK_RE = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g;
+// Relative import, not the "@/" alias — this file is loaded directly by
+// astro.config.mjs, outside the app's Vite context where that alias resolves.
+import { WIKILINK_RE, toHref } from "../shared/content/wikilinks";
 
 const SKIP_PARENT_TYPES = new Set(["code", "inlineCode"]);
 
@@ -43,11 +44,6 @@ const COMPONENT_SOURCES: Record<string, string> = {
 interface TextNode extends Node {
   type: "text";
   value: string;
-}
-
-function toHref(target: string): string {
-  const trimmed = target.trim();
-  return trimmed.startsWith("/") ? trimmed : `/${trimmed}`;
 }
 
 function buildWikiNode(target: string, label?: string) {

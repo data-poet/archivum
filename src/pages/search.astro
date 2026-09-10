@@ -56,45 +56,7 @@ const rawQ = Astro.url.searchParams.get('q') ?? '';
 </html>
 
 <script>
-import { COLLECTION_META, TYPE_LABELS } from '../content/meta';
-import { normalise } from '../utils/text';
-
-// ── Score a single record against the query tokens ───────────────────────────
-function score(record: any, tokens: string[]): number {
-  const title       = normalise(record.title);
-  const description = normalise(record.description);
-  const type        = normalise(TYPE_LABELS[record.type] ?? record.type);
-  const tags        = (record.tags as string[]).map(normalise).join(' ');
-
-  let total = 0;
-  for (const token of tokens) {
-    if (title.includes(token))       total += 3;
-    if (tags.includes(token))        total += 2;
-    if (description.includes(token)) total += 1;
-    if (type.includes(token))        total += 1;
-  }
-  return total;
-}
-
-// ── Split the query into exact tag filters (`tag:x` / `#x`) and free-text tokens ──
-// Filters AND together (each narrows further, like GitHub's `label:`) while the
-// remaining words still fuzzy-score title/description/type/tags as before.
-function parseQuery(query: string): { tagFilters: string[]; textTokens: string[] } {
-  const words = query.trim().split(/\s+/).filter(Boolean);
-  const tagFilters: string[] = [];
-  const textTokens: string[] = [];
-
-  for (const word of words) {
-    const match = word.match(/^(?:tag:|#)(.+)$/i);
-    if (match) {
-      tagFilters.push(normalise(match[1]));
-    } else {
-      textTokens.push(normalise(word));
-    }
-  }
-
-  return { tagFilters, textTokens };
-}
+import { searchRecords, renderGroupedResults } from '@/shared/search';
 
 // ── DOM refs ─────────────────────────────────────────────────────────────────
 const statusEl  = document.getElementById('search-status')!;
@@ -117,31 +79,13 @@ document.getElementById('search-form-main')!.addEventListener('submit', (e) => {
 
 // ── Render ────────────────────────────────────────────────────────────────────
 function render(records: any[], query: string) {
-  const { tagFilters, textTokens } = parseQuery(query);
+  const scored = searchRecords(records, query);
 
-  if (!tagFilters.length && !textTokens.length) {
+  if (!query.trim()) {
     statusEl.textContent = 'Digite algo para buscar.';
     resultsEl.innerHTML  = '';
     return;
   }
-
-  const candidates = tagFilters.length
-    ? records.filter((r) => {
-        const recordTags = (r.tags as string[]).map(normalise);
-        return tagFilters.every((t) => recordTags.includes(t));
-      })
-    : records;
-
-  // A tag-only query (no free text left to score) just lists every match,
-  // alphabetically — there's nothing left to rank by relevance.
-  const scored = textTokens.length
-    ? candidates
-        .map((r) => ({ ...r, _score: score(r, textTokens) }))
-        .filter((r) => r._score > 0)
-        .sort((a, b) => b._score - a._score)
-    : candidates
-        .map((r) => ({ ...r, _score: 1 }))
-        .sort((a, b) => a.title.localeCompare(b.title, 'pt-BR'));
 
   if (!scored.length) {
     statusEl.textContent = `Nenhum resultado para "${query}".`;
@@ -150,45 +94,7 @@ function render(records: any[], query: string) {
   }
 
   statusEl.textContent = `${scored.length} resultado${scored.length !== 1 ? 's' : ''} para "${query}"`;
-
-  // Group by collection preserving score order
-  const groups: Record<string, any[]> = {};
-  for (const r of scored) {
-    if (!groups[r.collection]) groups[r.collection] = [];
-    groups[r.collection].push(r);
-  }
-
-  let html = '';
-  for (const [col, entries] of Object.entries(groups)) {
-    const meta = COLLECTION_META[col] ?? { label: col, color: '#555' };
-    html += `
-      <details class="border border-border rounded overflow-hidden mb-6 group" open>
-        <summary class="list-none cursor-pointer select-none">
-          <div class="px-4 py-2 font-serif font-bold text-white text-base flex items-center gap-2"
-               style="background-color: ${meta.color}">
-            <span class="transition-transform group-open:rotate-90">▶</span>
-            ${meta.label}
-            <span class="font-sans font-normal text-xs opacity-80">(${entries.length})</span>
-          </div>
-        </summary>
-        <ul class="divide-y divide-border bg-parchment-100">
-          ${entries.map((e) => `
-            <li>
-              <a href="${e.href}"
-                 class="flex items-baseline gap-3 px-5 py-3 hover:bg-parchment-200 transition-colors no-underline">
-                <span class="font-serif font-bold text-accent">${e.title}</span>
-                <span class="font-sans text-xs text-ink-light">${TYPE_LABELS[e.type] ?? e.type}</span>
-                ${e.description
-                  ? `<span class="font-sans text-xs text-ink-muted ml-auto truncate max-w-xs">${e.description}</span>`
-                  : ''}
-              </a>
-            </li>
-          `).join('')}
-        </ul>
-      </details>`;
-  }
-
-  resultsEl.innerHTML = html;
+  resultsEl.innerHTML = renderGroupedResults(scored);
 }
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
