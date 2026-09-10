@@ -1,4 +1,5 @@
 import type { CollectionMeta } from "@/shared/content/types";
+import { RELIGIONS_TYPES } from "./types";
 
 export const RELIGIONS_META: CollectionMeta = {
   label: "Religiões",
@@ -6,12 +7,4 @@ export const RELIGIONS_META: CollectionMeta = {
   href: "/religions",
 };
 
-export const RELIGIONS_TYPE_LABELS: Record<string, string> = {
-  pantheon: "Panteão",
-  god: "Deus",
-  church: "Igreja",
-  order: "Ordem",
-  relic: "Relíquia",
-  ritual: "Ritual",
-  "creation-myth": "Mito da Criação",
-};
+export const RELIGIONS_TYPE_LABELS: Record<string, string> = Object.fromEntries(RELIGIONS_TYPES.map((t) => [t.type, t.label]));

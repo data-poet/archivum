@@ -2,10 +2,11 @@
  * Display metadata orchestrator.
  * To extend:
  * - New collection: Import and merge its `*_META` and `*_TYPE_LABELS` below.
- * - New author: Add to `AUTHORS` (automatically updates `AUTHOR_IDS`).
+ * - New author: Add to `AUTHORS` in shared/content/authors.ts (automatically updates `AUTHOR_IDS`).
  */
 
 import type { CollectionMeta } from "@/shared/content/types";
+import { AUTHORS, AUTHOR_IDS } from "@/shared/content/authors";
 import { RELIGIONS_META, RELIGIONS_TYPE_LABELS } from "./religions/meta";
 import { RACES_META, RACES_TYPE_LABELS } from "./races/meta";
 
@@ -21,10 +22,7 @@ export const TYPE_LABELS: Record<string, string> = {
   ...RACES_TYPE_LABELS,
 };
 
-export const AUTHORS: Record<string, string> = {
-  r4ven: "r4ven",
-};
-export const AUTHOR_IDS = Object.keys(AUTHORS) as [string, ...string[]];
+export { AUTHORS, AUTHOR_IDS };
 
 /** Metadata lookup with fallback for unlisted collections. */
 export function metaFor(key: string): CollectionMeta {

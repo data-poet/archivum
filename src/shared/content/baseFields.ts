@@ -1,5 +1,5 @@
 import { z } from "astro:content";
-import { AUTHOR_IDS } from "@/content/meta";
+import { AUTHOR_IDS } from "@/shared/content/authors";
 
 export const IMAGE_TYPES = [
   "art",
