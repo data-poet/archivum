@@ -17,6 +17,12 @@ Code should be self-explanatory through clear naming and structure. Comments are
 - Something belongs in flat `utils/` or `shared/` only if two or more features actually use it. One consumer means it belongs in that feature's own subfolder instead.
 - Don't scaffold a feature's folders before the feature is actually being built.
 
+# Responsive design
+
+- Mobile-first Tailwind: unprefixed classes target the smallest screens; breakpoint prefixes (`sm:`/`md:`/`lg:`/`xl:`) layer on enhancements for wider viewports, never the reverse.
+- Multi-column layouts collapse progressively at named breakpoints rather than squeezing columns — see `WikiLayout.astro` (TOC sidebar hidden below `xl`, infobox sidebar hidden below `lg`) as the reference implementation.
+- List rows (title + badges + meta) wrap (`flex-wrap`) rather than truncating or overflowing horizontally on narrow screens.
+
 # Commits
 
 - Never add a `Co-Authored-By` trailer or any other AI-attribution line — commits are authored by the user alone.
