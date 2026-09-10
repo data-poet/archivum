@@ -1,15 +1,13 @@
 ---
 /**
  * graph/[collection]/[...slug].astro — mention graph for one article.
- * Deliberately blank apart from SiteHeader + the node boxes: no prose, no
- * infobox, no TOC. v1 layout is a plain circle (trigonometry, computed here)
- * rather than a force-directed simulation — there's no real neighbor count
- * yet to justify pulling in a layout library.
+ * Rendered client-side as an interactive force-directed canvas (force-graph):
+ * physics-based layout, drag, and edges are the library's job now — this
+ * page just hands it the {center, neighbors} data from getGraphData().
  */
 import { getCollection, type CollectionEntry, type CollectionKey } from 'astro:content';
 import { collections as collectionConfig } from '@/content/config';
 import SiteHeader from '@/components/SiteHeader.astro';
-import GraphNode from '@/components/graph/GraphNode.astro';
 import { getGraphData } from '@/components/graph/graphData';
 import '../../../styles/global.css';
 
@@ -31,16 +29,6 @@ interface Props { entry: CollectionEntry<CollectionKey> }
 
 const { entry } = Astro.props;
 const { center, neighbors } = await getGraphData(entry);
-
-const RADIUS_PERCENT = 38;
-const angleStep = (2 * Math.PI) / Math.max(neighbors.length, 1);
-
-function positionStyle(index: number): string {
-  const angle = angleStep * index - Math.PI / 2;
-  const x = 50 + RADIUS_PERCENT * Math.cos(angle);
-  const y = 50 + RADIUS_PERCENT * Math.sin(angle);
-  return `left: ${x}%; top: ${y}%;`;
-}
 ---
 
 <!doctype html>
@@ -56,11 +44,131 @@ function positionStyle(index: number): string {
   <SiteHeader activeFeature="graphs" />
 
   <main class="relative w-full" style="height: calc(100vh - 3rem);">
-    <GraphNode node={center} variant="center" style="left: 50%; top: 50%;" />
-    {neighbors.map((node, i) => (
-      <GraphNode node={node} style={positionStyle(i)} />
-    ))}
+    <div id="graph-canvas" class="absolute inset-0"></div>
   </main>
+
+  {/* Data island, not define:vars — a plain <script> with imports (force-graph,
+      the shared link-behavior setting) can't also use define:vars, since that
+      forces is:inline and disables module/import processing. */}
+  <script is:inline type="application/json" id="graph-data" set:html={JSON.stringify({ center, neighbors }).replace(/</g, '\\u003c')} />
 
 </body>
 </html>
+
+<script>
+import ForceGraph from 'force-graph';
+import type { NodeObject, LinkObject } from 'force-graph';
+import { OPEN_CONTENT_LINKS_IN_NEW_TAB } from '@/shared/linkBehavior';
+
+interface GNode extends NodeObject {
+  id: string;
+  title: string;
+  exists: boolean;
+  isCenter?: boolean;
+}
+
+interface GLink extends LinkObject<GNode> {
+  exists: boolean;
+}
+
+interface GraphNodeData { href: string; title: string; exists: boolean }
+interface GraphPayload { center: GraphNodeData; neighbors: GraphNodeData[] }
+
+const { center, neighbors }: GraphPayload = JSON.parse(document.getElementById('graph-data')!.textContent!);
+
+const GRID_SIZE = 40;
+const ACCENT = '#8b1a1a';
+const BORDER = '#c8c0a8';
+const INK = '#2a2418';
+const INK_LIGHT = '#8a8272';
+
+const nodes: GNode[] = [
+  { id: center.href, title: center.title, exists: true, isCenter: true },
+  ...neighbors.map((n) => ({ id: n.href, title: n.title, exists: n.exists })),
+];
+const links: GLink[] = neighbors.map((n) => ({ source: center.href, target: n.href, exists: n.exists }));
+
+const container = document.getElementById('graph-canvas')!;
+
+function nodeSize(ctx: CanvasRenderingContext2D, node: GNode) {
+  ctx.font = '600 12px sans-serif';
+  const width = Math.max(ctx.measureText(node.title).width + 24, 60);
+  return { width, height: 28 };
+}
+
+const graph = new ForceGraph<GNode, GLink>(container)
+  .graphData({ nodes, links })
+  .nodeId('id')
+  .linkSource('source')
+  .linkTarget('target')
+  .onRenderFramePre((ctx, globalScale) => {
+    // Cover comfortably more than the viewport so panning doesn't reveal gaps.
+    const span = 4000;
+    ctx.strokeStyle = '#00000008';
+    ctx.lineWidth = 1 / globalScale;
+    for (let x = -span; x <= span; x += GRID_SIZE) {
+      ctx.beginPath();
+      ctx.moveTo(x, -span);
+      ctx.lineTo(x, span);
+      ctx.stroke();
+    }
+    for (let y = -span; y <= span; y += GRID_SIZE) {
+      ctx.beginPath();
+      ctx.moveTo(-span, y);
+      ctx.lineTo(span, y);
+      ctx.stroke();
+    }
+  })
+  .linkColor((link) => (link.exists ? ACCENT : INK_LIGHT))
+  .linkLineDash((link) => (link.exists ? null : [4, 3]))
+  .linkWidth(1.5)
+  .nodeCanvasObject((node, ctx) => {
+    const { width, height } = nodeSize(ctx, node);
+    const nx = node.x ?? 0;
+    const ny = node.y ?? 0;
+    const x = nx - width / 2;
+    const y = ny - height / 2;
+
+    ctx.save();
+    ctx.setLineDash(node.exists ? [] : [3, 2]);
+    ctx.lineWidth = node.isCenter ? 2 : 1;
+    ctx.strokeStyle = node.isCenter ? ACCENT : node.exists ? BORDER : INK_LIGHT;
+    ctx.fillStyle = '#faf6ec';
+    ctx.beginPath();
+    ctx.roundRect(x, y, width, height, 6);
+    ctx.fill();
+    ctx.stroke();
+    ctx.restore();
+
+    ctx.font = '600 12px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = node.exists ? INK : INK_LIGHT;
+    ctx.fillText(node.title, nx, ny);
+  })
+  .nodePointerAreaPaint((node, color, ctx) => {
+    const { width, height } = nodeSize(ctx, node);
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.roundRect((node.x ?? 0) - width / 2, (node.y ?? 0) - height / 2, width, height, 6);
+    ctx.fill();
+  })
+  .onNodeClick((node) => {
+    if (node.isCenter || !node.exists) return;
+    if (OPEN_CONTENT_LINKS_IN_NEW_TAB) {
+      window.open(node.id, '_blank', 'noopener,noreferrer');
+    } else {
+      window.location.href = node.id;
+    }
+  })
+  .onNodeDragEnd((node) => {
+    node.fx = Math.round((node.x ?? 0) / GRID_SIZE) * GRID_SIZE;
+    node.fy = Math.round((node.y ?? 0) / GRID_SIZE) * GRID_SIZE;
+  });
+
+function resize() {
+  graph.width(container.clientWidth).height(container.clientHeight);
+}
+resize();
+window.addEventListener('resize', resize);
+</script>
