@@ -16,14 +16,6 @@ interface Props {
   typeLabel?:    string;
   publishedAt?:  string | Date;
   updatedAt?:    string | Date;
-  /**
-   * Whether this entry is the "root" page of its section (e.g. a pantheon
-   * or a base race) as opposed to a nested sub-page (a god, a sub-race, …).
-   * Root pages get the full site nav in the header; sub-pages only get a
-   * link back to their own section. Defaults to true so pages that don't
-   * pass it (or collections without the concept) keep the full nav.
-   */
-  isRootPage?:   boolean;
 }
 
 const {
@@ -34,7 +26,6 @@ const {
   typeLabel,
   publishedAt,
   updatedAt,
-  isRootPage = true
 } = Astro.props;
 
 function formatDate(dateInput: string | Date) {
@@ -65,7 +56,6 @@ function formatDate(dateInput: string | Date) {
   <!-- Top navigation bar -->
   <SiteHeader
     activeSection={section}
-    isRootPage={isRootPage}
     maxWidthClass="max-w-screen-2xl xl:px-6 2xl:px-8"
   />
 

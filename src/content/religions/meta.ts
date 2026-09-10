@@ -4,7 +4,6 @@ export const RELIGIONS_META: CollectionMeta = {
   label: "Religiões",
   color: "#8b1a1a",
   href: "/religions",
-  rootType: "pantheon",
 };
 
 export const RELIGIONS_TYPE_LABELS: Record<string, string> = {

@@ -18,7 +18,7 @@ import RelicInfobox          from '@/components/infoboxes/religions/RelicInfobox
 import RitualInfobox         from '@/components/infoboxes/religions/RitualInfobox';
 import CreationMythInfobox   from '@/components/infoboxes/religions/CreationMythInfobox';
 import MediaInfobox          from '@/components/infoboxes/MediaInfobox';
-import { typeLabel, isRootType } from '@/content/meta';
+import { typeLabel } from '@/content/meta';
 import { getArticleData } from '@/utils/articleData';
 
 export async function getStaticPaths() {
@@ -44,7 +44,6 @@ const { data, validSlugs, images } = await getArticleData(entry);
   typeLabel={typeLabel(data.type)}
   publishedAt={entry.data.publishedAt}
   updatedAt={entry.data.updatedAt}
-  isRootPage={isRootType('religions', data.type)}
 >
 
   <Fragment slot="toc">

@@ -42,12 +42,6 @@ export function typeLabel(type: string): string {
   return TYPE_LABELS[type] ?? type;
 }
 
-/** Checks if type is a root entry (e.g. `pantheon` vs `god`). */
-export function isRootType(collectionKey: string, type: string): boolean {
-  const meta = COLLECTION_META[collectionKey];
-  return meta ? type === meta.rootType : true;
-}
-
 /** Author display name lookup falling back to raw ID. */
 export function authorLabel(id: string): string {
   return AUTHORS[id] ?? id;

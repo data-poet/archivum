@@ -8,40 +8,54 @@
  * one built client-side via script). Adding a nav item meant editing six
  * files and likely missing one. This is the single replacement.
  *
- * Collection links are generated from content/meta.ts's COLLECTION_META —
- * add a collection there and it shows up in the nav everywhere automatically,
- * no header file needs to change.
+ * Two dropdown selectors, always shown the same way on every page — no more
+ * conditional "full nav vs restricted nav" logic based on page depth:
+ *   - Features:      Mapas, Linha do Tempo, … — sourced from shared/features.ts.
+ *                     Add a feature there and it shows up automatically.
+ *   - Content types:  Religiões, Raças, … — sourced from content/meta.ts's
+ *                     COLLECTION_META, same as before. Add a collection there
+ *                     and it shows up automatically.
+ *
+ * Built with <details>/<summary> rather than a hydrated component — this is
+ * open/close-only interactivity, so it doesn't need client:load.
  *
  * Usage:
- *   <SiteHeader />                          — no link highlighted (e.g. /search, /tags/[tag])
- *   <SiteHeader activeSection="religions" /> — highlights "Religiões"
+ *   <SiteHeader />                                                — neither selector highlighted (e.g. /search, /tags/[tag])
+ *   <SiteHeader activeSection="religions" />                      — content selector shows "Religiões"
+ *   <SiteHeader activeFeature="maps" />                           — features selector shows "Mapas" (once available)
  *   <SiteHeader maxWidthClass="max-w-screen-2xl xl:px-6 2xl:px-8" /> — wider layout (article pages)
- *   <SiteHeader activeSection="religions" isRootPage={false} /> — restricted nav:
- *     only the "Religiões" link, no Timeline/Mapas, no other collections.
- *     Used on article pages that are nested under a section root (e.g. a
- *     god page nested under its religion's pantheon) rather than the root
- *     page itself (e.g. the pantheon page). See WikiLayout.astro.
  */
 import { collections as collectionConfig } from '@/content/config';
 import { metaFor } from '@/content/meta';
+import { FEATURES, featureFor } from '@/shared/features';
 
 interface Props {
-  /** Collection key to highlight as the current section, if any. */
+  /** Collection key to highlight as the current content type, if any. */
   activeSection?: string;
+  /** Feature key to highlight as the current feature, if any. */
+  activeFeature?: string;
   /** Overrides the header's inner max-width/padding classes. */
   maxWidthClass?: string;
-  /**
-   * Pass `false` on nested/sub-pages to show only a link back to their own
-   * section instead of the full site nav (Timeline/Mapas + all collections).
-   * Omitted (or `true`) means "show the full nav" — the default for the
-   * homepage, collection indexes, search, tags, and section root pages.
-   */
-  isRootPage?: boolean;
 }
 
-const { activeSection, maxWidthClass = 'max-w-6xl', isRootPage = true } = Astro.props;
+const { activeSection, activeFeature, maxWidthClass = 'max-w-6xl' } = Astro.props;
 
 const collectionKeys = Object.keys(collectionConfig);
+
+const activeCollectionMeta = activeSection ? metaFor(activeSection) : undefined;
+const contentTriggerLabel = activeCollectionMeta?.label ?? 'Conteúdo';
+
+const activeFeatureMeta = activeFeature ? featureFor(activeFeature) : undefined;
+const featureTriggerLabel = activeFeatureMeta?.label ?? 'Recursos';
+
+const summaryBaseClass =
+  'list-none [&::-webkit-details-marker]:hidden cursor-pointer select-none px-2 py-1 rounded flex items-center gap-1 hover:text-accent transition-colors';
+
+const menuPanelClass =
+  'absolute left-0 top-full mt-1 min-w-[10rem] bg-white border border-border rounded shadow-lg py-1 z-50';
+
+const menuItemClass =
+  'block px-3 py-1.5 whitespace-nowrap hover:bg-parchment-100 hover:text-accent transition-colors';
 ---
 
 <header class="border-b border-border bg-white/70 backdrop-blur sticky top-0 z-50">
@@ -54,53 +68,58 @@ const collectionKeys = Object.keys(collectionConfig);
       📜 Archivum
     </a>
 
-    <nav class="flex gap-4 text-sm text-ink-muted font-sans">
+    <nav class="flex gap-2 text-sm text-ink-muted font-sans">
 
-      {isRootPage ? (
-        <>
-          {/*
-            Feature links — future dedicated pages (not content collections).
-            Placeholders until the Timeline and Map features exist; shown
-            disabled/muted with a tooltip so they don't look broken.
-          */}
-          <span
-            class="text-ink-light/60 cursor-not-allowed select-none"
-            title="Em desenvolvimento"
-          >
-            Linha do Tempo
-          </span>
+      {/* Features selector: Mapas, Linha do Tempo, … */}
+      <details class="relative group">
+        <summary class={`${summaryBaseClass} ${activeFeatureMeta ? 'text-accent font-semibold' : ''}`}>
+          {featureTriggerLabel}
+          <span class="text-[0.6rem] text-ink-light group-open:rotate-180 transition-transform">▾</span>
+        </summary>
+        <div class={menuPanelClass}>
+          {FEATURES.map((feature) => {
+            const isActive = feature.key === activeFeature;
+            return feature.available ? (
+              <a
+                href={feature.href}
+                class={`${menuItemClass} ${isActive ? 'text-accent font-semibold' : ''}`}
+              >
+                {feature.label}
+              </a>
+            ) : (
+              <span
+                class="block px-3 py-1.5 whitespace-nowrap text-ink-light/60 cursor-not-allowed select-none"
+                title="Em desenvolvimento"
+              >
+                {feature.label}
+              </span>
+            );
+          })}
+        </div>
+      </details>
 
-          <span
-            class="text-ink-light/60 cursor-not-allowed select-none"
-            title="Em desenvolvimento"
-          >
-            Mapas
-          </span>
-
+      {/* Content type selector: Religiões, Raças, … */}
+      <details class="relative group">
+        <summary class={`${summaryBaseClass} ${activeCollectionMeta ? 'text-accent font-semibold' : ''}`}>
+          {contentTriggerLabel}
+          <span class="text-[0.6rem] text-ink-light group-open:rotate-180 transition-transform">▾</span>
+        </summary>
+        <div class={menuPanelClass}>
           {collectionKeys.map((key) => {
             const meta = metaFor(key);
             const isActive = key === activeSection;
             return (
               <a
                 href={meta.href}
-                class={isActive ? 'text-accent font-semibold' : 'hover:text-accent transition-colors'}
+                class={`${menuItemClass} ${isActive ? 'text-accent font-semibold' : ''}`}
               >
                 {meta.label}
               </a>
             );
           })}
-        </>
-      ) : (
-        /*
-          Sub-page (nested article, e.g. a god page): show only a way back
-          to its own section root, not the full site nav.
-        */
-        activeSection && (
-          <a href={metaFor(activeSection).href} class="hover:text-accent transition-colors">
-            {metaFor(activeSection).label}
-          </a>
-        )
-      )}
+        </div>
+      </details>
+
     </nav>
 
     <div class="ml-auto">
