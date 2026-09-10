@@ -33,7 +33,7 @@ interface Props { entry: CollectionEntry<'religions'> }
 
 const { entry } = Astro.props;
 const { Content, headings } = await entry.render();
-const { data, validSlugs, images } = await getArticleData(entry);
+const { data, validSlugs, images, coverImage } = await getArticleData(entry);
 ---
 
 <WikiLayout
@@ -44,6 +44,7 @@ const { data, validSlugs, images } = await getArticleData(entry);
   typeLabel={typeLabel(data.type)}
   publishedAt={entry.data.publishedAt}
   updatedAt={entry.data.updatedAt}
+  image={coverImage?.src}
 >
 
   <Fragment slot="toc">
@@ -57,8 +58,8 @@ const { data, validSlugs, images } = await getArticleData(entry);
       {data.type === 'pantheon' && (
         <PantheonInfobox
           name={data.title}
-          pantheonMyth={data.pantheonMyth}
-          pantheonDeities={data.pantheonDeities}
+          pantheonMyth={data.mythRef}
+          pantheonDeities={data.deityRefs}
           validSlugs={validSlugs}
         >
           <MediaInfobox client:load images={images} title={data.title} />
@@ -73,10 +74,10 @@ const { data, validSlugs, images } = await getArticleData(entry);
           realm={data.realm}
           domains={data.domains}
           alterEgos={data.alterEgos}
-          pantheon={data.pantheon}
-          worshipedBy={data.worshipedBy}
-          honoredBy={data.honoredBy}
-          createdRelics={data.createdRelics}
+          pantheon={data.pantheonRef}
+          worshipedBy={data.churchRefs}
+          honoredBy={data.ritualRefs}
+          createdRelics={data.relicRefs}
           validSlugs={validSlugs}
         >
           <MediaInfobox client:load images={images} title={data.title} />
@@ -86,12 +87,12 @@ const { data, validSlugs, images } = await getArticleData(entry);
       {data.type === 'church' && (
         <ChurchInfobox
           name={data.title}
-          deity={data.deity}
+          deity={data.deityRef}
           leader={data.leader}
           founded={data.founded}
           headquarters={data.headquarters}
-          performs={data.performs}
-          guards={data.guards}
+          performs={data.ritualRefs}
+          guards={data.relicRefs}
         >
           <MediaInfobox client:load images={images} title={data.title} />
         </ChurchInfobox>
@@ -100,14 +101,14 @@ const { data, validSlugs, images } = await getArticleData(entry);
       {data.type === 'order' && (
         <OrderInfobox
           name={data.title}
-          orderDeity={data.orderDeity}
-          parentChurch={data.parentChurch}
-          relatedReligions={data.relatedReligions}
+          orderDeity={data.deityRef}
+          parentChurch={data.churchRef}
+          relatedReligions={data.pantheonRefs}
           leader={data.leader}
           founded={data.founded}
           headquarters={data.headquarters}
-          orderPerforms={data.orderPerforms}
-          orderGuards={data.orderGuards}
+          orderPerforms={data.ritualRefs}
+          orderGuards={data.relicRefs}
         >
           <MediaInfobox client:load images={images} title={data.title} />
         </OrderInfobox>
@@ -119,8 +120,8 @@ const { data, validSlugs, images } = await getArticleData(entry);
           relicType={data.relicType}
           origin={data.origin}
           powers={data.powers}
-          createdBy={data.createdBy}
-          heldBy={data.heldBy}
+          createdBy={data.godRef}
+          heldBy={data.churchRef}
         >
           <MediaInfobox client:load images={images} title={data.title} />
         </RelicInfobox>
@@ -132,8 +133,8 @@ const { data, validSlugs, images } = await getArticleData(entry);
           participants={data.participants}
           frequency={data.frequency}
           purpose={data.purpose}
-          conductedBy={data.conductedBy}
-          honoredGod={data.honoredGod}
+          conductedBy={data.churchRef}
+          honoredGod={data.godRef}
         >
           <MediaInfobox client:load images={images} title={data.title} />
         </RitualInfobox>

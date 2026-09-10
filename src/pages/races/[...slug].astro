@@ -28,7 +28,7 @@ interface Props { entry: CollectionEntry<'races'> }
 
 const { entry } = Astro.props;
 const { Content, headings } = await entry.render();
-const { data, validSlugs, images } = await getArticleData(entry);
+const { data, validSlugs, images, coverImage } = await getArticleData(entry);
 ---
 
 <WikiLayout
@@ -39,6 +39,7 @@ const { data, validSlugs, images } = await getArticleData(entry);
   typeLabel={typeLabel(data.type)}
   publishedAt={entry.data.publishedAt}
   updatedAt={entry.data.updatedAt}
+  image={coverImage?.src}
 >
 
   <Fragment slot="toc">
@@ -70,7 +71,7 @@ const { data, validSlugs, images } = await getArticleData(entry);
       {data.type === 'sub-race' && (
         <SubRaceInfobox
           name={data.title}
-          parentRace={data.parentRace}
+          parentRace={data.parentRaceRef}
           validSlugs={validSlugs}
           vision={data.vision}
           languages={data.languages}

@@ -21,7 +21,7 @@ const sections = [
 function subtitle(data: any): string | null {
   switch (data.type) {
     case 'race':     return data.vision ?? null;
-    case 'sub-race': return data.parentRace ? `Sub-raça de ${data.parentRace.label}` : null;
+    case 'sub-race': return data.parentRaceRef ? `Sub-raça de ${data.parentRaceRef.label}` : null;
     default:         return null;
   }
 }

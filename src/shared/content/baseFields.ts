@@ -1,5 +1,6 @@
 import { z } from "astro:content";
-import { AUTHOR_IDS } from "@/content/meta";
+import { AUTHOR_IDS } from "@/shared/content/authors";
+import { TAGS } from "@/shared/content/tags";
 
 export const IMAGE_TYPES = [
   "art",
@@ -19,7 +20,7 @@ export function makeBaseFields(image: (...args: any[]) => z.ZodType<any>) {
     publishedAt: z.coerce.date(),
     updatedAt: z.coerce.date().optional(),
     description: z.string().optional(),
-    tags: z.array(z.string()).default([]),
+    tags: z.array(z.enum(TAGS)).default([]),
     authors: z.array(z.enum(AUTHOR_IDS)).default([]),
     draft: z.boolean().default(false),
     images: z
@@ -30,6 +31,7 @@ export function makeBaseFields(image: (...args: any[]) => z.ZodType<any>) {
           alt: z.string().optional(),
           // 2. Pass the constant array into z.enum()
           type: z.enum(IMAGE_TYPES).optional(),
+          primary: z.boolean().default(false),
         })
       )
       .optional(),

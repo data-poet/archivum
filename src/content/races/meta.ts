@@ -1,4 +1,5 @@
 import type { CollectionMeta } from "@/shared/content/types";
+import { RACES_TYPES } from "./types";
 
 export const RACES_META: CollectionMeta = {
   label: "Raças",
@@ -6,7 +7,4 @@ export const RACES_META: CollectionMeta = {
   href: "/races",
 };
 
-export const RACES_TYPE_LABELS: Record<string, string> = {
-  race: "Raça",
-  "sub-race": "Sub-raça",
-};
+export const RACES_TYPE_LABELS: Record<string, string> = Object.fromEntries(RACES_TYPES.map((t) => [t.type, t.label]));
