@@ -21,6 +21,7 @@
 
 import { getCollection, type CollectionEntry, type CollectionKey } from "astro:content";
 import { collections as collectionConfig } from "@/content/config";
+import { COLLECTION_RELATIONS } from "@/content/relations";
 
 type AnyEntry = CollectionEntry<CollectionKey>;
 
@@ -40,6 +41,8 @@ export interface ContentRegistry {
   /** `/${collection}/${slug}` → title, including drafts, so a link to an
    *  unwritten stub still shows its real title instead of a raw slug. */
   titleByPath: Map<string, string>;
+  /** `/${collection}/${slug}` → entry `type`, including drafts — used by the relation lint below. */
+  typeByPath: Map<string, string>;
 }
 
 async function scanCollections(includeDrafts: boolean): Promise<AnyEntry[]> {
@@ -50,6 +53,46 @@ async function scanCollections(includeDrafts: boolean): Promise<AnyEntry[]> {
   return lists.flat() as AnyEntry[];
 }
 
+/**
+ * Checks every reference field declared in `COLLECTION_RELATIONS` against the actual `type`
+ * of its target entry (e.g. a god's `pantheonRef` must point at a `pantheon`, not a `church`).
+ * `reference()` alone only proves the slug exists, not that it's the right kind of entry —
+ * this is the only place that catches a relation pointed at the wrong type.
+ */
+function validateRelations(allEntries: AnyEntry[], typeByPath: Map<string, string>): void {
+  const violations: string[] = [];
+
+  for (const entry of allEntries) {
+    const rules = COLLECTION_RELATIONS[entry.collection]?.filter((rule) => rule.type === (entry.data as { type?: string }).type) ?? [];
+    if (rules.length === 0) continue;
+
+    const entryPath = `/${entry.collection}/${entry.slug}`;
+    const data = entry.data as Record<string, unknown>;
+
+    for (const rule of rules) {
+      const value = data[rule.field];
+      if (value == null) continue;
+
+      const refs = Array.isArray(value) ? value : [value];
+      for (const ref of refs) {
+        const ref_ = ref as { collection: string; slug: string };
+        const targetPath = `/${ref_.collection}/${ref_.slug}`;
+        const targetType = typeByPath.get(targetPath);
+
+        if (targetType === undefined) {
+          violations.push(`${entryPath}.${rule.field} → ${targetPath} does not exist`);
+        } else if (!rule.targetTypes.includes(targetType)) {
+          violations.push(`${entryPath}.${rule.field} → ${targetPath} is type "${targetType}", expected one of [${rule.targetTypes.join(", ")}]`);
+        }
+      }
+    }
+  }
+
+  if (violations.length > 0) {
+    throw new Error(`Invalid content relations:\n${violations.join("\n")}`);
+  }
+}
+
 async function buildRegistry(): Promise<ContentRegistry> {
   const [liveEntries, allEntries] = await Promise.all([scanCollections(false), scanCollections(true)]);
 
@@ -57,7 +100,11 @@ async function buildRegistry(): Promise<ContentRegistry> {
 
   const titleByPath = new Map(allEntries.map((entry) => [`/${entry.collection}/${entry.slug}`, (entry.data as { title?: string }).title ?? `/${entry.collection}/${entry.slug}`]));
 
-  return { validPaths, titleByPath };
+  const typeByPath = new Map(allEntries.map((entry) => [`/${entry.collection}/${entry.slug}`, (entry.data as { type: string }).type]));
+
+  validateRelations(allEntries, typeByPath);
+
+  return { validPaths, titleByPath, typeByPath };
 }
 
 let cachedRegistry: Promise<ContentRegistry> | null = null;

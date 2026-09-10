@@ -14,6 +14,11 @@ export interface RelationRule {
   targetTypes: string[];
 }
 
+/** A `RelationRule` tagged with the entry `type` it applies to — the shape the relation lint consumes. */
+export interface TypedRelationRule extends RelationRule {
+  type: string;
+}
+
 /** Single source of truth for one discriminated-union member: schema, display label, and its relations. */
 export interface EntryTypeDef {
   type: string;
