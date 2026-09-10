@@ -36,6 +36,7 @@ interface Props {
 const { href } = Astro.props;
 
 import { resolveWikiTarget } from '@/shared/content/contentRegistry';
+import { OPEN_CONTENT_LINKS_IN_NEW_TAB } from '@/shared/linkBehavior';
 
 const { exists } = await resolveWikiTarget(href);
 const isDead = !exists;
@@ -49,7 +50,12 @@ const isDead = !exists;
     <slot />
   </span>
 ) : (
-  <a href={href} class="text-accent hover:underline">
+  <a
+    href={href}
+    class="text-accent hover:underline"
+    target={OPEN_CONTENT_LINKS_IN_NEW_TAB ? '_blank' : undefined}
+    rel={OPEN_CONTENT_LINKS_IN_NEW_TAB ? 'noopener noreferrer' : undefined}
+  >
     <slot />
   </a>
 )}
