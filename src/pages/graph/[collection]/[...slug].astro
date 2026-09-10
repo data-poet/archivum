@@ -58,7 +58,7 @@ const { center, neighbors } = await getGraphData(entry);
 <script>
 import ForceGraph from 'force-graph';
 import type { NodeObject, LinkObject } from 'force-graph';
-import { forceX, forceY } from 'd3-force-3d';
+import { forceX, forceY, forceCollide } from 'd3-force-3d';
 import { OPEN_CONTENT_LINKS_IN_NEW_TAB } from '@/shared/linkBehavior';
 
 interface GNode extends NodeObject {
@@ -68,6 +68,8 @@ interface GNode extends NodeObject {
   isCenter?: boolean;
   groupTargetX?: number;
   groupTargetY?: number;
+  boxWidth: number;
+  boxHeight: number;
 }
 
 interface GLink extends LinkObject<GNode> {
@@ -81,7 +83,6 @@ const { center, neighbors }: GraphPayload = JSON.parse(document.getElementById('
 
 const GRID_SIZE = 40;
 const GROUP_RADIUS = 220;
-const LABEL_RADIUS = GROUP_RADIUS + 60;
 const ACCENT = '#8b1a1a';
 const BORDER = '#c8c0a8';
 const INK = '#2a2418';
@@ -95,19 +96,9 @@ function groupKeyFor(href: string): string {
   return segments.length > 1 ? segments.slice(0, -1).join('/') : segments[0];
 }
 
-function labelForGroup(key: string): string {
-  return key
-    .split('/')
-    .map((seg) => seg.split(/[-_]/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' '))
-    .join(' / ');
-}
-
+// Groups only organize node position — no label is ever drawn for them.
 const groupKeys = [...new Set(neighbors.map((n) => groupKeyFor(n.href)))].sort();
 const groupAngle = (key: string) => (2 * Math.PI * groupKeys.indexOf(key)) / groupKeys.length;
-const groupLabels = groupKeys.map((key) => {
-  const angle = groupAngle(key);
-  return { text: labelForGroup(key), x: LABEL_RADIUS * Math.cos(angle), y: LABEL_RADIUS * Math.sin(angle) };
-});
 
 // Members of the same group fan out around their shared angle instead of all
 // aiming at one exact point, so a 13-node group reads as a wedge, not a dot.
@@ -128,22 +119,25 @@ function targetFor(n: GraphNodeData): { x: number; y: number } {
   return { x: GROUP_RADIUS * Math.cos(angle), y: GROUP_RADIUS * Math.sin(angle) };
 }
 
+// Measured once per node (not per render frame) so the collision force below
+// and the actual drawn box always agree on the same size.
+const measureCtx = document.createElement('canvas').getContext('2d')!;
+function boxSizeFor(title: string): { boxWidth: number; boxHeight: number } {
+  measureCtx.font = '600 12px sans-serif';
+  const boxWidth = Math.max(measureCtx.measureText(title).width + 24, 60);
+  return { boxWidth, boxHeight: 28 };
+}
+
 const nodes: GNode[] = [
-  { id: center.href, title: center.title, exists: true, isCenter: true, fx: 0, fy: 0 },
+  { id: center.href, title: center.title, exists: true, isCenter: true, fx: 0, fy: 0, ...boxSizeFor(center.title) },
   ...neighbors.map((n) => {
     const target = targetFor(n);
-    return { id: n.href, title: n.title, exists: n.exists, groupTargetX: target.x, groupTargetY: target.y };
+    return { id: n.href, title: n.title, exists: n.exists, groupTargetX: target.x, groupTargetY: target.y, ...boxSizeFor(n.title) };
   }),
 ];
 const links: GLink[] = neighbors.map((n) => ({ source: center.href, target: n.href, exists: n.exists }));
 
 const container = document.getElementById('graph-canvas')!;
-
-function nodeSize(ctx: CanvasRenderingContext2D, node: GNode) {
-  ctx.font = '600 12px sans-serif';
-  const width = Math.max(ctx.measureText(node.title).width + 24, 60);
-  return { width, height: 28 };
-}
 
 const graph = new ForceGraph<GNode, GLink>(container)
   .graphData({ nodes, links })
@@ -167,24 +161,18 @@ const graph = new ForceGraph<GNode, GLink>(container)
       ctx.lineTo(span, y);
       ctx.stroke();
     }
-
-    // Group labels — drawn before nodes/links so they read as background
-    // context rather than competing with nodes for click/hover priority.
-    ctx.font = '600 11px sans-serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = INK_LIGHT;
-    for (const label of groupLabels) {
-      ctx.fillText(label.text, label.x, label.y);
-    }
   })
   .d3Force('groupX', forceX((n: GNode) => (n.isCenter ? 0 : n.groupTargetX ?? 0)).strength(0.2))
   .d3Force('groupY', forceY((n: GNode) => (n.isCenter ? 0 : n.groupTargetY ?? 0)).strength(0.2))
+  // Half-diagonal as an approximate circular radius for each rectangular box,
+  // plus a little padding — keeps boxes from overlapping/hiding each other,
+  // on top of (not instead of) the group/link/charge forces above.
+  .d3Force('collide', forceCollide((n: GNode) => Math.hypot(n.boxWidth, n.boxHeight) / 2 + 6).iterations(2))
   .linkColor((link) => (link.exists ? ACCENT : INK_LIGHT))
   .linkLineDash((link) => (link.exists ? null : [4, 3]))
   .linkWidth(1.5)
   .nodeCanvasObject((node, ctx) => {
-    const { width, height } = nodeSize(ctx, node);
+    const { boxWidth: width, boxHeight: height } = node;
     const nx = node.x ?? 0;
     const ny = node.y ?? 0;
     const x = nx - width / 2;
@@ -208,7 +196,7 @@ const graph = new ForceGraph<GNode, GLink>(container)
     ctx.fillText(node.title, nx, ny);
   })
   .nodePointerAreaPaint((node, color, ctx) => {
-    const { width, height } = nodeSize(ctx, node);
+    const { boxWidth: width, boxHeight: height } = node;
     ctx.fillStyle = color;
     ctx.beginPath();
     ctx.roundRect((node.x ?? 0) - width / 2, (node.y ?? 0) - height / 2, width, height, 6);

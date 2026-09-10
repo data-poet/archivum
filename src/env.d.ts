@@ -9,4 +9,8 @@ declare module 'd3-force-3d' {
   export function forceY<N>(y?: number | ((node: N) => number)): {
     strength(strength: number): any;
   };
+  export function forceCollide<N>(radius?: number | ((node: N) => number)): {
+    strength(strength: number): any;
+    iterations(iterations: number): any;
+  };
 }
