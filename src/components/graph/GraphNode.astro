@@ -6,7 +6,7 @@
  * box — same dashed/muted treatment WikiLink.astro already uses for dead
  * inline links, so "this doesn't exist yet" looks consistent site-wide.
  */
-import { GRAPH_LINKS_OPEN_IN_NEW_TAB } from './linkBehavior';
+import { OPEN_CONTENT_LINKS_IN_NEW_TAB } from '@/shared/linkBehavior';
 import type { GraphNode as GraphNodeData } from './graphData';
 
 interface Props {
@@ -31,8 +31,8 @@ const boxClass = `absolute -translate-x-1/2 -translate-y-1/2 w-32 rounded overfl
     href={node.href}
     style={style}
     class={boxClass}
-    target={GRAPH_LINKS_OPEN_IN_NEW_TAB ? '_blank' : undefined}
-    rel={GRAPH_LINKS_OPEN_IN_NEW_TAB ? 'noopener noreferrer' : undefined}
+    target={OPEN_CONTENT_LINKS_IN_NEW_TAB ? '_blank' : undefined}
+    rel={OPEN_CONTENT_LINKS_IN_NEW_TAB ? 'noopener noreferrer' : undefined}
   >
     {node.image && <img src={node.image} alt="" class="w-full h-16 object-cover" />}
     <div class="px-2 py-1 text-xs font-sans font-semibold text-ink truncate">{node.title}</div>
