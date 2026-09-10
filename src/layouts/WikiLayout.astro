@@ -37,7 +37,7 @@ const absoluteImage = image ? new URL(image, Astro.site) : undefined;
 function formatDate(dateInput: string | Date) {
   return new Date(dateInput).toLocaleDateString('pt-BR', {
     day: '2-digit',
-    month: 'long',
+    month: '2-digit',
     year: 'numeric'
   });
 }
@@ -108,13 +108,13 @@ function formatDate(dateInput: string | Date) {
     )}
 
     <!-- Article title -->
-    <div class="flex items-baseline justify-between gap-4 border-b border-border pb-2 mb-4">
+    <div class="border-b border-border pb-2 mb-4">
       <h1 class="font-serif text-3xl font-bold text-ink">
         {title}
       </h1>
 
       {graphHref && (
-        <a href={graphHref} class="text-sm font-sans text-accent hover:underline whitespace-nowrap">
+        <a href={graphHref} class="inline-block mt-1 text-sm font-sans text-accent hover:underline">
           Ver grafos
         </a>
       )}
