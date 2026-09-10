@@ -28,11 +28,11 @@ const sections = [
 // (rendering "Culto a [object Object]"). Fixed to use the real fields.
 function subtitle(data: any): string | null {
   switch (data.type) {
-    case 'pantheon':      return data.pantheonDeities?.length
-      ? `${data.pantheonDeities.length} divindades`
+    case 'pantheon':      return data.deityRefs?.length
+      ? `${data.deityRefs.length} divindades`
       : null;
     case 'god':           return data.domains?.length ? data.domains.join(', ') : null;
-    case 'church':        return data.deity ? `Culto a ${data.deity.label}` : null;
+    case 'church':        return data.deityRef ? `Culto a ${data.deityRef.label}` : null;
     case 'relic':         return data.relicType ?? null;
     case 'ritual':        return data.frequency ?? null;
     case 'creation-myth': return data.pantheonRef ? data.pantheonRef.label : null;
