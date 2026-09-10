@@ -178,8 +178,8 @@ const graph = new ForceGraph<GNode, GLink>(container)
       ctx.fillText(label.text, label.x, label.y);
     }
   })
-  .d3Force('groupX', forceX((n: GNode) => (n.isCenter ? 0 : n.groupTargetX ?? 0)).strength(0.06))
-  .d3Force('groupY', forceY((n: GNode) => (n.isCenter ? 0 : n.groupTargetY ?? 0)).strength(0.06))
+  .d3Force('groupX', forceX((n: GNode) => (n.isCenter ? 0 : n.groupTargetX ?? 0)).strength(0.2))
+  .d3Force('groupY', forceY((n: GNode) => (n.isCenter ? 0 : n.groupTargetY ?? 0)).strength(0.2))
   .linkColor((link) => (link.exists ? ACCENT : INK_LIGHT))
   .linkLineDash((link) => (link.exists ? null : [4, 3]))
   .linkWidth(1.5)
@@ -233,6 +233,13 @@ const graph = new ForceGraph<GNode, GLink>(container)
     node.fx = Math.round((node.x ?? 0) / GRID_SIZE) * GRID_SIZE;
     node.fy = Math.round((node.y ?? 0) / GRID_SIZE) * GRID_SIZE;
   });
+
+// force-graph's default link distance is 30 — with the center pinned via
+// fx/fy, that alone was pulling every neighbor to within ~30px of it,
+// overpowering the group bias above. Matching it to GROUP_RADIUS makes the
+// link force and the group force agree on where a node belongs instead of
+// fighting each other.
+(graph.d3Force('link') as any)?.distance(GROUP_RADIUS);
 
 function resize() {
   graph.width(container.clientWidth).height(container.clientHeight);
