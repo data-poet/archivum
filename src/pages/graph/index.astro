@@ -1,0 +1,114 @@
+---
+/**
+ * graph/index.astro — Grafos landing page.
+ * Same search UI as /search (shares src/shared/search.ts), but results link
+ * to an article's graph page instead of the article itself.
+ */
+import SiteHeader from '@/components/SiteHeader.astro';
+import '../../styles/global.css';
+
+const rawQ = Astro.url.searchParams.get('q') ?? '';
+---
+
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grafos – Archivum</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+<body>
+
+  <SiteHeader activeFeature="graphs" />
+
+  <main class="max-w-4xl mx-auto px-4 py-10">
+
+    <h1 class="font-serif text-3xl font-bold border-b border-border pb-2 mb-4">
+      Grafos
+    </h1>
+
+    <p class="font-sans text-sm text-ink-light mb-6">
+      Escolha um artigo para ver o grafo de suas menções.
+    </p>
+
+    <form id="graph-search-form" class="flex gap-2 mb-8">
+      <input
+        id="graph-search-input"
+        name="q"
+        type="search"
+        placeholder="Qual artigo você quer explorar? (ex: tag:dragoes)"
+        value={rawQ}
+        autofocus
+        class="flex-1 border border-border rounded px-4 py-2 text-base font-sans bg-parchment-50 focus:outline-none focus:ring-2 focus:ring-accent"
+      />
+      <button
+        type="submit"
+        class="border border-border rounded px-5 py-2 text-sm font-sans font-semibold bg-accent text-white hover:opacity-90 transition-opacity"
+      >
+        Buscar
+      </button>
+    </form>
+
+    <p id="graph-search-status" class="font-sans text-sm text-ink-light mb-6"></p>
+
+    <div id="graph-search-results"></div>
+
+  </main>
+
+</body>
+</html>
+
+<script>
+import { searchRecords, renderGroupedResults } from '@/shared/search';
+
+const statusEl  = document.getElementById('graph-search-status')!;
+const resultsEl = document.getElementById('graph-search-results')!;
+const inputEl   = document.getElementById('graph-search-input') as HTMLInputElement;
+
+// Unlike /search, there's nowhere else for this form to navigate to — it
+// filters this same page's result list, so submit just re-runs the search.
+document.getElementById('graph-search-form')!.addEventListener('submit', (e) => {
+  e.preventDefault();
+});
+
+function render(records: any[], query: string) {
+  const scored = searchRecords(records, query);
+
+  if (!query.trim()) {
+    statusEl.textContent = 'Digite algo para escolher um artigo.';
+    resultsEl.innerHTML  = '';
+    return;
+  }
+
+  if (!scored.length) {
+    statusEl.textContent = `Nenhum artigo encontrado para "${query}".`;
+    resultsEl.innerHTML  = '';
+    return;
+  }
+
+  statusEl.textContent = `${scored.length} artigo${scored.length !== 1 ? 's' : ''} encontrado${scored.length !== 1 ? 's' : ''}`;
+  resultsEl.innerHTML = renderGroupedResults(scored, (r) => `/graph${r.href}`);
+}
+
+const initialQuery = new URLSearchParams(window.location.search).get('q') ?? '';
+
+fetch('/search-index.json')
+  .then((r) => r.json())
+  .then((records) => {
+    if (initialQuery) {
+      render(records, initialQuery);
+    } else {
+      statusEl.textContent = 'Digite algo para escolher um artigo.';
+    }
+
+    let timer: ReturnType<typeof setTimeout>;
+    inputEl.addEventListener('input', () => {
+      clearTimeout(timer);
+      timer = setTimeout(() => render(records, inputEl.value), 250);
+    });
+  })
+  .catch(() => {
+    statusEl.textContent = 'Erro ao carregar o índice de busca.';
+  });
+</script>
