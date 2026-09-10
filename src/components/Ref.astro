@@ -22,7 +22,7 @@ interface Props {
 const { href } = Astro.props;
 
 import WikiLink from "./WikiLink.astro";
-import { resolveWikiTarget } from "@/shared/content/resolveWikiTarget";
+import { resolveWikiTarget } from "@/shared/content/contentRegistry";
 
 // Falls back to the raw href as the label when the target doesn't exist —
 // there's no title to borrow, but WikiLink's own dead-link styling still

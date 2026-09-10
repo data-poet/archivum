@@ -35,7 +35,7 @@ interface Props {
 
 const { href } = Astro.props;
 
-import { resolveWikiTarget } from '@/shared/content/resolveWikiTarget';
+import { resolveWikiTarget } from '@/shared/content/contentRegistry';
 
 const { exists } = await resolveWikiTarget(href);
 const isDead = !exists;
