@@ -1,0 +1,78 @@
+/* Shared by TableOfContents.astro (renders these) and CollapsibleHeadings.astro
+   (listens for clicks on .toc-link) — a genuine cross-component contract,
+   not one component's private styling. */
+@layer base {
+  .toc {
+    @apply bg-parchment-100 border border-border rounded-lg p-4 text-sm font-sans;
+  }
+
+  .toc-title {
+    @apply font-serif text-lg font-bold text-ink mb-4;
+  }
+
+  .toc-list {
+    @apply m-0 p-0;
+    list-style: none;
+  }
+
+  .toc-group {
+    @apply mb-2;
+  }
+
+  /* Collapsible sections */
+
+  .toc-section summary {
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .toc-section summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .toc-summary {
+    @apply flex items-center gap-2;
+  }
+
+  /* Arrow */
+
+  .toc-summary::before {
+    content: "▶";
+    font-size: 0.7rem;
+    transition: transform 0.2s ease;
+    opacity: 0.7;
+    flex-shrink: 0;
+    margin-top: 0.1rem;
+  }
+
+  /* Rotate arrow when open */
+
+  .toc-section[open] .toc-summary::before {
+    transform: rotate(90deg);
+  }
+
+  /* Nested list */
+
+  .toc-sublist {
+    @apply mt-2 ml-5 space-y-1;
+    list-style: none;
+  }
+
+  /* Links */
+
+  .toc-link {
+    @apply no-underline transition-colors;
+  }
+
+  .toc-link:hover {
+    @apply text-accent underline;
+  }
+
+  .toc-h2 {
+    @apply text-ink font-semibold;
+  }
+
+  .toc-h3 {
+    @apply text-ink-muted text-sm;
+  }
+}
