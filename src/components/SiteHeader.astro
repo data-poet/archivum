@@ -59,16 +59,16 @@ const menuItemClass =
 ---
 
 <header class="border-b border-border bg-white/70 backdrop-blur sticky top-0 z-50">
-  <div class={`${maxWidthClass} mx-auto px-4 flex items-center gap-6 h-12`}>
+  <div class={`${maxWidthClass} mx-auto px-4 py-2 sm:h-12 sm:py-0 flex flex-wrap items-center gap-x-4 gap-y-2 sm:flex-nowrap sm:gap-6`}>
 
     <a
       href="/"
-      class="font-serif font-bold text-accent text-lg tracking-tight no-underline hover:no-underline"
+      class="shrink-0 font-serif font-bold text-accent text-lg tracking-tight no-underline hover:no-underline"
     >
       📜 Archivum
     </a>
 
-    <nav class="flex gap-2 text-sm text-ink-muted font-sans">
+    <nav class="order-3 w-full sm:order-none sm:w-auto flex gap-2 text-sm text-ink-muted font-sans">
 
       {/* Features selector: Mapas, Linha do Tempo, … */}
       <details class="relative group">
@@ -122,17 +122,17 @@ const menuItemClass =
 
     </nav>
 
-    <div class="ml-auto">
+    <div class="flex-1 min-w-0 sm:flex-none sm:ml-auto">
       <form action="/search" method="get" class="flex">
         <input
           name="q"
           type="search"
           placeholder="Buscar…"
-          class="border border-border rounded-l px-3 py-1 text-sm font-sans bg-parchment-50 focus:outline-none focus:ring-1 focus:ring-accent w-48"
+          class="w-full min-w-0 sm:w-48 border border-border rounded-l px-3 py-1 text-sm font-sans bg-parchment-50 focus:outline-none focus:ring-1 focus:ring-accent"
         />
         <button
           type="submit"
-          class="border border-l-0 border-border rounded-r px-3 py-1 text-sm font-sans bg-parchment-100 hover:bg-parchment-200 transition-colors"
+          class="shrink-0 border border-l-0 border-border rounded-r px-3 py-1 text-sm font-sans bg-parchment-100 hover:bg-parchment-200 transition-colors"
         >
           Ir
         </button>
