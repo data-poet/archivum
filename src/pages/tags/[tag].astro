@@ -112,7 +112,7 @@ for (const m of matching) {
                 <li>
                   <a
                     href={`/${col}/${entry.slug}`}
-                    class="flex items-baseline gap-3 px-5 py-3 hover:bg-parchment-200 transition-colors no-underline"
+                    class="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-5 py-3 hover:bg-parchment-200 transition-colors no-underline"
                   >
                     <span class="font-serif font-bold text-accent">
                       {entry.data.title}
@@ -121,7 +121,7 @@ for (const m of matching) {
                       {typeLabel(entry.data.type)}
                     </span>
                     {entry.data.description && (
-                      <span class="font-sans text-xs text-ink-muted ml-auto truncate max-w-xs">
+                      <span class="font-sans text-xs text-ink-muted w-full sm:w-auto sm:ml-auto truncate sm:max-w-xs">
                         {entry.data.description}
                       </span>
                     )}

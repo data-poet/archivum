@@ -115,7 +115,7 @@ function subtitle(data: any): string | null {
 
                     <a
                       href={`/races/${entry.slug}`}
-                      class="flex items-baseline gap-3 px-5 py-3 hover:bg-parchment-200 transition-colors"
+                      class="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-5 py-3 hover:bg-parchment-200 transition-colors"
                     >
 
                       <span class="font-serif font-bold text-accent">
@@ -129,7 +129,7 @@ function subtitle(data: any): string | null {
                       )}
 
                       {entry.data.description && (
-                        <span class="text-ink-muted font-sans text-sm ml-auto truncate max-w-xs">
+                        <span class="text-ink-muted font-sans text-sm w-full sm:w-auto sm:ml-auto truncate sm:max-w-xs">
                           {entry.data.description}
                         </span>
                       )}

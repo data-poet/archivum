@@ -59,7 +59,7 @@ const { recent } = Astro.props;
 
             <a
               href={`${entry.collectionHref}/${entry.slug}`}
-              class="flex items-baseline gap-3 px-4 py-2 hover:bg-parchment-200 transition-colors"
+              class="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-4 py-2 hover:bg-parchment-200 transition-colors"
             >
 
               <span class="font-serif text-sm font-bold text-accent">
@@ -81,7 +81,7 @@ const { recent } = Astro.props;
               )}
 
               {entry.data.description && (
-                <span class="font-sans text-xs text-ink-muted ml-auto truncate max-w-xs">
+                <span class="font-sans text-xs text-ink-muted w-full sm:w-auto sm:ml-auto truncate sm:max-w-xs">
                   {entry.data.description}
                 </span>
               )}

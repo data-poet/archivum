@@ -108,11 +108,11 @@ export function renderGroupedResults(scored: ScoredRecord[], hrefFor: (record: S
           ${entries.map((e) => `
             <li>
               <a href="${hrefFor(e)}"${target}
-                 class="flex items-baseline gap-3 px-5 py-3 hover:bg-parchment-200 transition-colors no-underline">
+                 class="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-5 py-3 hover:bg-parchment-200 transition-colors no-underline">
                 <span class="font-serif font-bold text-accent">${e.title}</span>
                 <span class="font-sans text-xs text-ink-light">${TYPE_LABELS[e.type] ?? e.type}</span>
                 ${e.description
-                  ? `<span class="font-sans text-xs text-ink-muted ml-auto truncate max-w-xs">${e.description}</span>`
+                  ? `<span class="font-sans text-xs text-ink-muted w-full sm:w-auto sm:ml-auto truncate sm:max-w-xs">${e.description}</span>`
                   : ''}
               </a>
             </li>
