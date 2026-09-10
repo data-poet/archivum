@@ -5,10 +5,12 @@ import tailwind from "@astrojs/tailwind";
 
 import rehypeSlug from "rehype-slug";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
+import remarkWikilink from "./src/plugins/remark-wikilink.ts";
 
 export default defineConfig({
   integrations: [
     mdx({
+      remarkPlugins: [remarkWikilink],
       rehypePlugins: [
         rehypeSlug,
         [

@@ -14,65 +14,21 @@ tags:
   - draconatos
 ---
 
-import WikiLink from "@/components/WikiLink.astro";
-
-export const link = (href, defaultLabel) => (label) => <WikiLink href={href}>{label ?? defaultLabel}</WikiLink>;
-
-export const characters = {
-  Anzu: link("/characters/dragons/anzu", "Anzu"),
-  Derseth: link("/characters/dragons/derseth", "Derseth"),
-  Kalista: link("/characters/elfs/kalista", "Kalista"),
-  Ptaris: link("/characters/dragons/ptaris", "Ptaris"),
-};
-
-export const gods = {
-  Asgorath: link("/religions/draconic-faith/gods/asgorath", "Asgorath"),
-  Bahamut: link("/religions/draconic-faith/gods/bahamut", "Bahamut"),
-  Tiamat: link("/religions/draconic-faith/gods/tiamat", "Tiamat"),
-  Null: link("/religions/draconic-faith/gods/null", "Null"),
-  Sardior: link("/religions/draconic-faith/gods/sardior", "Sardior"),
-  Kereska: link("/religions/draconic-faith/gods/kereska", "Kereska"),
-  Hlal: link("/religions/draconic-faith/gods/hlal", "Hlal"),
-  Lendys: link("/religions/draconic-faith/gods/lendys", "Lendys"),
-  Tamara: link("/religions/draconic-faith/gods/tamara", "Tamara"),
-  Zorquan: link("/religions/draconic-faith/gods/zorquan", "Zorquan"),
-  Astibolor: link("/religions/draconic-faith/gods/astibolor", "Astibolor"),
-  Task: link("/religions/draconic-faith/gods/task", "Task"),
-  Garyx: link("/religions/draconic-faith/gods/garyx", "Garyx"),
-  "Panteão dos Dragões": link("/religions/draconic-faith/pantheon", "Panteão dos Dragões"),
-  Satanael: link("religions/demonic-faith/satanael", "Satanael"),
-  Lillith: link("religions/demonic-faith/lillith", "Lillith"),
-  "Panteão dos Demônios": link("/religions/demonic-faith/pantheon", "Panteão dos Demônios"),
-  Annam: link("religions/giant-faith/gods/annam", "Annam"),
-};
-
-export const guilds = {
-  "Guilda dos Historiadores": link("/guilds/history_guild", "Guilda dos Historiadores"),
-};
-
-export const lore = {
-  "Compêndio Dracônico": link("/lore/books/draconic_compendium", "Compêndio Dracônico"),
-};
-
-export const races = {
-  Draconatos: link("/races/dragonborns/dragonborns", "Draconatos"),
-  Gigantes: link("/races/giants/giants", "Gigantes"),
-};
-
-**O Primeiro Mundo** é o mito da criação central do {gods["Panteão dos Dragões"]()}, documentada no {lore["Compêndio Dracônico"]()}, um livro compilado por {characters.Kalista("Kalista Veleska")},
-Mestra em Antropologia Dracônica pela {guilds["Guilda dos Historiadores"]()}, a partir das sessões de transcrição oral de {characters.Ptaris("Ptaris, o Áureo")}, um dragão dourado ancestral.
+**O Primeiro Mundo** é o mito da criação central do [[religions/draconic-faith/pantheon]], documentada no [[lore/books/draconic_compendium]], um livro compilado por
+[[characters/elfs/kalista|Kalista Veleska]], Mestra em Antropologia Dracônica pela [[guilds/history_guild]], a partir das sessões de transcrição oral de [[characters/dragons/ptaris|Ptaris, o Áureo]],
+um dragão dourado ancestral.
 
 #### **Nota de Abertura**
 
 > Registrar a cosmogonia de uma criatura que viveu milênios antes da escrita moderna é um exercício de arqueologia mental e paciência hercúlea.
 >
-> Para {characters.Ptaris()},, o tempo não é uma linha reta, mas uma espiral de sentimentos e lealdades. Ele reconta a história do universo sob a ótica de sua inabalável devoção a {gods.Bahamut()},
-> pintando o passado com tons dourados e transformando qualquer discordância em 'alucinações de raças menores'. Ofereço este texto com minhas devidas anotações, buscando decifrar o fato histórico por
-> trás do rugido mitológico.
+> Para [[characters/dragons/ptaris]],, o tempo não é uma linha reta, mas uma espiral de sentimentos e lealdades. Ele reconta a história do universo sob a ótica de sua inabalável devoção a
+> [[religions/draconic-faith/gods/bahamut]], pintando o passado com tons dourados e transformando qualquer discordância em 'alucinações de raças menores'. Ofereço este texto com minhas devidas
+> anotações, buscando decifrar o fato histórico por trás do rugido mitológico.
 >
-> Vale notar, uma reivindicação que jamais consegui provar nem desmentir: {characters.Ptaris()}, afirma, com a mesma convicção com que afirma tudo o mais, ser um dos poucos sobreviventes do próprio
-> Primeiro Mundo - não um mero herdeiro de memórias transmitidas, mas uma testemunha ocular dos eventos que narra. Não há arquivo, relíquia ou tratado que confirme ou refute tal idade. Talvez seja
-> verdade; talvez seja apenas a vaidade natural de um dragão ancião que prefere ser lembrado como personagem da história, e não apenas como seu narrador.
+> Vale notar, uma reivindicação que jamais consegui provar nem desmentir: [[characters/dragons/ptaris]], afirma, com a mesma convicção com que afirma tudo o mais, ser um dos poucos sobreviventes do
+> próprio Primeiro Mundo - não um mero herdeiro de memórias transmitidas, mas uma testemunha ocular dos eventos que narra. Não há arquivo, relíquia ou tratado que confirme ou refute tal idade. Talvez
+> seja verdade; talvez seja apenas a vaidade natural de um dragão ancião que prefere ser lembrado como personagem da história, e não apenas como seu narrador.
 >
 > — Kalista Veleska
 
@@ -80,100 +36,108 @@ Mestra em Antropologia Dracônica pela {guilds["Guilda dos Historiadores"]()}, a
 
 ## 1 - O VAZIO ANTES DA CRIAÇÃO
 
-**Relato de {characters.Ptaris()},:** "Antes que as estrelas fossem costuradas no firmamento, antes que o tempo tivesse uma régua para medi-lo, Kalista, o silêncio era a única canção do cosmos.
+**Relato de [[characters/dragons/ptaris]],:** "Antes que as estrelas fossem costuradas no firmamento, antes que o tempo tivesse uma régua para medi-lo, Kalista, o silêncio era a única canção do
+cosmos.
 
 Não imagine a escuridão daquela época como a noite ordinária que você conhece; era um nada grávido de possibilidades infinitas. E ali, estendido sobre o próprio abismo, repousava o Pai de Tudo,
-{gods.Asgorath()}. Ele não era apenas um dragão; Ele era a própria arquitetura do espaço, e o vazio nada mais era do que a sombra projetada por Suas asas colossais.
+[[religions/draconic-faith/gods/asgorath]]. Ele não era apenas um dragão; Ele era a própria arquitetura do espaço, e o vazio nada mais era do que a sombra projetada por Suas asas colossais.
 
 Quando o Criador decidiu que o silêncio já havia durado o suficiente, manifestou Sua vontade em um único sopro divino de criação. Desse hálito de pura definição nasceram as duas primeiras centelhas da
 realidade:
 
-1. {gods.Bahamut()}, reluzente em platina, encarnando a ordem e a harmonia celestial;
-2. {gods.Tiamat()}, erguendo-se gloriosa e indomável entre as chamas da criação selvagem.
+1. [[religions/draconic-faith/gods/bahamut]], reluzente em platina, encarnando a ordem e a harmonia celestial;
+2. [[religions/draconic-faith/gods/tiamat]], erguendo-se gloriosa e indomável entre as chamas da criação selvagem.
 
 Mas onde há luz intensa, moldam-se sombras profundas. Nas fendas entre a pureza de platina e o fogo escarlate, manifestou-se a terceira força:
 
-3. {gods.Null()}, cujo corpo era feito do próprio nada que fora empurrado para os confins da realidade. Ele não emitia som; apenas contemplava o nascimento das primeiras estrelas com a paciência
-   solene de quem sabe que, no fim, toda a luz retornará ao escuro."
+3. [[religions/draconic-faith/gods/null]], cujo corpo era feito do próprio nada que fora empurrado para os confins da realidade. Ele não emitia som; apenas contemplava o nascimento das primeiras
+   estrelas com a paciência solene de quem sabe que, no fim, toda a luz retornará ao escuro."
 
 #### **Nota de Kalista (#01):**
 
-> _{characters.Ptaris()}, narra o nascimento de {gods.Bahamut()} e {gods.Tiamat()} como um evento perfeitamente simultâneo e equilibrado. No entanto, {characters.Derseth()}, uma dragoa azul anciã que
-> pude entrevistar brevemente, reivindica vigorosamente que {gods.Tiamat()} foi a verdadeira primogênita, tendo moldado os contornos e contrapontos do vazio antes que seu irmão sequer ganhasse
-> escamas. Quando confrontei {characters.Ptaris()}, com essa divergência de tradições orais, ele apenas bufou uma nuvem de fumaça dourada e murmurou que 'dragões de escamas escuras sofrem de um
-> crônico daltonismo espiritual'._
+> _[[characters/dragons/ptaris]], narra o nascimento de [[religions/draconic-faith/gods/bahamut]] e [[religions/draconic-faith/gods/tiamat]] como um evento perfeitamente simultâneo e equilibrado. No
+> entanto, [[characters/dragons/derseth]], uma dragoa azul anciã que pude entrevistar brevemente, reivindica vigorosamente que [[religions/draconic-faith/gods/tiamat]] foi a verdadeira primogênita,
+> tendo moldado os contornos e contrapontos do vazio antes que seu irmão sequer ganhasse escamas. Quando confrontei [[characters/dragons/ptaris]], com essa divergência de tradições orais, ele apenas
+> bufou uma nuvem de fumaça dourada e murmurou que 'dragões de escamas escuras sofrem de um crônico daltonismo espiritual'._
 
 ## 2 - A CRIAÇÃO DO PRIMEIRO MUNDO
 
-**Relato de Ptaris:** "Houve um tempo em que eles não se odiavam. Você consegue conceber isso, elfa? No alvorecer sem eras, {gods.Bahamut()} e {gods.Tiamat()} voavam lado a lado. Seus batimentos de
-asas ocorriam em uníssono para guiar as correntes de vento que moldariam os primeiros oceanos. O rugido de {gods.Bahamut()} congelava o vapor primordial para erguer cordilheiras de puro cristal; o
-sopro de {gods.Tiamat()} abria as entranhas da terra para fazer correr o magma que aquecia o mundo jovem. O Primeiro Mundo era um templo imaculado, intocado por mãos mortais."
+**Relato de Ptaris:** "Houve um tempo em que eles não se odiavam. Você consegue conceber isso, elfa? No alvorecer sem eras, [[religions/draconic-faith/gods/bahamut]] e
+[[religions/draconic-faith/gods/tiamat]] voavam lado a lado. Seus batimentos de asas ocorriam em uníssono para guiar as correntes de vento que moldariam os primeiros oceanos. O rugido de
+[[religions/draconic-faith/gods/bahamut]] congelava o vapor primordial para erguer cordilheiras de puro cristal; o sopro de [[religions/draconic-faith/gods/tiamat]] abria as entranhas da terra para
+fazer correr o magma que aquecia o mundo jovem. O Primeiro Mundo era um templo imaculado, intocado por mãos mortais."
 
 ### 2.1 - O Panteão
 
-**Relato de Ptaris:** "Enquanto a matéria se consolidava sob os sopros primordiais, outras facetas da substância viva de {gods.Asgorath()} tomaram forma sob o céu virgem. Não eram meras criações, mas
-estilhaços da própria essência do Pai Dragão que ganharam vontade enquanto o cosmos se assentava:
+**Relato de Ptaris:** "Enquanto a matéria se consolidava sob os sopros primordiais, outras facetas da substância viva de [[religions/draconic-faith/gods/asgorath]] tomaram forma sob o céu virgem. Não
+eram meras criações, mas estilhaços da própria essência do Pai Dragão que ganharam vontade enquanto o cosmos se assentava:
 
-- **{gods.Kereska()}:** Nascida das correntes invisíveis da magia pura que emanavam do Criador. Seu corpo era um entremeio de constelações líquidas e runas que se moviam como escamas reluzentes. Foi
-  ela quem sussurrou os Primeiros Verbos Arcanos para que os dragões pudessem dobrar a realidade.
-- **{gods.Hlal()}:** Nascida do primeiro riso que ecoou quando os deuses contemplaram a beleza da obra recém-moldada. Hlal trouxe a música, a irreverência e a arte, lembrando à nossa espécie que o
-  poder supremo também precisa dançar sob as estrelas.
-- **{gods.Lendys()}:** A manifestação da equidade de {gods.Asgorath()} diante do orgulho dracônico. Com escamas de prata polida, seu olhar implacável pesava a intenção e a verdade para manter a ordem
-  e arbitrar os primeiros desentendimentos.
-- **{gods.Tamara()}:** A compaixão divina tornada forma. Tamara era o hálito da cura e do descanso sagrado, a guardiã das ninhadas e a promessa de renovação para os corpos cansados.
-- **{gods.Zorquan()}:** O Grande Observador. Antigo além de qualquer contagem mortal, encarnava a memória viva de {gods.Asgorath()}, caminhando entre todas as linhagens sem jamais desembainhar as
-  garras, registrando os nomes e feitos para que o tempo não os apagasse.
-- **{gods.Astibolor()}:** Nascido do conceito da abundância divina. Suas escamas de ouro líquido refletiam o valor intrínseco de tudo o que fora criado. Ele ensinou aos dragões que acumular tesouros
-  não era avareza, mas sim a preservação da memória física do mundo em pedras e relíquias.
-- **{gods.Task()}:** O espírito da ambição insaciável. Suas escamas carregavam cicatrizes das provações que impunha a si mesmo. Ele sussurrava que um dragão nunca deve se contentar com o horizonte
-  dominado; deve sempre almejar o próximo.
-- **{gods.Garyx()}:** O fogo que purifica através da cinza. Garyx nasceu no coração dos vulcões para lembrar à criação que tudo o que estagna deve ser consumido para dar espaço ao novo.
+- **[[religions/draconic-faith/gods/kereska]]:** Nascida das correntes invisíveis da magia pura que emanavam do Criador. Seu corpo era um entremeio de constelações líquidas e runas que se moviam como
+  escamas reluzentes. Foi ela quem sussurrou os Primeiros Verbos Arcanos para que os dragões pudessem dobrar a realidade.
+- **[[religions/draconic-faith/gods/hlal]]:** Nascida do primeiro riso que ecoou quando os deuses contemplaram a beleza da obra recém-moldada. Hlal trouxe a música, a irreverência e a arte, lembrando
+  à nossa espécie que o poder supremo também precisa dançar sob as estrelas.
+- **[[religions/draconic-faith/gods/lendys]]:** A manifestação da equidade de [[religions/draconic-faith/gods/asgorath]] diante do orgulho dracônico. Com escamas de prata polida, seu olhar implacável
+  pesava a intenção e a verdade para manter a ordem e arbitrar os primeiros desentendimentos.
+- **[[religions/draconic-faith/gods/tamara]]:** A compaixão divina tornada forma. Tamara era o hálito da cura e do descanso sagrado, a guardiã das ninhadas e a promessa de renovação para os corpos
+  cansados.
+- **[[religions/draconic-faith/gods/zorquan]]:** O Grande Observador. Antigo além de qualquer contagem mortal, encarnava a memória viva de [[religions/draconic-faith/gods/asgorath]], caminhando entre
+  todas as linhagens sem jamais desembainhar as garras, registrando os nomes e feitos para que o tempo não os apagasse.
+- **[[religions/draconic-faith/gods/astibolor]]:** Nascido do conceito da abundância divina. Suas escamas de ouro líquido refletiam o valor intrínseco de tudo o que fora criado. Ele ensinou aos
+  dragões que acumular tesouros não era avareza, mas sim a preservação da memória física do mundo em pedras e relíquias.
+- **[[religions/draconic-faith/gods/task]]:** O espírito da ambição insaciável. Suas escamas carregavam cicatrizes das provações que impunha a si mesmo. Ele sussurrava que um dragão nunca deve se
+  contentar com o horizonte dominado; deve sempre almejar o próximo.
+- **[[religions/draconic-faith/gods/garyx]]:** O fogo que purifica através da cinza. Garyx nasceu no coração dos vulcões para lembrar à criação que tudo o que estagna deve ser consumido para dar
+  espaço ao novo.
 
-E assim, sob a tutela das emanações de {gods.Asgorath()}, o Primeiro Mundo prosperou. Das montanhas nasceram meus ancestrais, os nobres dragões metálicos; das tempestades e chamas, os ferozes dragões
-cromáticos; e nas sombras acolhedoras entre ambos, começaram a se multiplicar draconatos e kobolds, cada qual encontrando seu lugar sob um céu ainda sem cicatrizes de guerra."
+E assim, sob a tutela das emanações de [[religions/draconic-faith/gods/asgorath]], o Primeiro Mundo prosperou. Das montanhas nasceram meus ancestrais, os nobres dragões metálicos; das tempestades e
+chamas, os ferozes dragões cromáticos; e nas sombras acolhedoras entre ambos, começaram a se multiplicar draconatos e kobolds, cada qual encontrando seu lugar sob um céu ainda sem cicatrizes de
+guerra."
 
 #### **Nota de Kalista (#03):**
 
 > _Analisar o panteão dracônico exige despir-se dos conceitos mortais de 'bem' e 'mal'. Ao ouvir Ptaris, percebe-se que divindades como Lendys (Justiça) e Task (Ambição) não nasceram como opostos
 > antagônicos, mas como ferramentas complementares de governo. Na mente dracônica primordial, a Ambição de Task fornecia a energia para erguer grandes obras e expandir os domínios, enquanto a Lei de
 > Lendys garantia que essa expansão não devorasse a si mesma. A tragédia do Primeiro Mundo não foi o surgimento dessas forças, mas a incapacidade dos dragões de sustentá-las em equilíbrio uma vez que
-> a voz de {gods.Asgorath()} silenciou._
+> a voz de [[religions/draconic-faith/gods/asgorath]] silenciou._
 
 #### **Nota de Kalista (#04):**
 
 > _A menção de Ptaris ao dogma de Astibolor lança uma luz fascinante sobre a famosíssima 'ganância' dos dragões. Para as raças mortais, um dragão deitando sobre uma pilha de ouro e gemas é o símbolo
-> máximo do egoísmo. Contudo, na teologia revelada por Ptaris, metais nobres e pedras preciosas são encarados como os 'ossos e o sangue petrificado' do próprio {gods.Asgorath()}. Acumular tesouros em
-> um covil não era, originalmente, um ato de vaidade pecuniária, mas uma prática litúrgica de reunir os fragmentos materiais do Criador sob a proteção de Suas proles._
+> máximo do egoísmo. Contudo, na teologia revelada por Ptaris, metais nobres e pedras preciosas são encarados como os 'ossos e o sangue petrificado' do próprio
+> [[religions/draconic-faith/gods/asgorath]]. Acumular tesouros em um covil não era, originalmente, um ato de vaidade pecuniária, mas uma prática litúrgica de reunir os fragmentos materiais do Criador
+> sob a proteção de Suas proles._
 
 ### 2.2 - O Repouso
 
-**Relato de Ptaris:** "Com a arquitetura da realidade concluída e o panteão estabelecido, a presença tangível de {gods.Asgorath()} começou a esvanecer. Não por fraqueza, mas por plenitude. O Grande
-Dragão recolheu suas asas e retirou-se para o Sono Primordial, deixando o mundo sob a guarda de suas proles.
+**Relato de Ptaris:** "Com a arquitetura da realidade concluída e o panteão estabelecido, a presença tangível de [[religions/draconic-faith/gods/asgorath]] começou a esvanecer. Não por fraqueza, mas
+por plenitude. O Grande Dragão recolheu suas asas e retirou-se para o Sono Primordial, deixando o mundo sob a guarda de suas proles.
 
-Livre do olhar direto do Pai, a Era de Ouro atingiu seu ápice — e com ela, os primeiros germes da ruptura. Os dragões metálicos, inspirados pela harmonia de {gods.Bahamut()} e guiados pela equidade de
-Lendys, ergueram grandes cidadelas de rocha e platina, onde ensinavam os draconatos a codificar leis e proteger a criação. Os dragões cromáticos, contudo, ouvindo os sussurros de conquista de Task e a
-chama selvagem de {gods.Tiamat()}, viam essas estruturas estáticas como gaiolas; para eles, o mundo pertencia a quem tivesse garras para moldá-lo e força para mantê-lo.
+Livre do olhar direto do Pai, a Era de Ouro atingiu seu ápice — e com ela, os primeiros germes da ruptura. Os dragões metálicos, inspirados pela harmonia de [[religions/draconic-faith/gods/bahamut]] e
+guiados pela equidade de Lendys, ergueram grandes cidadelas de rocha e platina, onde ensinavam os draconatos a codificar leis e proteger a criação. Os dragões cromáticos, contudo, ouvindo os sussurros
+de conquista de Task e a chama selvagem de [[religions/draconic-faith/gods/tiamat]], viam essas estruturas estáticas como gaiolas; para eles, o mundo pertencia a quem tivesse garras para moldá-lo e
+força para mantê-lo.
 
-Sem a presenças unificadora de {gods.Asgorath()} para arbitrar as fronteiras do invisível, a coexistência começou a estalar. Onde antes havia cooperação na construção dos oceanos e montanhas, passou a
-haver disputa por primazia espacial. O orgulho dracônico, outrora uma virtude de celebração da própria existência divina, converteu-se na semente dos primeiros conflitos territoriais. O Primeiro Mundo
-ainda era belo, mas seus céus já não abrigavam o mesmo silêncio harmonioso de seu alvorecer."
+Sem a presenças unificadora de [[religions/draconic-faith/gods/asgorath]] para arbitrar as fronteiras do invisível, a coexistência começou a estalar. Onde antes havia cooperação na construção dos
+oceanos e montanhas, passou a haver disputa por primazia espacial. O orgulho dracônico, outrora uma virtude de celebração da própria existência divina, converteu-se na semente dos primeiros conflitos
+territoriais. O Primeiro Mundo ainda era belo, mas seus céus já não abrigavam o mesmo silêncio harmonioso de seu alvorecer."
 
 #### **Nota de Kalista (#05):**
 
-> _O 'Sono de {gods.Asgorath()}' é talvez o ponto mais controverso de toda a cosmogonia. Ptaris fala em 'recolhimento por plenitude', uma versão poeticamente reconfortante para um devoto. No entanto,
-> em minhas conversas com {characters.Anzu()}, o dragão de ametista apresentou uma tese consideravelmente mais sombria: a de que {gods.Asgorath()} não 'adormeceu', mas sim esgotou Sua própria
-> substância vital ao emanar tantas divindades e raças. Para Anzu, o Criador não está descansando em algum lugar do Vazio, mas tornou-se o próprio tecido inerte do universo — um deus morto cuja
-> matéria viva nós pisamos todos os dias. Se isso for verdade, o 'silêncio' do Criador não foi uma escolha, mas o preço supremo pago pela existência do Primeiro Mundo._
+> _O 'Sono de [[religions/draconic-faith/gods/asgorath]]' é talvez o ponto mais controverso de toda a cosmogonia. Ptaris fala em 'recolhimento por plenitude', uma versão poeticamente reconfortante
+> para um devoto. No entanto, em minhas conversas com [[characters/dragons/anzu]], o dragão de ametista apresentou uma tese consideravelmente mais sombria: a de que
+> [[religions/draconic-faith/gods/asgorath]] não 'adormeceu', mas sim esgotou Sua própria substância vital ao emanar tantas divindades e raças. Para Anzu, o Criador não está descansando em algum lugar
+> do Vazio, mas tornou-se o próprio tecido inerte do universo — um deus morto cuja matéria viva nós pisamos todos os dias. Se isso for verdade, o 'silêncio' do Criador não foi uma escolha, mas o preço
+> supremo pago pela existência do Primeiro Mundo._
 
 ## 3 - DRACONATOS E KOBOLDS
 
-**Relato de {characters.Ptaris()},:** "Todo império grandioso precisa de alicerces firmes, elfa, e alicerces são erguidos na escuridão antes de vislumbrarem a luz do sol. Enquanto {gods.Bahamut()} e
-{gods.Tiamat()} teciam as estrelas e as montanhas, entenderam que a majestade dos grandes dragões não deveria ser gasta em tarefas menores. Assim, moldaram as raças descendentes, cada uma com sua
-vocação precisa na grande engrenagem do Primeiro Mundo.
+**Relato de [[characters/dragons/ptaris]],:** "Todo império grandioso precisa de alicerces firmes, elfa, e alicerces são erguidos na escuridão antes de vislumbrarem a luz do sol. Enquanto
+[[religions/draconic-faith/gods/bahamut]] e [[religions/draconic-faith/gods/tiamat]] teciam as estrelas e as montanhas, entenderam que a majestade dos grandes dragões não deveria ser gasta em tarefas
+menores. Assim, moldaram as raças descendentes, cada uma com sua vocação precisa na grande engrenagem do Primeiro Mundo.
 
 Os primeiros kobolds nasceram do sopro que penetrou as fendas profundas da terra. Pequenos, resistentes e incansáveis, foram abençoados com o dom da mineração e da arquitetura subterrânea. Cabia a
 eles o trabalho duro e insalubre que garantia o nosso progresso: escavar a rocha bruta, canalizar os rios de magma aquecido, desobstruir os túneis sufocantes e extrair os minérios raros que mais tarde
-ornamentariam nossos santuários. O que os ignorantes chamam de penúria, para eles era a mais pura devoção a {gods.Asgorath()}.
+ornamentariam nossos santuários. O que os ignorantes chamam de penúria, para eles era a mais pura devoção a [[religions/draconic-faith/gods/asgorath]].
 
 Já os draconatos foram moldados para caminhar eretos, carregando uma centelha do nosso próprio fogo no peito. Eles foram os escolhidos para servir como a nobre guarda de honra do panteão. Eram nossos
 diplomatas entre os clãs, nossos marechais de campo, nossos escudeiros e, acima de tudo, o escudo vivo que protegia os ninhos e as relíquias sagradas. Um draconato não nascia para a servidão vulgar,
@@ -181,175 +145,188 @@ mas para o cumprimento do dever; encontrar o ápice da sua existência em tombar
 
 #### **Nota de Kalista (#06):**
 
-> _A retórica de {characters.Ptaris()}, é um exemplo magistral de revisionismo aristocrático. Ele mascara a escravidão estrutural dos draconatos sob o eufemismo de 'vocação sagrada' e 'dever de
-> honra', apagando qualquer menção ao fato de que essas raças não tinham escolha sobre suas próprias vidas ou destinos. Do mesmo modo, a higienização que ele faz do trabalho dos kobolds —
+> _A retórica de [[characters/dragons/ptaris]], é um exemplo magistral de revisionismo aristocrático. Ele mascara a escravidão estrutural dos draconatos sob o eufemismo de 'vocação sagrada' e 'dever
+> de honra', apagando qualquer menção ao fato de que essas raças não tinham escolha sobre suas próprias vidas ou destinos. Do mesmo modo, a higienização que ele faz do trabalho dos kobolds —
 > transformando vidas inteiras consumidas em minas insalubres e desabamentos em 'devoção graciosa' — revela a cegueira moral inerente ao orgulho dracônico. Na teologia dos dragões, a liberdade só
 > existe para os que possuem asas._
 
 ## 4 - A GUERRA DRACÔNICA
 
-**O Relato de {characters.Ptaris()}:** "Toda a fartura tem um preço, elfa, e o nosso foi pago em sangue de irmãos.
+**O Relato de [[characters/dragons/ptaris]]:** "Toda a fartura tem um preço, elfa, e o nosso foi pago em sangue de irmãos.
 
 Eu sei disso porque foi nesse tempo ue abri minhas asas pela primeira vez. Não nasci no silêncio abençoado do alvorecer; nasci sob o clarão de sopros de ácido cortando as nuvens e o rugido de
 montanhas sendo partidas ao meio. A Guerra Dracônica não foi um mero desentendimento territorial — foi o choque inevitável entre duas filosofias incompatíveis sobre quem deveria herdar o Primeiro
 Mundo.
 
-Conforme as ninhadas se multiplicavam, os territórios se estreitaram. Os metálicos, fiéis à ordem de {gods.Bahamut()}, erguiam cidadelas nas terras altas para proteger o equilíbrio da criação e
-ensinar os draconatos a defender a virtude. Os cromáticos, movidos pela fome ininterrupta de {gods.Tiamat()}, viam o mundo como um espólio a ser tomado: cada pico de montanha, cada veio de magma e
-cada fonte de poder arcano pertencia àquele que tivesse garras mais fortes para reivindicá-lo. As primeiras fendas não começaram por grandes ofensivas, mas por pequenas disputas por covis e pedras
-preciosas que logo escalaram para o extermínio de linhagens inteiras.
+Conforme as ninhadas se multiplicavam, os territórios se estreitaram. Os metálicos, fiéis à ordem de [[religions/draconic-faith/gods/bahamut]], erguiam cidadelas nas terras altas para proteger o
+equilíbrio da criação e ensinar os draconatos a defender a virtude. Os cromáticos, movidos pela fome ininterrupta de [[religions/draconic-faith/gods/tiamat]], viam o mundo como um espólio a ser
+tomado: cada pico de montanha, cada veio de magma e cada fonte de poder arcano pertencia àquele que tivesse garras mais fortes para reivindicá-lo. As primeiras fendas não começaram por grandes
+ofensivas, mas por pequenas disputas por covis e pedras preciosas que logo escalaram para o extermínio de linhagens inteiras.
 
 A guerra durou uma era inteira — um lento sangramento onde dragões jovens como eu aprendiam a matar antes mesmo de dominarem a arte de voar alto. As batalhas reescreveram a geografia da terra:
 tempestades elétricas permanentes surgiam de duelos entre dragões; vales inteiros foram vitrificados por chamas vermelhas e congelados por sopros prateados. Usávamos nossos exércitos de draconatos
-como infantaria de choque nas trincheiras e kobolds para escavar túneis de cerco sob os picos inimigos. {gods.Bahamut()} e {gods.Tiamat()} observavam do alto com horror e fúria, relutantes em intervir
-diretamente com todo o seu poder divino, pois um choque direto entre eles destruiria a própria urdidura do mundo que haviam acabado de criar."
+como infantaria de choque nas trincheiras e kobolds para escavar túneis de cerco sob os picos inimigos. [[religions/draconic-faith/gods/bahamut]] e [[religions/draconic-faith/gods/tiamat]] observavam
+do alto com horror e fúria, relutantes em intervir diretamente com todo o seu poder divino, pois um choque direto entre eles destruiria a própria urdidura do mundo que haviam acabado de criar."
 
 #### **Nota de Kalista (#07):**
 
-> _Esta é uma das passagens mais reveladoras da crônica. A afirmação explícita de {characters.Ptaris()} de que emergiu de seu ovo durante o apogeu da guerra contextualiza todo o seu viés teológico.
-> Ele não é um observador imparcial do mito; é um veterano de guerra cujo caráter foi temperado no trauma da luta contra os cromáticos. Isso explica por que ele descreve os draconatos e kobolds
-> daquele período essencialmente como ferramentas de batalha e peões descartáveis, enquanto romantiza e exalta o sofrimento dos dragões metálicos._
+> _Esta é uma das passagens mais reveladoras da crônica. A afirmação explícita de [[characters/dragons/ptaris]] de que emergiu de seu ovo durante o apogeu da guerra contextualiza todo o seu viés
+> teológico. Ele não é um observador imparcial do mito; é um veterano de guerra cujo caráter foi temperado no trauma da luta contra os cromáticos. Isso explica por que ele descreve os draconatos e
+> kobolds daquele período essencialmente como ferramentas de batalha e peões descartáveis, enquanto romantiza e exalta o sofrimento dos dragões metálicos._
 
 ### 4.1 - Sardior e a Origem dos Dragões de Gema
 
-**O Relato de {characters.Ptaris()}:** "Exaustos de ver seus filhos se despedaçarem, os Reis-Dragões decidiram fazer algo que nenhum dos dois jamais havia imaginado: criar, juntos, um único herdeiro
-para julgar entre as linhagens.
+**O Relato de [[characters/dragons/ptaris]]:** "Exaustos de ver seus filhos se despedaçarem, os Reis-Dragões decidiram fazer algo que nenhum dos dois jamais havia imaginado: criar, juntos, um único
+herdeiro para julgar entre as linhagens.
 
-Assim nasceu {gods.Sardior()}, o Dragão Rubi, do encontro entre a luz divina de {gods.Bahamut()} e o fogo ardente de {gods.Tiamat()}. Ele herdou a inteligência pura e a serenidade da mente de meu
-senhor, unidas à determinação inextinguível de sua mãe. Onde {gods.Sardior()} pousava, as garras baixavam. Sua palavra era lei porque não pertencia inteiramente a nenhum dos lados — e por isso,
-paradoxalmente, pertencia a ambos. Ele se tornou o mediador Supremo do Primeiro Mundo e, por um tempo, o sangue parou de fluir.
+Assim nasceu [[religions/draconic-faith/gods/sardior]], o Dragão Rubi, do encontro entre a luz divina de [[religions/draconic-faith/gods/bahamut]] e o fogo ardente de
+[[religions/draconic-faith/gods/tiamat]]. Ele herdou a inteligência pura e a serenidade da mente de meu senhor, unidas à determinação inextinguível de sua mãe. Onde
+[[religions/draconic-faith/gods/sardior]] pousava, as garras baixavam. Sua palavra era lei porque não pertencia inteiramente a nenhum dos lados — e por isso, paradoxalmente, pertencia a ambos. Ele se
+tornou o mediador Supremo do Primeiro Mundo e, por um tempo, o sangue parou de fluir.
 
-Mas a mente de {gods.Sardior()} não se satisfeita em ser apenas um juiz emprestado por seus pais, elfa. Sua consciência, voltada para os mistérios mais profundos do cosmos e do psiquismo, começou a
-sonhar formas próprias. Desses sonhos divinos nasceram os dragões de gema — não filhos de carne e território como nós, metálicos e cromáticos, mas criaturas moldadas em pensamento, luz cristalina e
-força psiônica.
+Mas a mente de [[religions/draconic-faith/gods/sardior]] não se satisfeita em ser apenas um juiz emprestado por seus pais, elfa. Sua consciência, voltada para os mistérios mais profundos do cosmos e
+do psiquismo, começou a sonhar formas próprias. Desses sonhos divinos nasceram os dragões de gema — não filhos de carne e território como nós, metálicos e cromáticos, mas criaturas moldadas em
+pensamento, luz cristalina e força psiônica.
 
-{gods.Sardior()} os criou à sua imagem: ligados aos segredos do tecido invisível da realidade. Onde nós servimos à ordem e os cromáticos servem ao domínio, os gemados servem ao conhecimento e à
-vontade do Dragão Rubi. Eles se isolaram nas profundezas e nos picos intocados, observando as duas grandes facções com um desdém silencioso.
+[[religions/draconic-faith/gods/sardior]] os criou à sua imagem: ligados aos segredos do tecido invisível da realidade. Onde nós servimos à ordem e os cromáticos servem ao domínio, os gemados servem
+ao conhecimento e à vontade do Dragão Rubi. Eles se isolaram nas profundezas e nos picos intocados, observando as duas grandes facções com um desdém silencioso.
 
 #### **Nota de Kalista (#08):**
 
-> _A emergência de {gods.Sardior()} e dos dragões de gema é interpretada de formas drasticamente diferentes pelos dragões. Enquanto o clero de {gods.Bahamut()} vê {gods.Sardior()} como um ato de
-> misericórdia e sabedoria divina para salvar a criação, os cultos de {gods.Tiamat()} sugerem que a criação de {gods.Sardior()} foi o primeiro grande erro ideológico: ao introduzir uma 'terceira via'
-> neutra e psiônica, o panteão dracônico fragmentou a autoridade absoluta dos dois irmãos, criando a brecha que mais tarde permitiria a derrocada definitiva do Primeiro Mundo._
+> _A emergência de [[religions/draconic-faith/gods/sardior]] e dos dragões de gema é interpretada de formas drasticamente diferentes pelos dragões. Enquanto o clero de
+> [[religions/draconic-faith/gods/bahamut]] vê [[religions/draconic-faith/gods/sardior]] como um ato de misericórdia e sabedoria divina para salvar a criação, os cultos de
+> [[religions/draconic-faith/gods/tiamat]] sugerem que a criação de [[religions/draconic-faith/gods/sardior]] foi o primeiro grande erro ideológico: ao introduzir uma 'terceira via' neutra e psiônica,
+> o panteão dracônico fragmentou a autoridade absoluta dos dois irmãos, criando a brecha que mais tarde permitiria a derrocada definitiva do Primeiro Mundo._
 
 #### **Nota de Kalista (#09):**
 
-> _{characters.Anzu()} foi o único dragão de gema disposto a falar comigo sobre a própria origem e insistiu em não me deixar registrar suas palavras por escrito, um hábito que atribui diretamente ao
-> exemplo do próprio {gods.Sardior()}. Do que consegui reconstituir apenas de memória depois dessas conversas, {gods.Sardior()} não teria nascido d eum acordo formal, no qual {gods.Bahamut()} e
-> {gods.Tiamat()} concederam parte de sua própria essência como garantia de que nenhum dos dois romperia a trégua primeiro._
+> _[[characters/dragons/anzu]] foi o único dragão de gema disposto a falar comigo sobre a própria origem e insistiu em não me deixar registrar suas palavras por escrito, um hábito que atribui
+> diretamente ao exemplo do próprio [[religions/draconic-faith/gods/sardior]]. Do que consegui reconstituir apenas de memória depois dessas conversas, [[religions/draconic-faith/gods/sardior]] não
+> teria nascido d eum acordo formal, no qual [[religions/draconic-faith/gods/bahamut]] e [[religions/draconic-faith/gods/tiamat]] concederam parte de sua própria essência como garantia de que nenhum
+> dos dois romperia a trégua primeiro._
 >
-> _{gods.Sardior()}, nessa leitura, nasceu menos como um filho amado e mais como um refém sagrado, o que talvez explique por que sua autoridade, embora respeitada, nunca foi verdadeiramente livre, e
-> por que seus próprios filhos aprenderam tão bem a guardar segredo e a se isolar dos assuntos dos demais dragões._
+> _[[religions/draconic-faith/gods/sardior]], nessa leitura, nasceu menos como um filho amado e mais como um refém sagrado, o que talvez explique por que sua autoridade, embora respeitada, nunca foi
+> verdadeiramente livre, e por que seus próprios filhos aprenderam tão bem a guardar segredo e a se isolar dos assuntos dos demais dragões._
 
 ---
 
 ## 5 - A GUERRA CONTRA O INFERNO
 
-**O Relato de {characters.Ptaris()}:** "Mal as feridas da Guerra Dracônica haviam estancado e o sangue dos nossos irmãos secado nas rochas, elfa, quando o céu se rasgou. Estávamos vulneráveis. Nossos
-covis estavam em ruínas, nossas ninhadas reduzidas e a confiança entre os clãs era uma ferida aberta. Foi nesse momento de fraqueza que as hordas profanas do Inferno — lideradas pela ambição insidiosa
-de {gods.Satanael("Satanael, o Rei do Inferno")}, cobiçaram a perfeição do Primeiro Mundo. Seus exércitos de demônios perfuraram o firmamento como uma chuva de lanças de ferro vil e chamas sombrias.
+**O Relato de [[characters/dragons/ptaris]]:** "Mal as feridas da Guerra Dracônica haviam estancado e o sangue dos nossos irmãos secado nas rochas, elfa, quando o céu se rasgou. Estávamos vulneráveis.
+Nossos covis estavam em ruínas, nossas ninhadas reduzidas e a confiança entre os clãs era uma ferida aberta. Foi nesse momento de fraqueza que as hordas profanas do Inferno — lideradas pela ambição
+insidiosa de [[religions/demonic-faith/satanael|Satanael, o Rei do Inferno]], cobiçaram a perfeição do Primeiro Mundo. Seus exércitos de demônios perfuraram o firmamento como uma chuva de lanças de
+ferro vil e chamas sombrias.
 
-Não houve tempo para negociações ou tréguas formais. {gods.Satanael()} era uma ameaça à própria existência. A sobrevivência exigiu o impensável: metálicos, cromáticos e gemados desceram dos mesmos
-céus onde se matavam dias antes para lutar ombro a ombro. Pela primeira e última vez na história, todo o Panteão Dracônico combateu sob uma única bandeira de guerra contra os demônios."
+Não houve tempo para negociações ou tréguas formais. [[religions/demonic-faith/satanael]] era uma ameaça à própria existência. A sobrevivência exigiu o impensável: metálicos, cromáticos e gemados
+desceram dos mesmos céus onde se matavam dias antes para lutar ombro a ombro. Pela primeira e última vez na história, todo o Panteão Dracônico combateu sob uma única bandeira de guerra contra os
+demônios."
 
 ### 5.1 - A Batalha das Divindades
 
-**O Relato de {characters.Ptaris()}:** "Cada um dos deuses lutou com a totalidade de seu ser, pois sabiam que a derrota para os {gods["Panteão dos Dragões"]("9 Infernos")} significaria a escravidão
-eterna ou a aniquilação total.
+**O Relato de [[characters/dragons/ptaris]]:** "Cada um dos deuses lutou com a totalidade de seu ser, pois sabiam que a derrota para os [[religions/draconic-faith/pantheon|9 Infernos]] significaria a
+escravidão eterna ou a aniquilação total.
 
-- **{gods.Bahamut()}:** Liderava a vanguarda nos céus celestiais, envolto em tempestades de platina e relâmpagos divinos que desintegravam legiões inteiras ao mero bater de suas asas.
-- **{gods.Tiamat()}:** Em sua fúria desenfreada, obliterava os exércitos abissais nas frentes terrestres, transformando batalhões inteiros de demônios em cinzas, gelo e poças de ácido fervente.
-- **{gods.Sardior("Sardior")}:** O Dragão Rubi ergueu uma rede psiônica ao redor do planeta, unindo as mentes de todos os generais dracônicos e servindo como o grande tático da resistência, prevendo
-  os movimentos das hordas demoníacas antes mesmo que cruzassem as nuvens.
-- **{gods.Kereska()}:** Rasgava a urdidura do cosmos. Com gestos arcanos, dobrava a gravidade, colapsava fendas infernais sobre divisões inimigas e tecia barreiras mágicas que sustentavam o
-  firmamento.
-- **{gods.Tamara()}:** Mantinha os hospitais de campanha no coração das montanhas, seu hálito de cura trazendo guerreiros da beira da morte e sustentando o sopro dos caídos.
-- **{gods.Lendys()}:** Impunha uma disciplina de ferro nas linhas de frente, julgando a covardia e garantindo que nenhum flanco desmoronasse diante do pavor abissal.
-- **{gods.Hlal()}:** Cantava hinos de ressonância arcana que estilhaçavam a determinação dos demônios e reacendiam a coragem e a fúria nas escamas mais cansadas.
-- **{gods.Zorquan()}:** Registrava em tábuas de pedra mágica inquebrável o nome e o feito de cada dragão que tombava, garantindo que o sacrifício não fosse apagado da eternidade.
-- **{gods.Astibolor()}:** Blindava os cofres ocultos e canalizava as energias e recursos materiais da terra para sustentar o esforço de guerra contínuo.
-- **{gods.Task()}:** Atiçava a ambição e o orgulho dos jovens dragões para que superassem seus limites físicos e lutassem até o último estalar de suas garras.
-- **{gods.Garyx()}:** Atuava como a força da terra arrasada, purificando territórios tomados pela contaminação demoníaca em infernos de chamas incontroláveis."
+- **[[religions/draconic-faith/gods/bahamut]]:** Liderava a vanguarda nos céus celestiais, envolto em tempestades de platina e relâmpagos divinos que desintegravam legiões inteiras ao mero bater de
+  suas asas.
+- **[[religions/draconic-faith/gods/tiamat]]:** Em sua fúria desenfreada, obliterava os exércitos abissais nas frentes terrestres, transformando batalhões inteiros de demônios em cinzas, gelo e poças
+  de ácido fervente.
+- **[[religions/draconic-faith/gods/sardior|Sardior]]:** O Dragão Rubi ergueu uma rede psiônica ao redor do planeta, unindo as mentes de todos os generais dracônicos e servindo como o grande tático da
+  resistência, prevendo os movimentos das hordas demoníacas antes mesmo que cruzassem as nuvens.
+- **[[religions/draconic-faith/gods/kereska]]:** Rasgava a urdidura do cosmos. Com gestos arcanos, dobrava a gravidade, colapsava fendas infernais sobre divisões inimigas e tecia barreiras mágicas que
+  sustentavam o firmamento.
+- **[[religions/draconic-faith/gods/tamara]]:** Mantinha os hospitais de campanha no coração das montanhas, seu hálito de cura trazendo guerreiros da beira da morte e sustentando o sopro dos caídos.
+- **[[religions/draconic-faith/gods/lendys]]:** Impunha uma disciplina de ferro nas linhas de frente, julgando a covardia e garantindo que nenhum flanco desmoronasse diante do pavor abissal.
+- **[[religions/draconic-faith/gods/hlal]]:** Cantava hinos de ressonância arcana que estilhaçavam a determinação dos demônios e reacendiam a coragem e a fúria nas escamas mais cansadas.
+- **[[religions/draconic-faith/gods/zorquan]]:** Registrava em tábuas de pedra mágica inquebrável o nome e o feito de cada dragão que tombava, garantindo que o sacrifício não fosse apagado da
+  eternidade.
+- **[[religions/draconic-faith/gods/astibolor]]:** Blindava os cofres ocultos e canalizava as energias e recursos materiais da terra para sustentar o esforço de guerra contínuo.
+- **[[religions/draconic-faith/gods/task]]:** Atiçava a ambição e o orgulho dos jovens dragões para que superassem seus limites físicos e lutassem até o último estalar de suas garras.
+- **[[religions/draconic-faith/gods/garyx]]:** Atuava como a força da terra arrasada, purificando territórios tomados pela contaminação demoníaca em infernos de chamas incontroláveis."
 
 ### 5.2 - O Sacrifício e a Cisão de Null
 
-**O Relato de {characters.Ptaris()}:** "Mas a fome do Inferno parecia inagotável. A virada trágica da guerra começou quando o próprio {gods.Satanael()} desceu dos céus e travou um duelo direto contra
-meu senhor {gods.Bahamut()}. Banhado em seu próprio sangue de platina, com as asas despedaçadas e a lâmina profana do {gods.Satanael("Rei do Inferno")} prestes a atravessar seu peito, meu senhor caiu.
+**O Relato de [[characters/dragons/ptaris]]:** "Mas a fome do Inferno parecia inagotável. A virada trágica da guerra começou quando o próprio [[religions/demonic-faith/satanael]] desceu dos céus e
+travou um duelo direto contra meu senhor [[religions/draconic-faith/gods/bahamut]]. Banhado em seu próprio sangue de platina, com as asas despedaçadas e a lâmina profana do
+[[religions/demonic-faith/satanael|Rei do Inferno]] prestes a atravessar seu peito, meu senhor caiu.
 
-Foi ao ver o Rei de Platina tombar ferido à beira da morte que {gods.Null()}, entrou decisivamente em campo.
+Foi ao ver o Rei de Platina tombar ferido à beira da morte que [[religions/draconic-faith/gods/null]], entrou decisivamente em campo.
 
-{gods.Null()}, não lutava com garras ou fogo, mas com o esquecimento absoluto. Onde suas asas de noite e poeira estelar passavam, generais demoníacos e suas tropas simplesmente deixavam de existir,
-apagados da memória do cosmos. Porém, para conter a arremetida direta de {gods.Satanael()} e salvar a vida de {gods.Bahamut()}, {gods.Null()}, desferiu um golpe de poder proibido que exigiu a própria
-essência de sua divindade. Ele absorveu diretamente em seu ser a maldição, a contaminação e a mácula infernal tecida pelas forças do {gods.Satanael("Rei do Inferno")}.
+[[religions/draconic-faith/gods/null]], não lutava com garras ou fogo, mas com o esquecimento absoluto. Onde suas asas de noite e poeira estelar passavam, generais demoníacos e suas tropas
+simplesmente deixavam de existir, apagados da memória do cosmos. Porém, para conter a arremetida direta de [[religions/demonic-faith/satanael]] e salvar a vida de
+[[religions/draconic-faith/gods/bahamut]], [[religions/draconic-faith/gods/null]], desferiu um golpe de poder proibido que exigiu a própria essência de sua divindade. Ele absorveu diretamente em seu
+ser a maldição, a contaminação e a mácula infernal tecida pelas forças do [[religions/demonic-faith/satanael|Rei do Inferno]].
 
-O impacto dessa corrupção abissal destruiu a mente cristalina de {gods.Null()}. A dor e a mácula fragmentaram sua alma em duas entidades distintas:
+O impacto dessa corrupção abissal destruiu a mente cristalina de [[religions/draconic-faith/gods/null]]. A dor e a mácula fragmentaram sua alma em duas entidades distintas:
 
-- **{gods.Null("Chronepsis")}:** A faceta que preservou a sabedoria, o silêncio e a neutralidade original da morte. Tornou-se o juiz impassível do destino, que observa a passagem do tempo e a queda
-  das almas sem paixão ou rancor.
-- **{gods.Null("Falazure")}:** A faceta consumida pela mácula infernal, pela dor, pelo rastro de podridão e pela amargura da traição. Falazure tornou-se o Dragão da Decomposição e da Necromancia, que
-  cobiça a vida que não pôde salvar e se alimenta do sofrimento das almas moribundas."
+- **[[religions/draconic-faith/gods/null|Chronepsis]]:** A faceta que preservou a sabedoria, o silêncio e a neutralidade original da morte. Tornou-se o juiz impassível do destino, que observa a
+  passagem do tempo e a queda das almas sem paixão ou rancor.
+- **[[religions/draconic-faith/gods/null|Falazure]]:** A faceta consumida pela mácula infernal, pela dor, pelo rastro de podridão e pela amargura da traição. Falazure tornou-se o Dragão da
+  Decomposição e da Necromancia, que cobiça a vida que não pôde salvar e se alimenta do sofrimento das almas moribundas."
 
 #### **Nota de Kalista (#10):**
 
-> _A explicação de {characters.Ptaris()} para a divisão de {gods.Null()} em {gods.Null("Chronepsis")} e {gods.Null("Falazure")} reflete a dor da teologia metálica ao tentar justificar a existência do
-> aspecto necromântico dentro de seu próprio panteão. Ao transformar Falazure em uma 'vítima da contaminação infernal' de {gods.Satanael()} durante a guerra, a narrativa de Ptaris preserva a pureza
-> original do Dragão da Morte._
+> _A explicação de [[characters/dragons/ptaris]] para a divisão de [[religions/draconic-faith/gods/null]] em [[religions/draconic-faith/gods/null|Chronepsis]] e
+> [[religions/draconic-faith/gods/null|Falazure]] reflete a dor da teologia metálica ao tentar justificar a existência do aspecto necromântico dentro de seu próprio panteão. Ao transformar Falazure em
+> uma 'vítima da contaminação infernal' de [[religions/demonic-faith/satanael]] durante a guerra, a narrativa de Ptaris preserva a pureza original do Dragão da Morte._
 >
-> _{characters.Anzu()}, contudo, aponta que a dualidade entre a aceitação do destino ({gods.Null("Chronepsis")}) e a ganância pela imortalidade ({gods.Null("Falazure")}) sempre existiu na psique
-> dracônica — a invasão do Inferno apenas rasgou o véu que mantinha esses dois opostos unidos._
+> _[[characters/dragons/anzu]], contudo, aponta que a dualidade entre a aceitação do destino ([[religions/draconic-faith/gods/null|Chronepsis]]) e a ganância pela imortalidade
+> ([[religions/draconic-faith/gods/null|Falazure]]) sempre existiu na psique dracônica — a invasão do Inferno apenas rasgou o véu que mantinha esses dois opostos unidos._
 
 ### 5.3 - As Sombras da Queda
 
-**O Relato de {characters.Ptaris()}:** "Com {gods.Bahamut()} incapacitado e a mente de {gods.Null()} despedaçada, a maré infernal avançou implacável. {gods.Tiamat()} continuou a lutar praticamente
-sozinha no solo. Eu a vi, elfa... do alto de uma crista congelada, assisti a tudo à distância enquanto minhas próprias escamas queimavam. Eu a vi rugir contra o horizonte em chamas, erguendo-se sobre
-uma montanha disforme feita dos corpos negros de uma dezena de arquidemônios que ela havia massacrado.
+**O Relato de [[characters/dragons/ptaris]]:** "Com [[religions/draconic-faith/gods/bahamut]] incapacitado e a mente de [[religions/draconic-faith/gods/null]] despedaçada, a maré infernal avançou
+implacável. [[religions/draconic-faith/gods/tiamat]] continuou a lutar praticamente sozinha no solo. Eu a vi, elfa... do alto de uma crista congelada, assisti a tudo à distância enquanto minhas
+próprias escamas queimavam. Eu a vi rugir contra o horizonte em chamas, erguendo-se sobre uma montanha disforme feita dos corpos negros de uma dezena de arquidemônios que ela havia massacrado.
 
-Mas nem mesmo ela podia conter a totalidade do nosso inimigo Das sombras da carnificina surgiram {gods.Lillith("Lillith, a Rainha do Inferno")}, e os Sete Pecados Capitais — os generais supremos das
-sete legiões do Inferno. Encurralada por essa falange profana, Tiamat lutou com garras, dentes e sopros até que correntes de feitiçaria profana e pactos infernais a acorrentaram, arrastando-a viva
-para as profundezas dos Nove Infernos.
+Mas nem mesmo ela podia conter a totalidade do nosso inimigo Das sombras da carnificina surgiram [[religions/demonic-faith/lillith|Lillith, a Rainha do Inferno]], e os Sete Pecados Capitais — os
+generais supremos das sete legiões do Inferno. Encurralada por essa falange profana, Tiamat lutou com garras, dentes e sopros até que correntes de feitiçaria profana e pactos infernais a acorrentaram,
+arrastando-a viva para as profundezas dos Nove Infernos.
 
-_[{characters.Ptaris()} fecha os olhos por um longo momento, o peito arfando como se a fumaça sulfúrica daquele dia ainda queimasse seus pulmões]_
+_[[[characters/dragons/ptaris]] fecha os olhos por um longo momento, o peito arfando como se a fumaça sulfúrica daquele dia ainda queimasse seus pulmões]_
 
 Nós fomos derrotados. Não por falta de coragem ou poder, mas porque fomos esmagados pela fome infinita do Inferno. Os exércitos abissais já se preparavam para escravizar o que restava das nossas raças
 e profanar o Primeiro Mundo até o seu núcleo.
 
-A única razão pela qual a nossa espécie não foi totalmente dominada e extinta naquele dia foi o ato derradeiro de {gods.Sardior()}. Vendo a ruína iminente, o Dragão Rubi expandiu sua consciência ao
-limite absoluto e ergueu uma barreira psiônica colossal ao redor de todo o planeta, repelindo e expelindo com força avassaladora as hordas de {gods.Satanael()} para fora da nossa realidade. Contudo,
-manter tal escudo contra a pressão do cosmos selaria o destino final do próprio Sardior e da estrutura do Primeiro Mundo..."
+A única razão pela qual a nossa espécie não foi totalmente dominada e extinta naquele dia foi o ato derradeiro de [[religions/draconic-faith/gods/sardior]]. Vendo a ruína iminente, o Dragão Rubi
+expandiu sua consciência ao limite absoluto e ergueu uma barreira psiônica colossal ao redor de todo o planeta, repelindo e expelindo com força avassaladora as hordas de
+[[religions/demonic-faith/satanael]] para fora da nossa realidade. Contudo, manter tal escudo contra a pressão do cosmos selaria o destino final do próprio Sardior e da estrutura do Primeiro Mundo..."
 
 #### **Nota de Kalista (#11):**
 
-> _O relato de {characters.Ptaris()} neste trecho é a razão exata pela qual escolhi o seu depoimento entre as dezenas de anciãos dracônicos que entrevistei. O tom com que um dragão metálico fala sobre
-> {gods.Tiamat()} é, em noventa por cento dos casos, eivado de desprezo e revisionismo dogmático. A maioria do clero de {gods.Bahamut()} sustenta até hoje a versão de que a Rainha foi uma traidora que
-> barganhou a própria vida com {gods.Satanael()}._
+> _O relato de [[characters/dragons/ptaris]] neste trecho é a razão exata pela qual escolhi o seu depoimento entre as dezenas de anciãos dracônicos que entrevistei. O tom com que um dragão metálico
+> fala sobre [[religions/draconic-faith/gods/tiamat]] é, em noventa por cento dos casos, eivado de desprezo e revisionismo dogmático. A maioria do clero de [[religions/draconic-faith/gods/bahamut]]
+> sustenta até hoje a versão de que a Rainha foi uma traidora que barganhou a própria vida com [[religions/demonic-faith/satanael]]._
 >
 > _Ptaris, contudo, recusa essa leitura conveniente. É fascinante — e profundamente revelador — ver um metálico descrever a queda da Rainha banhada no sangue de arquidemônios e enfrentando Lilith e os
 > Sete Pecados Capitais com o mesmo lirismo de mártir que encontraríamos nos textos sagrados dos clãs de Tiamat. Para Ptaris, a despeito de todas as divergências, Tiamat ainda era a fúria criativa de
-> {gods.Asgorath()}, uma mãe divina lutando até o fim por seus filhos._
+> [[religions/draconic-faith/gods/asgorath]], uma mãe divina lutando até o fim por seus filhos._
 
 ## 6 - O CREPÚSCULO DO PRIMEIRO MUNDO
 
-**O Relato de {characters.Ptaris()}:** "Sem a luz de {gods.Bahamut()} para guiar os céus e sem o calor criativo de {gods.Tiamat()} para nutrir a terra, a realidade do Primeiro Mundo começou a rachar
-como vidro ressecado sob o sol. O fim não foi imediato; foi uma agonia lenta de eras onde as forças fundamentais da criação colapsavam uma a uma.
+**O Relato de [[characters/dragons/ptaris]]:** "Sem a luz de [[religions/draconic-faith/gods/bahamut]] para guiar os céus e sem o calor criativo de [[religions/draconic-faith/gods/tiamat]] para nutrir
+a terra, a realidade do Primeiro Mundo começou a rachar como vidro ressecado sob o sol. O fim não foi imediato; foi uma agonia lenta de eras onde as forças fundamentais da criação colapsavam uma a
+uma.
 
 Cada divindade sobrevivente reagiu à ruína de forma desesperada:
 
-- **{gods.Tamara()}:** Lutou até a exaustão total de seu poder divino para conter a entropia e curar o próprio solo que sangrava magma, empenhando-se em proteger as últimas ninhadas imaturas em
-  cavernas seladas.
-- **{gods.Hlal()}:** Transformou o lamento do colapso em baladas sussurradas e cantos de ressonância, gravando os mitos e os dias de glória dos dragões nas almas e na tradição oral das raças mortais.
-- **{gods.Task()}:** Incitou os dragões sobreviventes a investir em surtidas suicidas contra as próprias fendas da realidade e as hordas restantes, pregando que a morte em combate era a única vitória
-  e demonstração de força digna que lhes restava.
-- **{gods.Zorquan()}:** Manteve-se em seu dever imemorial até o fim, entalhando os nomes, feitos e linhagens de cada dragão nas pedras fundamentais do planeta antes que elas evaporassem no vácuo.
-- **{gods.Lendys()}:** Manteve a disciplina e a lei militar rígida até os últimos momentos, estabelecendo códigos de contenção severos para impedir que a fome e o desespero levassem os sobreviventes
-  ao canibalismo.
-- **{gods.Astibolor()}:** Blindou os maiores tesouros, registros físicos e relíquias do panteão, ocultando-os em dobras planares profundas para que a memória material da civilização dracônica não
-  fosse varrida da história."
+- **[[religions/draconic-faith/gods/tamara]]:** Lutou até a exaustão total de seu poder divino para conter a entropia e curar o próprio solo que sangrava magma, empenhando-se em proteger as últimas
+  ninhadas imaturas em cavernas seladas.
+- **[[religions/draconic-faith/gods/hlal]]:** Transformou o lamento do colapso em baladas sussurradas e cantos de ressonância, gravando os mitos e os dias de glória dos dragões nas almas e na tradição
+  oral das raças mortais.
+- **[[religions/draconic-faith/gods/task]]:** Incitou os dragões sobreviventes a investir em surtidas suicidas contra as próprias fendas da realidade e as hordas restantes, pregando que a morte em
+  combate era a única vitória e demonstração de força digna que lhes restava.
+- **[[religions/draconic-faith/gods/zorquan]]:** Manteve-se em seu dever imemorial até o fim, entalhando os nomes, feitos e linhagens de cada dragão nas pedras fundamentais do planeta antes que elas
+  evaporassem no vácuo.
+- **[[religions/draconic-faith/gods/lendys]]:** Manteve a disciplina e a lei militar rígida até os últimos momentos, estabelecendo códigos de contenção severos para impedir que a fome e o desespero
+  levassem os sobreviventes ao canibalismo.
+- **[[religions/draconic-faith/gods/astibolor]]:** Blindou os maiores tesouros, registros físicos e relíquias do panteão, ocultando-os em dobras planares profundas para que a memória material da
+  civilização dracônica não fosse varrida da história."
 
 ### 6.1 - O Dragão do Vazio
 
-**O Relato de {characters.Ptaris()}:** "Mas nenhum ato se comparou ao de **{gods.Garyx()}**.
+**O Relato de [[characters/dragons/ptaris]]:** "Mas nenhum ato se comparou ao de **[[religions/draconic-faith/gods/garyx]]**.
 
-_[{characters.Ptaris()} baixa a cabeça, suas escamas emitindo um leve estalo de tensão; sua voz cai para um sussurro carregado de tremor e reverência]_
+_[[[characters/dragons/ptaris]] baixa a cabeça, suas escamas emitindo um leve estalo de tensão; sua voz cai para um sussurro carregado de tremor e reverência]_
 
 Até aquele dia, Garyx era o Fogo da Purificação, o renovador que destruía para que o novo pudesse florescer. Mas, enquanto os outros deuses tentavam consertar o inconsertável, Garyx subiu aos picos
 mais altos do firmamento e olhou diretamente para o Vazio além da criação. E o Vazio olhou de volta para ele.
@@ -366,50 +343,50 @@ Voluntariamente, Garyx mergulhou como um meteoro de fogo escuro no coração vul
 cadeia que estilhaçou a rocha primordial. Os continentes viraram plataformas flutuantes; os oceanos evaporaram no nada e o céu desabou em chuva de poeira estelar.
 
 E então, elfa... assim que o processo de aniquilação foi consumado e o Primeiro Mundo começou a se desfazer em cinzas cósmicas, Garyx abriu suas asas de sombra e partiu. Ele virou as costas para as
-ruínas e voou em direção às profundezas do grande desconhecido, iniciando uma busca eterna pelo próprio {gods.Asgorath()} no silêncio do cosmos."
+ruínas e voou em direção às profundezas do grande desconhecido, iniciando uma busca eterna pelo próprio [[religions/draconic-faith/gods/asgorath]] no silêncio do cosmos."
 
 #### **Nota de Kalista (#12):**
 
-> _A transformação de Garyx no 'Dragão do Vazio' é uma das passagens teológicas mais fascinantes e assustadoras de toda a mitologia dracônica. O fato de {characters.Ptaris()}, um dragão metálico
-> tradicional e disciplinado, demonstrar o mesmo pavor de Garyx que um dragão cromático ou gemado demonstraria, prova que a figura do Vazio transcendeu qualquer divisão de linhagem._
+> _A transformação de Garyx no 'Dragão do Vazio' é uma das passagens teológicas mais fascinantes e assustadoras de toda a mitologia dracônica. O fato de [[characters/dragons/ptaris]], um dragão
+> metálico tradicional e disciplinado, demonstrar o mesmo pavor de Garyx que um dragão cromático ou gemado demonstraria, prova que a figura do Vazio transcendeu qualquer divisão de linhagem._
 >
 > _No entanto, vejo na partida de Garyx uma dupla tragédia: ele incinerou o Primeiro Mundo não por malevolência, mas por um niilismo absoluto e pela convicção de que apenas o criador original,
-> {gods.Asgorath()}, poderia consertar o cosmos. A ideia de que Garyx ainda vaga pela escuridão entre os planos em busca do Pai Dragão é o que mantém cultos de apocalipse ativos até os dias de hoje em
-> Yrth — pois diz a lenda que, se Garyx encontrar {gods.Asgorath()}, a segunda grande purificação começará._
+> [[religions/draconic-faith/gods/asgorath]], poderia consertar o cosmos. A ideia de que Garyx ainda vaga pela escuridão entre os planos em busca do Pai Dragão é o que mantém cultos de apocalipse
+> ativos até os dias de hoje em Yrth — pois diz a lenda que, se Garyx encontrar [[religions/draconic-faith/gods/asgorath]], a segunda grande purificação começará._
 
 ### 6.2 - A Ruína do Dragão Rubi
 
-**O Relato de {characters.Ptaris()}:** "A barreira que {gods.Sardior()} ergueu para expulsar os demônios cobrou o preço final. Conforme a Chama do Vazio de Garyx consumia a rocha primordial, a
-consciência do Dragão Rubi não aguentou a tensão de sustentar a realidade e conter as forças da criação ao mesmo tempo.
+**O Relato de [[characters/dragons/ptaris]]:** "A barreira que [[religions/draconic-faith/gods/sardior]] ergueu para expulsar os demônios cobrou o preço final. Conforme a Chama do Vazio de Garyx
+consumia a rocha primordial, a consciência do Dragão Rubi não aguentou a tensão de sustentar a realidade e conter as forças da criação ao mesmo tempo.
 
-Diante dos nossos olhos, a forma cristalina de {gods.Sardior()} trincou de dentro para fora e explodiu. Um rugido psiônico ecoou por todos os planos enquanto sua carne incandescente se estilhaçava em
-um milhão de fragmentos cintilantes, espalhando relíquias e gemas psíquicas pelo Vazio. O Primeiro Mundo havia deixado de existir."
+Diante dos nossos olhos, a forma cristalina de [[religions/draconic-faith/gods/sardior]] trincou de dentro para fora e explodiu. Um rugido psiônico ecoou por todos os planos enquanto sua carne
+incandescente se estilhaçava em um milhão de fragmentos cintilantes, espalhando relíquias e gemas psíquicas pelo Vazio. O Primeiro Mundo havia deixado de existir."
 
 ## 7 - O NASCIMENTO DOS MUNDOS INFINITOS E O ÉXODO
 
-**O Relato de {characters.Ptaris()}:** "Do desastre primordial, veio a partilha. Foi nesse instante de destruição absoluta que surgiram as mãos pesadas e alienígenas de {gods.Annam()} — de onde ele
-veio ou como se posicionou no Vazio, a história dracônica não se digna a explicar.
+**O Relato de [[characters/dragons/ptaris]]:** "Do desastre primordial, veio a partilha. Foi nesse instante de destruição absoluta que surgiram as mãos pesadas e alienígenas de
+[[religions/giant-faith/gods/annam]] — de onde ele veio ou como se posicionou no Vazio, a história dracônica não se digna a explicar.
 
-O que sabemos é que {gods.Annam()} recolheu a matéria moribunda e os pedaços da carne do nosso mundo junto com a mente pulverizada de Sardior e, com seu toque bruto, arremessou-os através do abismo
-escuridão afora. Each fragmento do Primeiro Mundo lançado por {gods.Annam()} tornou-se a semente de um novo planeta no Plano Material. Mundos infinitos, todos nascidos da carne, da magia e do sangue
-de nossa pátria dracônica.
+O que sabemos é que [[religions/giant-faith/gods/annam]] recolheu a matéria moribunda e os pedaços da carne do nosso mundo junto com a mente pulverizada de Sardior e, com seu toque bruto,
+arremessou-os através do abismo escuridão afora. Each fragmento do Primeiro Mundo lançado por [[religions/giant-faith/gods/annam]] tornou-se a semente de um novo planeta no Plano Material. Mundos
+infinitos, todos nascidos da carne, da magia e do sangue de nossa pátria dracônica.
 
 Conforme esses novos céus ganhavam forma, os dragões sobreviventes abriram suas asas no Vazio e iniciaram a grande travessia. Foi assim que a minha ninhada navegou pelas estrelas até alcançar o solo
 deste mundo que vocês hoje chamam de Yrth."
 
 #### **Nota de Kalista (#13):**
 
-> _Note como o orgulho de {characters.Ptaris()} tropeça e gagueja ao mencionar {gods.Annam()}. Para a teologia dracônica, admitir que o Pai dos Gigantes foi o 'arquiteto prático' do Plano Material —
-> usando os restos do Primeiro Mundo como argila — é um golpe insuportável na vaidade de sua espécie._
+> _Note como o orgulho de [[characters/dragons/ptaris]] tropeça e gagueja ao mencionar [[religions/giant-faith/gods/annam]]. Para a teologia dracônica, admitir que o Pai dos Gigantes foi o 'arquiteto
+> prático' do Plano Material — usando os restos do Primeiro Mundo como argila — é um golpe insuportável na vaidade de sua espécie._
 
 ### 7.1 - Os Servos do Éxodo e a Herança Divina
 
-**O Relato de {characters.Ptaris()}:** "Ainda hoje, as montanhas desses novos mundos sonham com o bater de nossas asas; seus oceanos se movem sob o eco de nossos rugidos antigos. E nossos deuses,
-embora dispersos e distantes, ainda estendem suas sombras sobre cada um desses domínios fragmentados: Tamara curando os enfermos; Lendys pesando a justiça dos reis mortais; Kereska alimentando os
-canais de magia que os magos tolos pensam ter inventado; Null aguardando o túmulo de cada ser vivo; e Astibolor atiçando a ganância nos corações dos mortais para que reunam tesouros que, por direito
-divino, pertencem a nós."
+**O Relato de [[characters/dragons/ptaris]]:** "Ainda hoje, as montanhas desses novos mundos sonham com o bater de nossas asas; seus oceanos se movem sob o eco de nossos rugidos antigos. E nossos
+deuses, embora dispersos e distantes, ainda estendem suas sombras sobre cada um desses domínios fragmentados: Tamara curando os enfermos; Lendys pesando a justiça dos reis mortais; Kereska alimentando
+os canais de magia que os magos tolos pensam ter inventado; Null aguardando o túmulo de cada ser vivo; e Astibolor atiçando a ganância nos corações dos mortais para que reunam tesouros que, por
+direito divino, pertencem a nós."
 
-_[Ao ser questionado sobre o destino dos draconatos e kobolds trazidos durante o Éxodo, {characters.Ptaris()} desacelera suas palavras, a expressão endurecendo com um desdém frio]_
+_[Ao ser questionado sobre o destino dos draconatos e kobolds trazidos durante o Éxodo, [[characters/dragons/ptaris]] desacelera suas palavras, a expressão endurecendo com um desdém frio]_
 
 "Eles eram a nossa responsabilidade, elfa... mas, acima de tudo, nossas ferramentas. Nós os trouxemos conosco através da escuridão do Vazio para que nos ajudassem a reconstruir o domínio dracônico e
 erguer novos impérios nesses mundos recém-nascidos. Eles foram moldados para servir à glória dos dragões e para garantir que nos tornássemos, novamente, os senhores absolutos da criação. Não há mais o
@@ -417,41 +394,42 @@ que debater sobre o destino de servos."
 
 #### **Nota de Kalista (#14):**
 
-> _A atitude de {characters.Ptaris()} ao responder sobre os draconatos e kobolds é profundamente reveladora. Ao rotulá-los apenas como 'ferramentas trazidas para nos tornar senhores dos novos mundos'
-> e encerrar o assunto abruptamente, ele mascara o desconforto de uma raça que dependeu do trabalho e do sangue das raças menores para sobreviver ao Éxodo, mas recusa-se a conceder-lhes qualquer
-> dignidade na história sagrada._
+> _A atitude de [[characters/dragons/ptaris]] ao responder sobre os draconatos e kobolds é profundamente reveladora. Ao rotulá-los apenas como 'ferramentas trazidas para nos tornar senhores dos novos
+> mundos' e encerrar o assunto abruptamente, ele mascara o desconforto de uma raça que dependeu do trabalho e do sangue das raças menores para sobreviver ao Éxodo, mas recusa-se a conceder-lhes
+> qualquer dignidade na história sagrada._
 >
 > _Sua insistência em classificar a magia, a geologia dos planos e as relíquias de Yrth como 'propriedade intelectual dracônica roubada' é a continuação dessa mesma lógica. Ele se recusa a aceitar que
 > o multiverso evoluiu e prefere enxergar os gigantes e mortais como meros invasores que herdaram as ruínas de seu playground particular._
 
 ## 8 - OS CAMINHOS E O SILÊNCIO
 
-**O Relato de {characters.Ptaris()}:** "Quando meu senhor {gods.Bahamut()} finalmente despertou de seu sono de feridas, encontrou um cosmos irremediavelmente despedaçado. Ele não buscou vingança cega
-contra as sombras. Em sua infinita e melancólica compaixão, o Rei de Platina escolheu caminhar disfarçado entre as raças menores do Plano Material — um velho andarilho envolto em um manto humilde,
-cercado por sete canários dourados que carregam as almas de seus paladinos mais fiéis. Ele ensina a justiça e a proteção aos fracos, enquanto observa com dor o estado presente do cosmos.
+**O Relato de [[characters/dragons/ptaris]]:** "Quando meu senhor [[religions/draconic-faith/gods/bahamut]] finalmente despertou de seu sono de feridas, encontrou um cosmos irremediavelmente
+despedaçado. Ele não buscou vingança cega contra as sombras. Em sua infinita e melancólica compaixão, o Rei de Platina escolheu caminhar disfarçado entre as raças menores do Plano Material — um velho
+andarilho envolto em um manto humilde, cercado por sete canários dourados que carregam as almas de seus paladinos mais fiéis. Ele ensina a justiça e a proteção aos fracos, enquanto observa com dor o
+estado presente do cosmos.
 
-Ele chora pelo estilhaçamento de {gods.Sardior()} e, na intimidade de sua divindade, chora também pelo destino de sua irmã. {gods.Bahamut()} não a odeia; ele anseia pelo dia em que a loucura da guerra
-será purificada de sua essência para que ambos possam voar juntos novamente.
+Ele chora pelo estilhaçamento de [[religions/draconic-faith/gods/sardior]] e, na intimidade de sua divindade, chora também pelo destino de sua irmã. [[religions/draconic-faith/gods/bahamut]] não a
+odeia; ele anseia pelo dia em que a loucura da guerra será purificada de sua essência para que ambos possam voar juntos novamente.
 
-{gods.Tiamat()}, contudo, permanece encarcerada nas profundezas de Avernus, o primeiro nível dos Nove Infernos. A Rainha Dragão está acorrentada pela feitiçaria e pelos pactos impostos após a derrota
-do Primeiro Mundo. Mas sua prisão física não silenciou sua vontade. Do fundo do Abismo, sua voz ruge como uma tempestade mental que atravessa os planos, incitando as linhagens cromáticas de Yrth e de
-mil outros mundos a reivindicar o que é nosso por direito de criação e a buscar os estilhaços do Dragão Rubi que possam romper suas correntes."
+[[religions/draconic-faith/gods/tiamat]], contudo, permanece encarcerada nas profundezas de Avernus, o primeiro nível dos Nove Infernos. A Rainha Dragão está acorrentada pela feitiçaria e pelos pactos
+impostos após a derrota do Primeiro Mundo. Mas sua prisão física não silenciou sua vontade. Do fundo do Abismo, sua voz ruge como uma tempestade mental que atravessa os planos, incitando as linhagens
+cromáticas de Yrth e de mil outros mundos a reivindicar o que é nosso por direito de criação e a buscar os estilhaços do Dragão Rubi que possam romper suas correntes."
 
 #### **Nota de Kalista (#15):**
 
-> _A idealização de {gods.Bahamut()} como um andarilho misericordioso é o ápice do discurso metálico de {characters.Ptaris()}. No entanto, é fundamental desconstruir essa visão paternalista. A
-> 'bondade' de {gods.Bahamut()} não é uma moralidade humanitária, mas uma **hierarquia rígida de deveres**: o forte deve proteger, o sábio deve ensinar, mas o liderado deve obediência irrestrita à
-> Ordem._
+> _A idealização de [[religions/draconic-faith/gods/bahamut]] como um andarilho misericordioso é o ápice do discurso metálico de [[characters/dragons/ptaris]]. No entanto, é fundamental desconstruir
+> essa visão paternalista. A 'bondade' de [[religions/draconic-faith/gods/bahamut]] não é uma moralidade humanitária, mas uma **hierarquia rígida de deveres**: o forte deve proteger, o sábio deve
+> ensinar, mas o liderado deve obediência irrestrita à Ordem._
 >
-> _Para um dragão cromático ou para um mortal que valoriza a autonomia individual acima de tudo, a doutrina de {gods.Bahamut()} não representa a virtude universal, mas a troca de uma tirania explícita
-> por uma servidão moralmente glorificada. O 'perdão' que {gods.Bahamut()} oferece à sua irmã é lido pelos clãs cromáticos não como compaixão, mas como a suprema arrogância de quem se considera o
-> único e inequívoco juiz do universo._
+> _Para um dragão cromático ou para um mortal que valoriza a autonomia individual acima de tudo, a doutrina de [[religions/draconic-faith/gods/bahamut]] não representa a virtude universal, mas a troca
+> de uma tirania explícita por uma servidão moralmente glorificada. O 'perdão' que [[religions/draconic-faith/gods/bahamut]] oferece à sua irmã é lido pelos clãs cromáticos não como compaixão, mas
+> como a suprema arrogância de quem se considera o único e inequívoco juiz do universo._
 
 #### **Nota de Kalista (#16):**
 
-> _Inversamente, a figura de {gods.Tiamat()} no presente transcendeu o papel de mera vilã mítica. Acorrentada no Inferno, a Rainha Dragão tornou-se o **símbolo absoluto da resistência e da recusa à
-> submissão**. A doutrina cromática central — a de que a força e o valor devem ser conquistados pelo próprio mérito, nunca doados ou herdados por graça divina — possui uma lógica interna
-> assustadoramente coesa._
+> _Inversamente, a figura de [[religions/draconic-faith/gods/tiamat]] no presente transcendeu o papel de mera vilã mítica. Acorrentada no Inferno, a Rainha Dragão tornou-se o **símbolo absoluto da
+> resistência e da recusa à submissão**. A doutrina cromática central — a de que a força e o valor devem ser conquistados pelo próprio mérito, nunca doados ou herdados por graça divina — possui uma
+> lógica interna assustadoramente coesa._
 >
 > _Se retirarmos a fúria e o horror das guerras do Primeiro Mundo, a tragédia de Tiamat é a de uma divindade que se recusou a aceitar que seu mundo fosse dividido e governado por pactos externos.
 > Mesmo entre os teólogos mais moderados de Yrth, permanece a dúvida incômoda: Tiamat caiu por ambição cega, ou porque foi a única a se recusar a dobrar o joelho para a nova ordem imposta após o
@@ -459,17 +437,17 @@ mil outros mundos a reivindicar o que é nosso por direito de criação e a busc
 
 ### 8.2 - O Sombral das Espécies e a Melancolia de Yrth
 
-**O Relato de {characters.Ptaris()}:** "Olhe para este mundo de Yrth, elfa... Olhe para os picos e para as grandes cidades que os mortais ergueram sobre as nossas ruínas. Os dragões de hoje não passam
-de sombras empalidecidas do que fomos. Nós nos tornamos ranzinzas, isolados em cavernas, brigando por moedas de ouro e títulos vazios enquanto o tecido da criação esfria ao nosso redor. Esquecemos a
-voz de {gods.Asgorath()}; esquecemos o canto de {gods.Hlal()} e o peso do olhar de {gods.Zorquan()}.
+**O Relato de [[characters/dragons/ptaris]]:** "Olhe para este mundo de Yrth, elfa... Olhe para os picos e para as grandes cidades que os mortais ergueram sobre as nossas ruínas. Os dragões de hoje
+não passam de sombras empalidecidas do que fomos. Nós nos tornamos ranzinzas, isolados em cavernas, brigando por moedas de ouro e títulos vazios enquanto o tecido da criação esfria ao nosso redor.
+Esquecemos a voz de [[religions/draconic-faith/gods/asgorath]]; esquecemos o canto de [[religions/draconic-faith/gods/hlal]] e o peso do olhar de [[religions/draconic-faith/gods/zorquan]].
 
 E quanto às raças que moldamos... os draconatos que outrora marcharam com honra à frente de nossos exércitos, e os kobolds que escavavam o coração das montanhas em devoção... eles vagam por esses
 novos mundos sem rumo teológico, esquecidos por deuses que já não têm mundos inteiros para lhes oferecer. Nós os trouxemos através do Vazio para erguer o nosso império, mas o império virou poeira."
 
 #### **Nota de Kalista (#17):**
 
-> _A melancolia final de {characters.Ptaris()} revela a ruína do orgulho dracônico. É fascinante notar como ele descreve a situação dos draconatos e kobolds como um 'esquecimento divino', incapaz de
-> perceber que a emancipação dessas raças em relação aos seus antigos mestres foi a maior bênção decorrente da queda do Primeiro Mundo._
+> _A melancolia final de [[characters/dragons/ptaris]] revela a ruína do orgulho dracônico. É fascinante notar como ele descreve a situação dos draconatos e kobolds como um 'esquecimento divino',
+> incapaz de perceber que a emancipação dessas raças em relação aos seus antigos mestres foi a maior bênção decorrente da queda do Primeiro Mundo._
 >
 > _Enquanto os dragões permanecem presos à nostalgia trágica de uma era de ouro que jamais retornará, os draconatos de Yrth aprenderam a construir suas próprias leis, suas próprias cidades e sua
 > própria honra, sem precisar ajoelhar-se perante o trono de platina ou a coroa de cinco cabeças._
@@ -478,19 +456,19 @@ novos mundos sem rumo teológico, esquecidos por deuses que já não têm mundos
 
 ### 8.3 - Encerramento das Transcrições
 
-_[{characters.Ptaris()} recolhe suas asas colossais, o metal das escamas emitindo um som semelhante ao de armaduras se ajustando. Ele sopra uma tênue nuvem de vapor dourada que se dissipa devagar na
-penumbra do recinto, fixando seus olhos dourados no pergaminho de Kalista]_
+_[[[characters/dragons/ptaris]] recolhe suas asas colossais, o metal das escamas emitindo um som semelhante ao de armaduras se ajustando. Ele sopra uma tênue nuvem de vapor dourada que se dissipa
+devagar na penumbra do recinto, fixando seus olhos dourados no pergaminho de Kalista]_
 
-**O Relato de {characters.Ptaris()}:** "A crônica está gravada, filha das florestas. Você tem a história do sangue, das chamas e dos deuses que moldaram a rocha sobre a qual seus reis caminham. Faça
-com que os seus entendam uma última verdade: o Primeiro Mundo não caiu por falta de poder, mas porque nem mesmo os filhos de {gods.Asgorath()} puderam conter a fome do Inferno quando a harmonia foi
-quebrada. Lembre aos seus mortais que eles pisam nos ossos de um império de deuses... e que os céus ainda guardam a memória do nosso primeiro voo."
+**O Relato de [[characters/dragons/ptaris]]:** "A crônica está gravada, filha das florestas. Você tem a história do sangue, das chamas e dos deuses que moldaram a rocha sobre a qual seus reis
+caminham. Faça com que os seus entendam uma última verdade: o Primeiro Mundo não caiu por falta de poder, mas porque nem mesmo os filhos de [[religions/draconic-faith/gods/asgorath]] puderam conter a
+fome do Inferno quando a harmonia foi quebrada. Lembre aos seus mortais que eles pisam nos ossos de um império de deuses... e que os céus ainda guardam a memória do nosso primeiro voo."
 
 #### **Nota de Fechamento:**
 
-> _Aqui encerro os registros diretos com {characters.Ptaris("Ptaris, o Áureo")}._
+> _Aqui encerro os registros diretos com [[characters/dragons/ptaris|Ptaris, o Áureo]]._
 >
-> _Ao longo de meses de depoimentos, depurei dogmas, contrapus mitos com o testemunho velado de {characters.Anzu()} e analisei as profundas cicatrizes que a teologia dracônica deixou na geografia e
-> nas raças de Yrth. A narrativa de Ptaris é um monumento de erudição, dor e viés aristocrático — a voz de uma raça que se recusa a aceitar que deixou de ser o centro do universo._
+> _Ao longo de meses de depoimentos, depurei dogmas, contrapus mitos com o testemunho velado de [[characters/dragons/anzu]] e analisei as profundas cicatrizes que a teologia dracônica deixou na
+> geografia e nas raças de Yrth. A narrativa de Ptaris é um monumento de erudição, dor e viés aristocrático — a voz de uma raça que se recusa a aceitar que deixou de ser o centro do universo._
 >
 > _O Primeiro Mundo pode ter sido um templo de perfeição imaculada, mas a história que se seguiu ao seu estilhaçamento provou que o multiverso não pertence aos gigantes, aos Reis-Dragões ou às suas
 > guerras eternas. O futuro pertence àqueles que aprenderam a erguer suas vidas sobre as cinzas da criação — aos mortais, aos draconatos e a todos os que olham para o céu noturno não para chorar pela

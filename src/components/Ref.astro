@@ -1,0 +1,34 @@
+---
+/**
+ * Ref.astro
+ *
+ * Auto-labelled wiki link: resolves the target entry's own frontmatter
+ * `title` instead of requiring the caller to spell out a label, so renaming
+ * a page's title doesn't leave every inline mention of it stale.
+ *
+ * This is what the `[[href]]` (no `|label`) remark-wikilink shorthand
+ * compiles to — `[[href|label]]` compiles straight to WikiLink instead.
+ * Import it directly only for bespoke cases outside that shorthand.
+ *
+ * Usage inside any .mdx file:
+ *   import Ref from '@/components/Ref.astro'
+ *   <Ref href="/religions/draconic-faith/gods/bahamut" />
+ */
+
+interface Props {
+  href: string;
+}
+
+const { href } = Astro.props;
+
+import WikiLink from "./WikiLink.astro";
+import { resolveWikiTarget } from "@/shared/content/resolveWikiTarget";
+
+// Falls back to the raw href as the label when the target doesn't exist —
+// there's no title to borrow, but WikiLink's own dead-link styling still
+// makes it clear the target is unresolved.
+const target = await resolveWikiTarget(href);
+const label = target.title ?? href;
+---
+
+<WikiLink href={href}>{label}</WikiLink>
