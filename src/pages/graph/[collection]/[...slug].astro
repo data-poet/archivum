@@ -58,6 +58,7 @@ const { center, neighbors } = await getGraphData(entry);
 <script>
 import ForceGraph from 'force-graph';
 import type { NodeObject, LinkObject } from 'force-graph';
+import { forceX, forceY } from 'd3-force-3d';
 import { OPEN_CONTENT_LINKS_IN_NEW_TAB } from '@/shared/linkBehavior';
 
 interface GNode extends NodeObject {
@@ -65,6 +66,8 @@ interface GNode extends NodeObject {
   title: string;
   exists: boolean;
   isCenter?: boolean;
+  groupTargetX?: number;
+  groupTargetY?: number;
 }
 
 interface GLink extends LinkObject<GNode> {
@@ -77,14 +80,60 @@ interface GraphPayload { center: GraphNodeData; neighbors: GraphNodeData[] }
 const { center, neighbors }: GraphPayload = JSON.parse(document.getElementById('graph-data')!.textContent!);
 
 const GRID_SIZE = 40;
+const GROUP_RADIUS = 220;
+const LABEL_RADIUS = GROUP_RADIUS + 60;
 const ACCENT = '#8b1a1a';
 const BORDER = '#c8c0a8';
 const INK = '#2a2418';
 const INK_LIGHT = '#8a8272';
 
+// Groups by path-prefix, not schema type — "religions/draconic-faith/gods/x"
+// and "religions/demonic-faith/gods/y" share a `type` ("god") but shouldn't
+// cluster together, and it works the same for targets that don't exist yet.
+function groupKeyFor(href: string): string {
+  const segments = href.replace(/^\//, '').split('/');
+  return segments.length > 1 ? segments.slice(0, -1).join('/') : segments[0];
+}
+
+function labelForGroup(key: string): string {
+  return key
+    .split('/')
+    .map((seg) => seg.split(/[-_]/).map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(' '))
+    .join(' / ');
+}
+
+const groupKeys = [...new Set(neighbors.map((n) => groupKeyFor(n.href)))].sort();
+const groupAngle = (key: string) => (2 * Math.PI * groupKeys.indexOf(key)) / groupKeys.length;
+const groupLabels = groupKeys.map((key) => {
+  const angle = groupAngle(key);
+  return { text: labelForGroup(key), x: LABEL_RADIUS * Math.cos(angle), y: LABEL_RADIUS * Math.sin(angle) };
+});
+
+// Members of the same group fan out around their shared angle instead of all
+// aiming at one exact point, so a 13-node group reads as a wedge, not a dot.
+const membersByGroup = new Map<string, GraphNodeData[]>();
+for (const n of neighbors) {
+  const key = groupKeyFor(n.href);
+  if (!membersByGroup.has(key)) membersByGroup.set(key, []);
+  membersByGroup.get(key)!.push(n);
+}
+
+function targetFor(n: GraphNodeData): { x: number; y: number } {
+  const key = groupKeyFor(n.href);
+  const members = membersByGroup.get(key)!;
+  const base = groupAngle(key);
+  const step = (2 * Math.PI) / groupKeys.length / (members.length + 1);
+  const indexInGroup = members.indexOf(n);
+  const angle = base + (indexInGroup - (members.length - 1) / 2) * step;
+  return { x: GROUP_RADIUS * Math.cos(angle), y: GROUP_RADIUS * Math.sin(angle) };
+}
+
 const nodes: GNode[] = [
-  { id: center.href, title: center.title, exists: true, isCenter: true },
-  ...neighbors.map((n) => ({ id: n.href, title: n.title, exists: n.exists })),
+  { id: center.href, title: center.title, exists: true, isCenter: true, fx: 0, fy: 0 },
+  ...neighbors.map((n) => {
+    const target = targetFor(n);
+    return { id: n.href, title: n.title, exists: n.exists, groupTargetX: target.x, groupTargetY: target.y };
+  }),
 ];
 const links: GLink[] = neighbors.map((n) => ({ source: center.href, target: n.href, exists: n.exists }));
 
@@ -118,7 +167,19 @@ const graph = new ForceGraph<GNode, GLink>(container)
       ctx.lineTo(span, y);
       ctx.stroke();
     }
+
+    // Group labels — drawn before nodes/links so they read as background
+    // context rather than competing with nodes for click/hover priority.
+    ctx.font = '600 11px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = INK_LIGHT;
+    for (const label of groupLabels) {
+      ctx.fillText(label.text, label.x, label.y);
+    }
   })
+  .d3Force('groupX', forceX((n: GNode) => (n.isCenter ? 0 : n.groupTargetX ?? 0)).strength(0.06))
+  .d3Force('groupY', forceY((n: GNode) => (n.isCenter ? 0 : n.groupTargetY ?? 0)).strength(0.06))
   .linkColor((link) => (link.exists ? ACCENT : INK_LIGHT))
   .linkLineDash((link) => (link.exists ? null : [4, 3]))
   .linkWidth(1.5)
@@ -162,6 +223,13 @@ const graph = new ForceGraph<GNode, GLink>(container)
     }
   })
   .onNodeDragEnd((node) => {
+    if (node.isCenter) {
+      // Always the fixed anchor group angles are computed relative to —
+      // dragging it shouldn't relocate the graph's frame of reference.
+      node.fx = 0;
+      node.fy = 0;
+      return;
+    }
     node.fx = Math.round((node.x ?? 0) / GRID_SIZE) * GRID_SIZE;
     node.fy = Math.round((node.y ?? 0) / GRID_SIZE) * GRID_SIZE;
   });
