@@ -9,6 +9,14 @@ Code should be self-explanatory through clear naming and structure. Comments are
 - Keep comments as short as possible — one line, not a paragraph.
 - No commented-out code, no restating the function/variable name in prose.
 
+# Architecture
+
+`src/` stays type-first at the top level: `components/`, `pages/`, `content/`, `utils/`, `shared/` (plus `layouts/`, `plugins/`, `styles/`). Astro requires pages under `src/pages/**` and content collection config at `src/content/config.ts`, so a feature never owns its pages/content config outside those locations.
+
+- Each feature gets its own same-named subfolder inside whichever type folders it actually needs (e.g. `pages/maps/`, `components/maps/`) — mirrors the existing `religions`/`races` pattern.
+- Something belongs in flat `utils/` or `shared/` only if two or more features actually use it. One consumer means it belongs in that feature's own subfolder instead.
+- Don't scaffold a feature's folders before the feature is actually being built.
+
 # Commits
 
 - Never add a `Co-Authored-By` trailer or any other AI-attribution line — commits are authored by the user alone.
