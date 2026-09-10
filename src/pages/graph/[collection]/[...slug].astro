@@ -203,7 +203,7 @@ const graph = new ForceGraph<GNode, GLink>(container)
     ctx.fill();
   })
   .onNodeClick((node) => {
-    if (node.isCenter || !node.exists) return;
+    if (!node.exists) return;
     if (OPEN_CONTENT_LINKS_IN_NEW_TAB) {
       window.open(node.id, '_blank', 'noopener,noreferrer');
     } else {
