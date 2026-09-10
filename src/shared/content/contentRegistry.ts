@@ -20,6 +20,7 @@
  */
 
 import { getCollection, type CollectionEntry, type CollectionKey } from "astro:content";
+import type { ImageMetadata } from "astro";
 import { collections as collectionConfig } from "@/content/config";
 import { COLLECTION_RELATIONS } from "@/content/relations";
 
@@ -43,6 +44,15 @@ export interface ContentRegistry {
   titleByPath: Map<string, string>;
   /** `/${collection}/${slug}` → entry `type`, including drafts — used by the relation lint below. */
   typeByPath: Map<string, string>;
+  /** `/${collection}/${slug}` → raw cover image, for entries that have one — see resolveCoverImage(). */
+  imageByPath: Map<string, ImageMetadata>;
+}
+
+/** First image marked `primary`, else the first image, else none — same rule articleData.ts uses. */
+function resolveCoverImage(data: unknown): ImageMetadata | undefined {
+  const images = (data as { images?: { src: ImageMetadata; primary?: boolean }[] }).images;
+  if (!images?.length) return undefined;
+  return (images.find((img) => img.primary) ?? images[0]).src;
 }
 
 async function scanCollections(includeDrafts: boolean): Promise<AnyEntry[]> {
@@ -102,9 +112,15 @@ async function buildRegistry(): Promise<ContentRegistry> {
 
   const typeByPath = new Map(allEntries.map((entry) => [`/${entry.collection}/${entry.slug}`, (entry.data as { type: string }).type]));
 
+  const imageByPath = new Map(
+    allEntries
+      .map((entry) => [`/${entry.collection}/${entry.slug}`, resolveCoverImage(entry.data)] as const)
+      .filter((pair) => pair[1] !== undefined) as [string, ImageMetadata][]
+  );
+
   validateRelations(allEntries, typeByPath);
 
-  return { validPaths, titleByPath, typeByPath };
+  return { validPaths, titleByPath, typeByPath, imageByPath };
 }
 
 let cachedRegistry: Promise<ContentRegistry> | null = null;
