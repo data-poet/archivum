@@ -57,6 +57,7 @@ export interface ArticleImage {
   caption?: string;
   alt?: string;
   type?: string;
+  primary?: boolean;
 }
 
 export interface ArticleData {
@@ -69,6 +70,9 @@ export interface ArticleData {
   // it can't use Astro's own <Image/>, so optimization has to happen here,
   // server-side, before the plain URL string gets passed down as a prop).
   images: ArticleImage[];
+  // The image marked `primary`, falling back to the first one — used for
+  // WikiLayout's og:image/twitter:image, so link previews get a real image.
+  coverImage?: ArticleImage;
 }
 
 export async function getArticleData(entry: AnyEntry): Promise<ArticleData> {
@@ -98,5 +102,7 @@ export async function getArticleData(entry: AnyEntry): Promise<ArticleData> {
     })
   );
 
-  return { data, validSlugs, images };
+  const coverImage = images.find((img) => img.primary) ?? images[0];
+
+  return { data, validSlugs, images, coverImage };
 }

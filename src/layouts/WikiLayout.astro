@@ -16,6 +16,7 @@ interface Props {
   typeLabel?:    string;
   publishedAt?:  string | Date;
   updatedAt?:    string | Date;
+  image?:        string;
 }
 
 const {
@@ -26,7 +27,10 @@ const {
   typeLabel,
   publishedAt,
   updatedAt,
+  image,
 } = Astro.props;
+
+const absoluteImage = image ? new URL(image, Astro.site) : undefined;
 
 function formatDate(dateInput: string | Date) {
   return new Date(dateInput).toLocaleDateString('pt-BR', {
@@ -46,6 +50,18 @@ function formatDate(dateInput: string | Date) {
 
   {description && (
     <meta name="description" content={description} />
+  )}
+
+  <meta property="og:title" content={title} />
+  {description && (
+    <meta property="og:description" content={description} />
+  )}
+  {absoluteImage && (
+    <>
+      <meta property="og:image" content={absoluteImage.toString()} />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:image" content={absoluteImage.toString()} />
+    </>
   )}
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />

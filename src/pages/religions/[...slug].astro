@@ -33,7 +33,7 @@ interface Props { entry: CollectionEntry<'religions'> }
 
 const { entry } = Astro.props;
 const { Content, headings } = await entry.render();
-const { data, validSlugs, images } = await getArticleData(entry);
+const { data, validSlugs, images, coverImage } = await getArticleData(entry);
 ---
 
 <WikiLayout
@@ -44,6 +44,7 @@ const { data, validSlugs, images } = await getArticleData(entry);
   typeLabel={typeLabel(data.type)}
   publishedAt={entry.data.publishedAt}
   updatedAt={entry.data.updatedAt}
+  image={coverImage?.src}
 >
 
   <Fragment slot="toc">

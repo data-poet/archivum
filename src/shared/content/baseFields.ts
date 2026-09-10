@@ -30,6 +30,7 @@ export function makeBaseFields(image: (...args: any[]) => z.ZodType<any>) {
           alt: z.string().optional(),
           // 2. Pass the constant array into z.enum()
           type: z.enum(IMAGE_TYPES).optional(),
+          primary: z.boolean().default(false),
         })
       )
       .optional(),
