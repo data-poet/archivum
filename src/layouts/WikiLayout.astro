@@ -17,6 +17,7 @@ interface Props {
   publishedAt?:  string | Date;
   updatedAt?:    string | Date;
   image?:        string;
+  graphHref?:    string;
 }
 
 const {
@@ -28,6 +29,7 @@ const {
   publishedAt,
   updatedAt,
   image,
+  graphHref,
 } = Astro.props;
 
 const absoluteImage = image ? new URL(image, Astro.site) : undefined;
@@ -106,9 +108,17 @@ function formatDate(dateInput: string | Date) {
     )}
 
     <!-- Article title -->
-    <h1 class="font-serif text-3xl font-bold text-ink border-b border-border pb-2 mb-4">
-      {title}
-    </h1>
+    <div class="flex items-baseline justify-between gap-4 border-b border-border pb-2 mb-4">
+      <h1 class="font-serif text-3xl font-bold text-ink">
+        {title}
+      </h1>
+
+      {graphHref && (
+        <a href={graphHref} class="text-sm font-sans text-accent hover:underline whitespace-nowrap">
+          Ver grafo de menções
+        </a>
+      )}
+    </div>
 
     <!-- Article Metadata -->
     {(publishedAt || updatedAt) && (
