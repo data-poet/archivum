@@ -161,3 +161,72 @@
 
   window.addEventListener("load", setupCollapsibleHeadings);
 </script>
+
+{/* is:global, not scoped — every element these rules target (.collapsible-*)
+    is created at runtime via document.createElement above, so it never gets
+    Astro's scoping attribute; a scoped <style> here would silently no-op. */}
+<style is:global>
+  .collapsible-trigger {
+    @apply w-full bg-transparent text-left cursor-pointer;
+    border: none;
+    padding: 0;
+  }
+
+  /* H2 spacing */
+
+  .collapsible-section.h2 > .collapsible-trigger {
+    margin: 2rem 0 1rem 0;
+  }
+
+  /* H3 spacing */
+
+  .collapsible-section.h3 > .collapsible-trigger {
+    margin: 1.5rem 0 0.75rem 0;
+  }
+
+  /* H4 spacing */
+  .collapsible-section.h4 > .collapsible-trigger {
+    margin: 1.25rem 0 0.5rem 0;
+  }
+
+  /* Heading layout */
+
+  .collapsible-trigger h2,
+  .collapsible-trigger h3,
+  .collapsible-trigger h4 {
+    @apply m-0 flex items-center gap-2;
+  }
+
+  /* Arrow */
+
+  .collapsible-trigger h2::before,
+  .collapsible-trigger h3::before,
+  .collapsible-trigger h4::before {
+    content: "▶";
+    font-size: 0.7rem;
+    transition: transform 0.2s ease;
+    opacity: 0.7;
+  }
+
+  /* Rotate when open */
+
+  .collapsible-section.open .collapsible-trigger h2::before,
+  .collapsible-section.open .collapsible-trigger h3::before,
+  .collapsible-section.open .collapsible-trigger h4::before {
+    transform: rotate(90deg);
+  }
+
+  /* Hide collapsed content */
+
+  .collapsible-section:not(.open) .collapsible-content {
+    display: none;
+  }
+
+  /* Hover */
+
+  .collapsible-trigger:hover h2,
+  .collapsible-trigger:hover h3,
+  .collapsible-trigger:hover h4 {
+    opacity: 0.85;
+  }
+</style>
