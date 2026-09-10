@@ -1,0 +1,49 @@
+---
+/**
+ * GraphNode.astro — one box in the mention graph.
+ * `exists` nodes render as a real (optionally new-tab) link; nodes for
+ * articles that haven't been written yet render as a plain, non-interactive
+ * box — same dashed/muted treatment WikiLink.astro already uses for dead
+ * inline links, so "this doesn't exist yet" looks consistent site-wide.
+ */
+import { GRAPH_LINKS_OPEN_IN_NEW_TAB } from './linkBehavior';
+import type { GraphNode as GraphNodeData } from './graphData';
+
+interface Props {
+  node: GraphNodeData;
+  variant?: 'center' | 'neighbor';
+  style: string;
+}
+
+const { node, variant = 'neighbor', style } = Astro.props;
+
+// The center node is the article you're already on — never a link, even
+// though it technically "exists".
+const interactive = node.exists && variant !== 'center';
+
+const boxClass = `absolute -translate-x-1/2 -translate-y-1/2 w-32 rounded overflow-hidden text-center bg-parchment-50 shadow-sm ${
+  variant === 'center' ? 'border-2 border-accent' : 'border border-border'
+} ${node.exists ? '' : 'opacity-60 cursor-not-allowed border-dashed'}`;
+---
+
+{interactive ? (
+  <a
+    href={node.href}
+    style={style}
+    class={boxClass}
+    target={GRAPH_LINKS_OPEN_IN_NEW_TAB ? '_blank' : undefined}
+    rel={GRAPH_LINKS_OPEN_IN_NEW_TAB ? 'noopener noreferrer' : undefined}
+  >
+    {node.image && <img src={node.image} alt="" class="w-full h-16 object-cover" />}
+    <div class="px-2 py-1 text-xs font-sans font-semibold text-ink truncate">{node.title}</div>
+  </a>
+) : (
+  <div
+    style={style}
+    class={boxClass}
+    title={node.exists ? node.title : `"${node.href}" ainda não existe`}
+  >
+    {node.image && <img src={node.image} alt="" class="w-full h-16 object-cover" />}
+    <div class="px-2 py-1 text-xs font-sans font-semibold text-ink-light truncate">{node.title}</div>
+  </div>
+)}

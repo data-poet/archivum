@@ -1,0 +1,66 @@
+---
+/**
+ * graph/[collection]/[...slug].astro — mention graph for one article.
+ * Deliberately blank apart from SiteHeader + the node boxes: no prose, no
+ * infobox, no TOC. v1 layout is a plain circle (trigonometry, computed here)
+ * rather than a force-directed simulation — there's no real neighbor count
+ * yet to justify pulling in a layout library.
+ */
+import { getCollection, type CollectionEntry, type CollectionKey } from 'astro:content';
+import { collections as collectionConfig } from '@/content/config';
+import SiteHeader from '@/components/SiteHeader.astro';
+import GraphNode from '@/components/graph/GraphNode.astro';
+import { getGraphData } from '@/components/graph/graphData';
+import '../../../styles/global.css';
+
+export async function getStaticPaths() {
+  const collectionKeys = Object.keys(collectionConfig);
+  const paths: { params: { collection: string; slug: string }; props: { entry: CollectionEntry<CollectionKey> } }[] = [];
+
+  for (const collection of collectionKeys) {
+    const entries = (await getCollection(collection as any, ({ data }: any) => !data.draft)) as CollectionEntry<CollectionKey>[];
+    for (const entry of entries) {
+      paths.push({ params: { collection, slug: entry.slug }, props: { entry } });
+    }
+  }
+
+  return paths;
+}
+
+interface Props { entry: CollectionEntry<CollectionKey> }
+
+const { entry } = Astro.props;
+const { center, neighbors } = await getGraphData(entry);
+
+const RADIUS_PERCENT = 38;
+const angleStep = (2 * Math.PI) / Math.max(neighbors.length, 1);
+
+function positionStyle(index: number): string {
+  const angle = angleStep * index - Math.PI / 2;
+  const x = 50 + RADIUS_PERCENT * Math.cos(angle);
+  const y = 50 + RADIUS_PERCENT * Math.sin(angle);
+  return `left: ${x}%; top: ${y}%;`;
+}
+---
+
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Grafo de {center.title} – Archivum</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+</head>
+<body>
+
+  <SiteHeader />
+
+  <main class="relative w-full" style="height: calc(100vh - 3rem);">
+    <GraphNode node={center} variant="center" style="left: 50%; top: 50%;" />
+    {neighbors.map((node, i) => (
+      <GraphNode node={node} style={positionStyle(i)} />
+    ))}
+  </main>
+
+</body>
+</html>
