@@ -21,6 +21,12 @@
  * resolves that label automatically, so it never drifts out of sync with
  * the target's frontmatter. Use WikiLink directly only when the link needs
  * bespoke inline text (e.g. an inflected or partial phrase).
+ *
+ * Neither is meant to be authored by hand in article prose anymore — the
+ * remark-wikilink plugin (src/plugins/remark-wikilink.ts) compiles the
+ * `[[href]]` / `[[href|label]]` shorthand straight to these components, and
+ * injects the import automatically. Import them directly only for bespoke
+ * cases outside that shorthand (e.g. inside another .astro component).
  */
 
 interface Props {
@@ -29,30 +35,10 @@ interface Props {
 
 const { href } = Astro.props;
 
-import { getCollection, type CollectionEntry, type CollectionKey } from 'astro:content';
-import { collections as collectionConfig } from '@/content/config';
+import { resolveWikiTarget } from '@/shared/content/contentRegistry';
 
-type AnyEntry = CollectionEntry<CollectionKey>;
-
-const collectionKeys = Object.keys(collectionConfig);
-
-// Draft entries (e.g. stub pages created only to satisfy a reference()
-// relation elsewhere) are excluded from every other listing (search, tags,
-// index pages, getStaticPaths) — exclude them here too, or a WikiLink to a
-// draft-only slug would render as a live link to a page that doesn't
-// actually get built.
-const allEntries = (
-  await Promise.all(
-    collectionKeys.map((key) => getCollection(key as any, ({ data }: any) => !data.draft))
-  )
-).flat() as AnyEntry[];
-
-// Build the set of all valid URL paths across every collection.
-const validPaths = new Set(
-  allEntries.map((entry) => `/${entry.collection}/${entry.slug}`)
-);
-
-const isDead = !validPaths.has(href);
+const { exists } = await resolveWikiTarget(href);
+const isDead = !exists;
 ---
 
 {isDead ? (

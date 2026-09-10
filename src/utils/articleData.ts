@@ -11,44 +11,21 @@
  * below) — the config.ts schema itself only stores { collection, slug }.
  */
 
-import { getCollection, type CollectionEntry, type CollectionKey } from 'astro:content';
-import { getImage } from 'astro:assets';
-import { collections as collectionConfig } from '@/content/config';
+import { type CollectionEntry, type CollectionKey } from "astro:content";
+import { getImage } from "astro:assets";
+import { getRegistry } from "@/shared/content/contentRegistry";
 
 type AnyEntry = CollectionEntry<CollectionKey>;
-
-/**
- * Builds a collection-prefixed-slug → title lookup from a set of entries,
- * used by resolveRelations() below to resolve reference() fields back into
- * a live display label instead of a raw slug.
- */
-function buildTitleIndex(entries: AnyEntry[]): Map<string, string> {
-  return new Map(
-    entries.map((e) => [
-      `${e.collection}/${e.slug}`,
-      ((e.data as Record<string, unknown>).title as string) ?? `${e.collection}/${e.slug}`,
-    ])
-  );
-}
 
 // A relation field resolved by Astro's reference() schema helper is exactly
 // { collection, slug } — nothing else in the schema produces that shape
 // (plain strings, string arrays, and image() results all fail this check),
 // so it's a safe, unambiguous detector.
 function isRelationRef(value: unknown): value is { collection: string; slug: string } {
-  return (
-    !!value &&
-    typeof value === 'object' &&
-    typeof (value as any).collection === 'string' &&
-    typeof (value as any).slug === 'string' &&
-    Object.keys(value as object).length === 2
-  );
+  return !!value && typeof value === "object" && typeof (value as any).collection === "string" && typeof (value as any).slug === "string" && Object.keys(value as object).length === 2;
 }
 
-function toLegacyRel(
-  ref: { collection: string; slug: string },
-  titleBySlug: Map<string, string>
-) {
+function toLegacyRel(ref: { collection: string; slug: string }, titleBySlug: Map<string, string>) {
   const slug = `${ref.collection}/${ref.slug}`;
   return { slug, label: titleBySlug.get(slug) ?? slug };
 }
@@ -95,25 +72,20 @@ export interface ArticleData {
 }
 
 export async function getArticleData(entry: AnyEntry): Promise<ArticleData> {
-  const collectionKeys = Object.keys(collectionConfig);
+  // contentRegistry keys everything as "/collection/slug" (matching
+  // WikiLink/Ref's href convention) — validSlugs/RelLink expect the
+  // leading-slash-less "collection/slug" shape instead, so strip it here
+  // rather than re-scanning every collection a second time in this shape.
+  const { validPaths, titleByPath } = await getRegistry();
 
-  const allEntries = (
-    await Promise.all(
-      collectionKeys.map((key) => getCollection(key as any, ({ data }: any) => !data.draft))
-    )
-  ).flat() as AnyEntry[];
+  const validSlugs = new Set([...validPaths].map((path) => path.slice(1)));
 
-  const validSlugs = new Set(allEntries.map((e) => `${e.collection}/${e.slug}`));
-
-  // Title lookup for resolveRelations() below deliberately includes drafts
-  // (e.g. stub god pages created only to satisfy a reference() target) —
-  // a relation pointing at an unwritten draft should still show the entry's
-  // real title ("Asgorath") rather than its raw slug, even though validSlugs
-  // above correctly keeps it non-clickable since the page isn't built.
-  const allEntriesIncludingDrafts = (
-    await Promise.all(collectionKeys.map((key) => getCollection(key as any)))
-  ).flat() as AnyEntry[];
-  const titleBySlug = buildTitleIndex(allEntriesIncludingDrafts);
+  // titleByPath includes drafts (e.g. stub god pages created only to satisfy
+  // a reference() target) — a relation pointing at an unwritten draft
+  // should still show the entry's real title ("Asgorath") rather than its
+  // raw slug, even though validSlugs above correctly keeps it non-clickable
+  // since the page isn't built.
+  const titleBySlug = new Map([...titleByPath].map(([path, title]) => [path.slice(1), title]));
   const data = resolveRelations(entry.data as Record<string, unknown>, titleBySlug) as any;
 
   // Each raw image's `src` is an imported ImageMetadata object (from the
@@ -121,7 +93,7 @@ export async function getArticleData(entry: AnyEntry): Promise<ArticleData> {
   // webp output, and pull out the final URL string MediaInfobox needs.
   const images: ArticleImage[] = await Promise.all(
     (data.images ?? []).map(async (img: any) => {
-      const optimized = await getImage({ src: img.src, width: 800, format: 'webp' });
+      const optimized = await getImage({ src: img.src, width: 800, format: "webp" });
       return { ...img, src: optimized.src };
     })
   );

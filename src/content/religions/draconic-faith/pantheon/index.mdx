@@ -27,92 +27,72 @@ tags:
   - primeira-mundo
 ---
 
-import WikiLink from "@/components/WikiLink.astro";
-
-export const link = (href, defaultLabel) => (label) => <WikiLink href={href}>{label ?? defaultLabel}</WikiLink>;
-
-export const gods = {
-  Asgorath: link("/religions/draconic-faith/gods/asgorath", "Asgorath"),
-  Bahamut: link("/religions/draconic-faith/gods/bahamut", "Bahamut"),
-  Tiamat: link("/religions/draconic-faith/gods/tiamat", "Tiamat"),
-  Null: link("/religions/draconic-faith/gods/null", "Null"),
-  Sardior: link("/religions/draconic-faith/gods/sardior", "Sardior"),
-  Kereska: link("/religions/draconic-faith/gods/kereska", "Kereska"),
-  Hlal: link("/religions/draconic-faith/gods/hlal", "Hlal"),
-  Lendys: link("/religions/draconic-faith/gods/lendys", "Lendys"),
-  Tamara: link("/religions/draconic-faith/gods/tamara", "Tamara"),
-  Zorquan: link("/religions/draconic-faith/gods/zorquan", "Zorquan"),
-  Astibolor: link("/religions/draconic-faith/gods/astibolor", "Astibolor"),
-  Task: link("/religions/draconic-faith/gods/task", "Task"),
-  Garyx: link("/religions/draconic-faith/gods/garyx", "Garyx"),
-  "O Primeiro Mundo": link("/religions/draconic-faith/creation-myth", "O Primeiro Mundo"),
-};
-
 # Panteão Dracônico
 
-Os deuses dracônicos são entidades ancestrais nascidas durante os primeiros instantes da criação, quando {gods["O Primeiro Mundo"]()} ainda era jovem e os céus pertenciam apenas aos dragões.
+Os deuses dracônicos são entidades ancestrais nascidas durante os primeiros instantes da criação, quando [[religions/draconic-faith/creation-myth|O Primeiro Mundo]] ainda era jovem e os céus
+pertenciam apenas aos dragões.
 
 Embora muitos mortais enxerguem os dragões apenas como criaturas colossais e antigas, os próprios dragões sabem que suas linhagens carregam fragmentos da vontade dessas entidades primordiais. Alguns
 deuses dracônicos caminham entre os planos observando silenciosamente os mundos infinitos. Outros permanecem adormecidos, fragmentados ou aprisionados desde a queda do Primeiro Mundo.
 
 ## Divindades Maiores
 
-1. {gods.Asgorath()}: O Criador Primordial, O Primeiro Dragão, A Alma da Criação
+1. [[religions/draconic-faith/gods/asgorath]]: O Criador Primordial, O Primeiro Dragão, A Alma da Criação
 
    > Divindade da criação, origem da existência, cosmos primordial e nascimento dos dragões.
 
-2. {gods.Bahamut()}: O Dragão de Platina, Rei dos Dragões Metálicos
+2. [[religions/draconic-faith/gods/bahamut]]: O Dragão de Platina, Rei dos Dragões Metálicos
 
    > Divindade da justiça, honra, proteção, nobreza, sabedoria e dragões metálicos.
 
-3. {gods.Tiamat()}: A Devoradora de Mundos, Rainha dos Dragões Cromáticos
+3. [[religions/draconic-faith/gods/tiamat]]: A Devoradora de Mundos, Rainha dos Dragões Cromáticos
 
    > Divindade da ambição, conquista, ganância, destruição e dragões cromáticos.
 
-4. {gods.Null()}: O Senhor da Morte, O Dragão da Passagem
+4. [[religions/draconic-faith/gods/null]]: O Senhor da Morte, O Dragão da Passagem
 
    > Divindade da morte, do destino inevitável, da decadência, do tempo e do julgamento final das almas dracônicas.
 
-   a. {gods.Null("Chronepsis")}: O Guardião do Tempo e do Destino
+   a. [[religions/draconic-faith/gods/null|Chronepsis]]: O Guardião do Tempo e do Destino
 
    > Aspecto neutro e impassível da morte, julgamento silencioso das almas e preservação da ordem temporal.
 
-   b. {gods.Null("Falazure")}: O Dragão da Decomposição e da Necromancia
+   b. [[religions/draconic-faith/gods/null|Falazure]]: O Dragão da Decomposição e da Necromancia
 
    > Aspecto corrompido e sombrio da morte, necromancia, podridão e cobiça pela imortalidade profana.
 
-5. {gods.Sardior()}: O Dragão Rubi, O Coração do Primeiro Mundo
+5. [[religions/draconic-faith/gods/sardior]]: O Dragão Rubi, O Coração do Primeiro Mundo
    > Divindade do equilíbrio dracônico, psionismo, memória ancestral, conhecimento profundo e dragões de gema.
 
 ## Divindades Menores
 
-6. {gods.Kereska()}: A Senhora da Feitiçaria Dracônica
+6. [[religions/draconic-faith/gods/kereska]]: A Senhora da Feitiçaria Dracônica
 
    > Divindade da magia arcana, conhecimento místico, feitiçaria dracônica e segredos antigos.
 
-7. {gods.Hlal()}: A Senhora das Histórias Eternas
+7. [[religions/draconic-faith/gods/hlal]]: A Senhora das Histórias Eternas
 
    > Divindade da música, inspiração, alegria, arte, histórias, humor e liberdade.
 
-8. {gods.Lendys()}: O Juiz Escamado
+8. [[religions/draconic-faith/gods/lendys]]: O Juiz Escamado
 
    > Divindade da justiça dracônica, equilíbrio, disciplina, julgamento e leis ancestrais.
 
-9. {gods.Tamara()}: A Chama da Cura
+9. [[religions/draconic-faith/gods/tamara]]: A Chama da Cura
 
    > Divindade da cura, misericórdia, proteção, compaixão, descanso e preservação da vida.
 
-10. {gods.Zorquan()}: O Grande Observador
+10. [[religions/draconic-faith/gods/zorquan]]: O Grande Observador
 
     > Divindade da sabedoria ancestral, memória, observação, história e preservação do conhecimento dracônico.
 
-11. {gods.Astibolor()}: O Guardião dos Tesouros Eternos
+11. [[religions/draconic-faith/gods/astibolor]]: O Guardião dos Tesouros Eternos
 
     > Divindade dos tesouros, riqueza, comércio, ganância dracônica e relíquias ancestrais.
 
-12. {gods.Task()}: O Senhor da Superação
+12. [[religions/draconic-faith/gods/task]]: O Senhor da Superação
 
     > Divindade da ambição, evolução pessoal, guerra, conquista, força e perseverança.
 
-13. {gods.Garyx()}: A Chama do Vazio
+13. [[religions/draconic-faith/gods/garyx]]: A Chama do Vazio
     > Divindade da destruição, fogo purificador, renovação através das cinzas e caos dracônico.
