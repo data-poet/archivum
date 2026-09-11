@@ -47,9 +47,9 @@ const { center, neighbors } = await getGraphData(entry);
     <div id="graph-canvas" class="absolute inset-0"></div>
   </main>
 
-  {/* Data island, not define:vars — a plain <script> with imports (force-graph,
-      the shared link-behavior setting) can't also use define:vars, since that
-      forces is:inline and disables module/import processing. */}
+  {/* Data island, not define:vars — the module script below imports force-graph
+      and the shared link-behavior setting, and can't also use define:vars, since
+      that forces is:inline and disables module/import processing. */}
   <script is:inline type="application/json" id="graph-data" set:html={JSON.stringify({ center, neighbors }).replace(/</g, '\\u003c')} />
 
 </body>
