@@ -9,6 +9,7 @@ import { getCollection, type CollectionEntry, type CollectionKey } from 'astro:c
 import { collections as collectionConfig } from '@/content/config';
 import SiteHeader from '@/components/SiteHeader.astro';
 import { getGraphData } from '@/components/graph/graphData';
+import { NO_FLASH_THEME_SCRIPT } from '@/shared/theme';
 import '../../../styles/global.css';
 
 export async function getStaticPaths() {
@@ -38,6 +39,7 @@ const { center, neighbors } = await getGraphData(entry);
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Grafo de {center.title} – Archivum</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <script is:inline set:html={NO_FLASH_THEME_SCRIPT} />
 </head>
 <body>
 

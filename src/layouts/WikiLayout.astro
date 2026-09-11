@@ -8,6 +8,7 @@
 import '../styles/global.css';
 import SiteHeader from '@/components/SiteHeader.astro';
 import { FOCUS_RING } from '@/shared/a11y';
+import { NO_FLASH_THEME_SCRIPT } from '@/shared/theme';
 
 interface Props {
   title:         string;
@@ -70,7 +71,8 @@ function formatDate(dateInput: string | Date) {
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="alternate" type="application/rss+xml" title="Archivum" href="/rss.xml" />
 
-  {/* Runs before first paint so the saved font-size preference doesn't flash at the default size. */}
+  {/* Runs before first paint so the saved theme/font-size preference doesn't flash at the default. */}
+  <script is:inline set:html={NO_FLASH_THEME_SCRIPT} />
   <script is:inline>
     (function () {
       var stored = localStorage.getItem('archivum:font-size');

@@ -6,6 +6,39 @@
 @tailwind utilities;
 
 @layer base {
+  /*
+   * Color tokens as space-separated RGB channels (not hex) so Tailwind's
+   * opacity modifiers (e.g. text-ink-light/60) keep working via
+   * rgb(var(--x) / <alpha-value>) in tailwind.config.mjs — see colors there.
+   * Dark palette is "dark parchment" (warm charcoal/brown), not neutral gray,
+   * to keep the same aged-book identity as light mode, just inverted.
+   */
+  :root {
+    --color-surface: 253 250 243;
+    --color-surface-raised: 248 240 216;
+    --color-surface-hover: 237 224 184;
+    --color-text: 26 26 26;
+    --color-text-muted: 74 74 74;
+    --color-text-light: 107 107 107;
+    --color-accent: 139 26 26;
+    --color-accent-hover: 165 32 32;
+    --color-border: 200 192 168;
+    --color-infobox: 240 235 224;
+  }
+
+  html[data-theme="dark"] {
+    --color-surface: 32 28 20;
+    --color-surface-raised: 43 36 25;
+    --color-surface-hover: 54 45 31;
+    --color-text: 237 228 208;
+    --color-text-muted: 201 191 168;
+    --color-text-light: 168 155 125;
+    --color-accent: 224 98 93;
+    --color-accent-hover: 239 125 120;
+    --color-border: 74 64 48;
+    --color-infobox: 43 36 25;
+  }
+
   body {
     @apply bg-parchment-50 text-ink font-serif;
   }

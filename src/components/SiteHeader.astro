@@ -53,13 +53,13 @@ const summaryBaseClass =
   `list-none [&::-webkit-details-marker]:hidden cursor-pointer select-none px-2 py-1 rounded flex items-center gap-1 hover:text-accent transition-colors ${FOCUS_RING}`;
 
 const menuPanelClass =
-  'absolute left-0 top-full mt-1 min-w-[10rem] bg-white border border-border rounded shadow-lg py-1 z-50';
+  'absolute left-0 top-full mt-1 min-w-[10rem] bg-parchment-50 border border-border rounded shadow-lg py-1 z-50';
 
 const menuItemClass =
   `block px-3 py-1.5 whitespace-nowrap hover:bg-parchment-100 hover:text-accent transition-colors ${FOCUS_RING}`;
 ---
 
-<header class="border-b border-border bg-white/70 backdrop-blur sticky top-0 z-50">
+<header class="border-b border-border bg-parchment-50/70 backdrop-blur sticky top-0 z-50">
   <div class={`${maxWidthClass} mx-auto px-4 py-2 sm:h-12 sm:py-0 flex flex-wrap items-center gap-x-4 gap-y-2 sm:flex-nowrap sm:gap-6`}>
 
     <a
@@ -123,8 +123,8 @@ const menuItemClass =
 
     </nav>
 
-    <div class="flex-1 min-w-0 sm:flex-none sm:ml-auto">
-      <form action="/search" method="get" class="flex">
+    <div class="flex items-center gap-2 flex-1 min-w-0 sm:flex-none sm:ml-auto">
+      <form action="/search" method="get" class="flex flex-1 min-w-0 sm:flex-none">
         <input
           name="q"
           type="search"
@@ -138,7 +138,52 @@ const menuItemClass =
           Ir
         </button>
       </form>
+
+      <button
+        id="theme-toggle"
+        type="button"
+        aria-label="Alternar tema claro/escuro"
+        aria-pressed="false"
+        class={`shrink-0 w-8 h-8 flex items-center justify-center rounded border border-border hover:bg-parchment-100 transition-colors ${FOCUS_RING}`}
+      >
+        <span aria-hidden="true" class="dark:hidden">🌙</span>
+        <span aria-hidden="true" class="hidden dark:inline">☀️</span>
+      </button>
     </div>
 
   </div>
 </header>
+
+<script>
+import { THEME_STORAGE_KEY } from '@/shared/theme';
+
+const button = document.getElementById('theme-toggle');
+
+function isDark(): boolean {
+  return document.documentElement.dataset.theme === 'dark';
+}
+
+function setDark(dark: boolean) {
+  if (dark) {
+    document.documentElement.dataset.theme = 'dark';
+  } else {
+    delete document.documentElement.dataset.theme;
+  }
+  button?.setAttribute('aria-pressed', String(dark));
+}
+
+setDark(isDark());
+
+button?.addEventListener('click', () => {
+  const next = !isDark();
+  localStorage.setItem(THEME_STORAGE_KEY, next ? 'dark' : 'light');
+  setDark(next);
+});
+
+// Follows the OS theme live, but only for visitors who never explicitly
+// chose one — an explicit choice in localStorage always wins.
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+  if (localStorage.getItem(THEME_STORAGE_KEY)) return;
+  setDark(e.matches);
+});
+</script>

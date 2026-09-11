@@ -3,6 +3,7 @@ import { getCollection } from 'astro:content';
 import { metaFor, typeLabel } from '../../content/meta';
 import SiteHeader from '@/components/SiteHeader.astro';
 import { FOCUS_RING } from '@/shared/a11y';
+import { NO_FLASH_THEME_SCRIPT } from '@/shared/theme';
 import '../../styles/global.css';
 
 // ── Static path generation ────────────────────────────────────────────────────
@@ -60,6 +61,7 @@ for (const m of matching) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>#{tag} – Archivum</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <script is:inline set:html={NO_FLASH_THEME_SCRIPT} />
 </head>
 <body>
 

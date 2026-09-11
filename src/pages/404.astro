@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import SiteHeader from '@/components/SiteHeader.astro';
 import { FOCUS_RING } from '@/shared/a11y';
+import { NO_FLASH_THEME_SCRIPT } from '@/shared/theme';
 ---
 
 <!doctype html>
@@ -11,6 +12,7 @@ import { FOCUS_RING } from '@/shared/a11y';
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Página não encontrada – Archivum</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <script is:inline set:html={NO_FLASH_THEME_SCRIPT} />
 </head>
 
 <body>

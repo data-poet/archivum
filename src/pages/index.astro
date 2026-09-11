@@ -16,6 +16,7 @@ import Hero            from '@/components/home/Hero.astro';
 import TagSearchWidget from '@/components/home/TagSearchWidget.astro';
 import RecentEntries   from '@/components/home/RecentEntries.astro';
 import CollectionCard  from '@/components/home/CollectionCard.astro';
+import { NO_FLASH_THEME_SCRIPT } from '@/shared/theme';
 
 const { collectionData, totalArticles, recent } = await getHomeData();
 ---
@@ -30,6 +31,9 @@ const { collectionData, totalArticles, recent } = await getHomeData();
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="alternate" type="application/rss+xml" title="Archivum" href="/rss.xml" />
+
+  {/* Runs before first paint so the saved theme preference doesn't flash light. */}
+  <script is:inline set:html={NO_FLASH_THEME_SCRIPT} />
 </head>
 
 <body>
