@@ -6,6 +6,8 @@
  */
 
 import RelLink from "@/components/infoboxes/RelLink";
+import { sharedInfoboxStyles, rowBg } from "@/components/infoboxes/sharedStyles";
+import { categoryPaletteVars } from "@/shared/content/categoryPalette";
 
 // Renders an array of relations as comma-separated links.
 function RelList({ rels = [], validSlugs }) {
@@ -26,23 +28,28 @@ export default function CreationMythInfobox({ name, children, pantheon, validSlu
   const rows = [{ label: "Panteão", value: pantheon ? <RelLink rel={pantheon} validSlugs={validSlugs} /> : null }].filter((r) => r.value);
 
   return (
-    <div style={s.wrapper}>
+    <div style={sharedInfoboxStyles.wrapper}>
       <div
         style={{
-          ...s.header,
+          ...sharedInfoboxStyles.header,
           background: "linear-gradient(135deg, #1a1a2e 0%, #4a3060 100%)",
         }}
       >
         {name}
       </div>
       {children}
-      <div style={{ ...s.badge, color: "#1a1a2e", backgroundColor: "#e8e8f5" }}>Mito da Criação</div>
-      <table style={s.table}>
+      <div
+        className="cat-pill"
+        style={{ ...sharedInfoboxStyles.badge, ...categoryPaletteVars({ color: "#1a1a2e", bg: "#e8e8f5" }) }}
+      >
+        Mito da Criação
+      </div>
+      <table style={sharedInfoboxStyles.table}>
         <tbody>
           {rows.map(({ label, value }, i) => (
-            <tr key={label} style={{ backgroundColor: i % 2 === 0 ? "#f0ebe0" : "#ede0b8" }}>
-              <td style={{ ...s.label, verticalAlign: "top" }}>{label}</td>
-              <td style={s.value}>{value}</td>
+            <tr key={label} style={rowBg(i)}>
+              <td style={{ ...sharedInfoboxStyles.label, verticalAlign: "top" }}>{label}</td>
+              <td style={sharedInfoboxStyles.value}>{value}</td>
             </tr>
           ))}
         </tbody>
@@ -50,52 +57,3 @@ export default function CreationMythInfobox({ name, children, pantheon, validSlu
     </div>
   );
 }
-
-const s = {
-  wrapper: {
-    border: "1px solid #c8c0a8",
-    borderRadius: "4px",
-    backgroundColor: "#f0ebe0",
-    fontSize: "0.85rem",
-    fontFamily: '"Source Sans 3", sans-serif',
-    overflow: "hidden",
-    marginBottom: "1rem",
-  },
-  header: {
-    color: "#fdfaf3",
-    textAlign: "center",
-    padding: "8px 12px",
-    fontFamily: '"Libre Baskerville", Georgia, serif',
-    fontWeight: 700,
-    fontSize: "1rem",
-    letterSpacing: "0.02em",
-  },
-  badge: {
-    textAlign: "center",
-    padding: "4px",
-    borderTop: "1px solid #c8c0a8",
-    borderBottom: "1px solid #c8c0a8",
-    fontStyle: "italic",
-    fontSize: "0.8rem",
-    fontWeight: 600,
-  },
-  table: { width: "100%", borderCollapse: "collapse" },
-  label: {
-    padding: "5px 10px",
-    fontWeight: 600,
-    color: "#1a1a1a",
-    borderBottom: "1px solid #c8c0a8",
-    whiteSpace: "nowrap",
-    width: "45%",
-  },
-  value: {
-    padding: "5px 10px",
-    color: "#4a4a4a",
-    borderBottom: "1px solid #c8c0a8",
-  },
-  link: {
-    color: "#8b1a1a",
-    textDecoration: "none",
-    fontWeight: 600,
-  },
-};

@@ -4,37 +4,28 @@
  * Divided into two visual sections:
  *   1. Informações Gerais  — vision, languages, life cycle
  *   2. Aparência           — height, weight, skin, eyes, distinctions
+ *
+ * Wrapper/table/label/value share the same neutral tokens every other
+ * infobox uses (sharedStyles.js) — previously this file had its own
+ * green-tinted wrapper/zebra-stripe palette independent of the rest of the
+ * site's infoboxes, which meant a second hardcoded palette to keep
+ * dark-mode-correct for no real design benefit. Only the header gradient,
+ * badge and section header keep the race-green identity, via the same
+ * `.cat-pill` category-color pattern used by the religions infoboxes.
  */
+
+import { sharedInfoboxStyles, rowBg } from "@/components/infoboxes/sharedStyles";
+import { categoryPaletteVars } from "@/shared/content/categoryPalette";
+
+const RACE_CATEGORY = { color: "#2d5a2d", bg: "#e8f5e8" };
 
 // ── Section header row ────────────────────────────────────────────────────────
 function SectionHeader({ label }) {
   return (
     <tr>
-      <td colSpan={2} style={s.sectionHeader}>
+      <td colSpan={2} className="cat-pill" style={{ ...s.sectionHeader, ...categoryPaletteVars(RACE_CATEGORY) }}>
         {label}
       </td>
-    </tr>
-  );
-}
-
-// ── Simple string row ─────────────────────────────────────────────────────────
-function Row({ label, value, index }) {
-  if (!value) return null;
-  return (
-    <tr style={{ backgroundColor: index % 2 === 0 ? "#eef3ee" : "#e2ece2" }}>
-      <td style={s.label}>{label}</td>
-      <td style={s.value}>{value}</td>
-    </tr>
-  );
-}
-
-// ── String array row (e.g. languages) ────────────────────────────────────────
-function ListRow({ label, items = [], index }) {
-  if (!items.length) return null;
-  return (
-    <tr style={{ backgroundColor: index % 2 === 0 ? "#eef3ee" : "#e2ece2" }}>
-      <td style={s.label}>{label}</td>
-      <td style={s.value}>{items.join(", ")}</td>
     </tr>
   );
 }
@@ -78,12 +69,16 @@ export default function RaceInfobox({
   let rowIndex = 0;
 
   return (
-    <div style={s.wrapper}>
-      <div style={s.header}>{name}</div>
+    <div style={sharedInfoboxStyles.wrapper}>
+      <div style={{ ...sharedInfoboxStyles.header, background: "linear-gradient(135deg, #2d5a2d 0%, #4a8c4a 100%)" }}>
+        {name}
+      </div>
       {children}
-      <div style={s.badge}>Raça</div>
+      <div className="cat-pill" style={{ ...sharedInfoboxStyles.badge, ...categoryPaletteVars(RACE_CATEGORY) }}>
+        Raça
+      </div>
 
-      <table style={s.table}>
+      <table style={sharedInfoboxStyles.table}>
         <tbody>
           {generalRows.length > 0 && (
             <>
@@ -91,9 +86,9 @@ export default function RaceInfobox({
               {generalRows.map(({ label, value }) => {
                 const idx = rowIndex++;
                 return (
-                  <tr key={label} style={{ backgroundColor: idx % 2 === 0 ? "#eef3ee" : "#e2ece2" }}>
-                    <td style={s.label}>{label}</td>
-                    <td style={s.value}>{value}</td>
+                  <tr key={label} style={rowBg(idx)}>
+                    <td style={sharedInfoboxStyles.label}>{label}</td>
+                    <td style={sharedInfoboxStyles.value}>{value}</td>
                   </tr>
                 );
               })}
@@ -106,9 +101,9 @@ export default function RaceInfobox({
               {appearanceRows.map(({ label, value }) => {
                 const idx = rowIndex++;
                 return (
-                  <tr key={label} style={{ backgroundColor: idx % 2 === 0 ? "#eef3ee" : "#e2ece2" }}>
-                    <td style={s.label}>{label}</td>
-                    <td style={s.value}>{value}</td>
+                  <tr key={label} style={rowBg(idx)}>
+                    <td style={sharedInfoboxStyles.label}>{label}</td>
+                    <td style={sharedInfoboxStyles.value}>{value}</td>
                   </tr>
                 );
               })}
@@ -121,61 +116,14 @@ export default function RaceInfobox({
 }
 
 const s = {
-  wrapper: {
-    border: "1px solid #a8bfa8",
-    borderRadius: "4px",
-    backgroundColor: "#eef3ee",
-    fontSize: "0.85rem",
-    fontFamily: '"Source Sans 3", sans-serif',
-    overflow: "hidden",
-    marginBottom: "1rem",
-  },
-  header: {
-    background: "linear-gradient(135deg, #2d5a2d 0%, #4a8c4a 100%)",
-    color: "#f0f7f0",
-    textAlign: "center",
-    padding: "8px 12px",
-    fontFamily: '"Libre Baskerville", Georgia, serif',
-    fontWeight: 700,
-    fontSize: "1rem",
-    letterSpacing: "0.02em",
-  },
-  badge: {
-    textAlign: "center",
-    padding: "4px",
-    borderTop: "1px solid #a8bfa8",
-    borderBottom: "1px solid #a8bfa8",
-    fontStyle: "italic",
-    fontSize: "0.8rem",
-    fontWeight: 600,
-    color: "#2d5a2d",
-    backgroundColor: "#d8ead8",
-  },
   sectionHeader: {
-    backgroundColor: "#c8dac8",
-    color: "#1a3a1a",
     fontWeight: 700,
     fontSize: "0.78rem",
     textAlign: "center",
     padding: "4px 8px",
-    borderTop: "1px solid #a8bfa8",
-    borderBottom: "1px solid #a8bfa8",
+    borderTop: "1px solid rgb(var(--color-border))",
+    borderBottom: "1px solid rgb(var(--color-border))",
     letterSpacing: "0.04em",
     textTransform: "uppercase",
-  },
-  table: { width: "100%", borderCollapse: "collapse" },
-  label: {
-    padding: "5px 10px",
-    fontWeight: 600,
-    color: "#1a1a1a",
-    borderBottom: "1px solid #a8bfa8",
-    whiteSpace: "nowrap",
-    verticalAlign: "top",
-    width: "45%",
-  },
-  value: {
-    padding: "5px 10px",
-    color: "#3a3a3a",
-    borderBottom: "1px solid #a8bfa8",
   },
 };

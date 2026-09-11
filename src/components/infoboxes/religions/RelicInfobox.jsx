@@ -5,10 +5,13 @@
  * `currentHolder` (old plain-string prop) is no longer used.
  */
 
+import { sharedInfoboxStyles, rowBg } from "@/components/infoboxes/sharedStyles";
+import { categoryPaletteVars } from "@/shared/content/categoryPalette";
+
 function RelLink({ rel }) {
   if (!rel) return null;
   return (
-    <a href={`/${rel.slug}`} style={s.link}>
+    <a href={`/${rel.slug}`} style={sharedInfoboxStyles.link}>
       {rel.label}
     </a>
   );
@@ -31,31 +34,27 @@ export default function RelicInfobox({
   ].filter((r) => r.value);
 
   return (
-    <div style={s.wrapper}>
-      <div style={{ ...s.header, backgroundColor: "#1e3a5a" }}>{name}</div>
+    <div style={sharedInfoboxStyles.wrapper}>
+      <div style={{ ...sharedInfoboxStyles.header, backgroundColor: "#1e3a5a" }}>{name}</div>
       {children}
-      <div style={{ ...s.badge, color: "#1e3a5a", backgroundColor: "#e8f0f8" }}>
+      <div
+        className="cat-pill"
+        style={{ ...sharedInfoboxStyles.badge, ...categoryPaletteVars({ color: "#1e3a5a", bg: "#e8f0f8" }) }}
+      >
         Relíquia Divina
       </div>
-      <table style={s.table}>
+      <table style={sharedInfoboxStyles.table}>
         <tbody>
           {rows.map(({ label, value }, i) => (
-            <tr
-              key={label}
-              style={{ backgroundColor: i % 2 === 0 ? "#f0ebe0" : "#ede0b8" }}
-            >
-              <td style={s.label}>{label}</td>
-              <td style={s.value}>{value}</td>
+            <tr key={label} style={rowBg(i)}>
+              <td style={sharedInfoboxStyles.label}>{label}</td>
+              <td style={sharedInfoboxStyles.value}>{value}</td>
             </tr>
           ))}
           {powers.length > 0 && (
-            <tr
-              style={{
-                backgroundColor: rows.length % 2 === 0 ? "#f0ebe0" : "#ede0b8",
-              }}
-            >
-              <td style={{ ...s.label, verticalAlign: "top" }}>Poderes</td>
-              <td style={s.value}>
+            <tr style={rowBg(rows.length)}>
+              <td style={{ ...sharedInfoboxStyles.label, verticalAlign: "top" }}>Poderes</td>
+              <td style={sharedInfoboxStyles.value}>
                 <ul style={{ margin: 0, paddingLeft: "1rem" }}>
                   {powers.map((p) => (
                     <li key={p}>{p}</li>
@@ -69,51 +68,3 @@ export default function RelicInfobox({
     </div>
   );
 }
-
-const s = {
-  wrapper: {
-    border: "1px solid #c8c0a8",
-    borderRadius: "4px",
-    backgroundColor: "#f0ebe0",
-    fontSize: "0.85rem",
-    fontFamily: '"Source Sans 3", sans-serif',
-    overflow: "hidden",
-    marginBottom: "1rem",
-  },
-  header: {
-    color: "#fdfaf3",
-    textAlign: "center",
-    padding: "8px 12px",
-    fontFamily: '"Libre Baskerville", Georgia, serif',
-    fontWeight: 700,
-    fontSize: "1rem",
-  },
-  badge: {
-    textAlign: "center",
-    padding: "4px",
-    borderTop: "1px solid #c8c0a8",
-    borderBottom: "1px solid #c8c0a8",
-    fontStyle: "italic",
-    fontSize: "0.8rem",
-    fontWeight: 600,
-  },
-  table: { width: "100%", borderCollapse: "collapse" },
-  label: {
-    padding: "5px 10px",
-    fontWeight: 600,
-    color: "#1a1a1a",
-    borderBottom: "1px solid #c8c0a8",
-    whiteSpace: "nowrap",
-    width: "45%",
-  },
-  value: {
-    padding: "5px 10px",
-    color: "#4a4a4a",
-    borderBottom: "1px solid #c8c0a8",
-  },
-  link: {
-    color: "#8b1a1a",
-    textDecoration: "none",
-    fontWeight: 600,
-  },
-};

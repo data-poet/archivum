@@ -94,8 +94,8 @@ export default function MediaInfobox({ images = [], title = "" }) {
 
 const s = {
   wrapper: {
-    borderBottom: "1px solid #c8c0a8",
-    backgroundColor: "#e8e0cf",
+    borderBottom: "1px solid rgb(var(--color-border))",
+    backgroundColor: "rgb(var(--color-surface-hover))",
   },
 
   imageWrapper: {
@@ -120,16 +120,16 @@ const s = {
     cursor: "pointer",
     fontSize: "1.4rem",
     fontWeight: "bold",
-    backgroundColor: "rgba(255,255,255,0.8)",
-    color: "#1a1a1a",
+    backgroundColor: "rgb(var(--color-surface) / 0.8)",
+    color: "rgb(var(--color-text))",
   },
 
   caption: {
     padding: "6px 10px",
     fontSize: "0.75rem",
-    color: "#4a4a4a",
-    backgroundColor: "#f0ebe0",
-    borderTop: "1px solid #c8c0a8",
+    color: "rgb(var(--color-text-muted))",
+    backgroundColor: "rgb(var(--color-infobox))",
+    borderTop: "1px solid rgb(var(--color-border))",
     textAlign: "center",
     lineHeight: 1.4,
   },
@@ -148,13 +148,13 @@ const s = {
     justifyContent: "space-between",
     alignItems: "center",
     padding: "6px 10px",
-    borderTop: "1px solid #c8c0a8",
-    backgroundColor: "#e6dfcf",
+    borderTop: "1px solid rgb(var(--color-border))",
+    backgroundColor: "rgb(var(--color-surface-hover))",
   },
 
   counter: {
     fontSize: "0.7rem",
-    color: "#666",
+    color: "rgb(var(--color-text-light))",
   },
 
   dots: {
@@ -167,7 +167,7 @@ const s = {
     height: "8px",
     borderRadius: "50%",
     border: "none",
-    backgroundColor: "#444",
+    backgroundColor: "rgb(var(--color-text-muted))",
     cursor: "pointer",
   },
 };

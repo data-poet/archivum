@@ -17,6 +17,8 @@
  */
 
 import { metaFor } from "@/content/meta";
+import { categoryForegroundVars } from "@/shared/content/categoryPalette";
+import { sharedInfoboxStyles } from "@/components/infoboxes/sharedStyles";
 
 export default function RelLink({ rel, validSlugs = new Set() }) {
   if (!rel) return null;
@@ -25,7 +27,7 @@ export default function RelLink({ rel, validSlugs = new Set() }) {
 
   if (!exists) {
     return (
-      <span style={s.dead} title={`"${rel.slug}" ainda não existe`}>
+      <span style={sharedInfoboxStyles.dead} title={`"${rel.slug}" ainda não existe`}>
         {rel.label}
       </span>
     );
@@ -35,21 +37,12 @@ export default function RelLink({ rel, validSlugs = new Set() }) {
   const color = metaFor(collectionKey).color;
 
   return (
-    <a href={`/${rel.slug}`} style={{ ...s.link, color }}>
+    <a
+      href={`/${rel.slug}`}
+      className="cat-fg"
+      style={{ ...sharedInfoboxStyles.link, ...categoryForegroundVars(color) }}
+    >
       {rel.label}
     </a>
   );
 }
-
-const s = {
-  link: {
-    textDecoration: "none",
-    fontWeight: 600,
-  },
-  dead: {
-    color: "#6b6b6b",
-    borderBottom: "1px dashed #6b6b6b",
-    cursor: "not-allowed",
-    fontWeight: 600,
-  },
-};

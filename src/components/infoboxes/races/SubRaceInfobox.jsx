@@ -5,41 +5,23 @@
  *   - "Sub-raça de X" parent link below the badge
  *   - Homeland / Region of Origin rows in Informações Gerais
  *   - Vantagens Inatas / Desvantagens Inatas section at the bottom
+ *
+ * Wrapper/table/label/value share the same neutral tokens every other
+ * infobox uses (sharedStyles.js) — see RaceInfobox.jsx's header comment for
+ * why the previous per-file tinted palette was consolidated.
  */
 
 import RelLink from "../RelLink";
+import { sharedInfoboxStyles, rowBg } from "@/components/infoboxes/sharedStyles";
+import { categoryForegroundVars, categoryPaletteVars } from "@/shared/content/categoryPalette";
+
+const SUB_RACE_CATEGORY = { color: "#1e3a5f", bg: "#e8eef8" };
 
 function SectionHeader({ label }) {
   return (
     <tr>
-      <td colSpan={2} style={s.sectionHeader}>
+      <td colSpan={2} className="cat-pill" style={{ ...s.sectionHeader, ...categoryPaletteVars(SUB_RACE_CATEGORY) }}>
         {label}
-      </td>
-    </tr>
-  );
-}
-
-function Row({ label, value, index }) {
-  if (!value) return null;
-  return (
-    <tr style={{ backgroundColor: index % 2 === 0 ? "#edf1f7" : "#e2e9f2" }}>
-      <td style={s.label}>{label}</td>
-      <td style={s.value}>{value}</td>
-    </tr>
-  );
-}
-
-function BulletRow({ label, items = [], index }) {
-  if (!items.length) return null;
-  return (
-    <tr style={{ backgroundColor: index % 2 === 0 ? "#edf1f7" : "#e2e9f2" }}>
-      <td style={s.label}>{label}</td>
-      <td style={s.value}>
-        <ul style={s.list}>
-          {items.map((item, i) => (
-            <li key={i}>{item}</li>
-          ))}
-        </ul>
       </td>
     </tr>
   );
@@ -93,10 +75,14 @@ export default function SubRaceInfobox({
   let rowIndex = 0;
 
   return (
-    <div style={s.wrapper}>
-      <div style={s.header}>{name}</div>
+    <div style={sharedInfoboxStyles.wrapper}>
+      <div style={{ ...sharedInfoboxStyles.header, background: "linear-gradient(135deg, #1e3a5f 0%, #2e5fa8 100%)" }}>
+        {name}
+      </div>
       {children}
-      <div style={s.badge}>Sub-raça</div>
+      <div className="cat-pill" style={{ ...sharedInfoboxStyles.badge, ...categoryPaletteVars(SUB_RACE_CATEGORY) }}>
+        Sub-raça
+      </div>
 
       {parentRace && (
         <div style={s.parentLine}>
@@ -105,7 +91,7 @@ export default function SubRaceInfobox({
         </div>
       )}
 
-      <table style={s.table}>
+      <table style={sharedInfoboxStyles.table}>
         <tbody>
 
           {generalRows.length > 0 && (
@@ -114,9 +100,9 @@ export default function SubRaceInfobox({
               {generalRows.map(({ label, value }) => {
                 const idx = rowIndex++;
                 return (
-                  <tr key={label} style={{ backgroundColor: idx % 2 === 0 ? "#edf1f7" : "#e2e9f2" }}>
-                    <td style={s.label}>{label}</td>
-                    <td style={s.value}>{value}</td>
+                  <tr key={label} style={rowBg(idx)}>
+                    <td style={sharedInfoboxStyles.label}>{label}</td>
+                    <td style={sharedInfoboxStyles.value}>{value}</td>
                   </tr>
                 );
               })}
@@ -129,9 +115,9 @@ export default function SubRaceInfobox({
               {appearanceRows.map(({ label, value }) => {
                 const idx = rowIndex++;
                 return (
-                  <tr key={label} style={{ backgroundColor: idx % 2 === 0 ? "#edf1f7" : "#e2e9f2" }}>
-                    <td style={s.label}>{label}</td>
-                    <td style={s.value}>{value}</td>
+                  <tr key={label} style={rowBg(idx)}>
+                    <td style={sharedInfoboxStyles.label}>{label}</td>
+                    <td style={sharedInfoboxStyles.value}>{value}</td>
                   </tr>
                 );
               })}
@@ -144,12 +130,12 @@ export default function SubRaceInfobox({
               {innateAdvantages.length > 0 && (() => {
                 const idx = rowIndex++;
                 return (
-                  <tr style={{ backgroundColor: idx % 2 === 0 ? "#edf1f7" : "#e2e9f2" }}>
-                    <td style={s.label}>Vantagens</td>
-                    <td style={s.value}>
+                  <tr style={rowBg(idx)}>
+                    <td style={sharedInfoboxStyles.label}>Vantagens</td>
+                    <td style={sharedInfoboxStyles.value}>
                       <ul style={s.list}>
                         {innateAdvantages.map((item, i) => (
-                          <li key={i} style={s.advantage}>{item}</li>
+                          <li key={i} className="cat-fg" style={categoryForegroundVars("#1a4a1a")}>{item}</li>
                         ))}
                       </ul>
                     </td>
@@ -159,12 +145,12 @@ export default function SubRaceInfobox({
               {innateDisadvantages.length > 0 && (() => {
                 const idx = rowIndex++;
                 return (
-                  <tr style={{ backgroundColor: idx % 2 === 0 ? "#edf1f7" : "#e2e9f2" }}>
-                    <td style={s.label}>Desvantagens</td>
-                    <td style={s.value}>
+                  <tr style={rowBg(idx)}>
+                    <td style={sharedInfoboxStyles.label}>Desvantagens</td>
+                    <td style={sharedInfoboxStyles.value}>
                       <ul style={s.list}>
                         {innateDisadvantages.map((item, i) => (
-                          <li key={i} style={s.disadvantage}>{item}</li>
+                          <li key={i} className="cat-fg" style={categoryForegroundVars("#4a1a1a")}>{item}</li>
                         ))}
                       </ul>
                     </td>
@@ -181,80 +167,27 @@ export default function SubRaceInfobox({
 }
 
 const s = {
-  wrapper: {
-    border: "1px solid #9aafcf",
-    borderRadius: "4px",
-    backgroundColor: "#edf1f7",
-    fontSize: "0.85rem",
-    fontFamily: '"Source Sans 3", sans-serif',
-    overflow: "hidden",
-    marginBottom: "1rem",
-  },
-  header: {
-    background: "linear-gradient(135deg, #1e3a5f 0%, #2e5fa8 100%)",
-    color: "#f0f4ff",
-    textAlign: "center",
-    padding: "8px 12px",
-    fontFamily: '"Libre Baskerville", Georgia, serif',
-    fontWeight: 700,
-    fontSize: "1rem",
-    letterSpacing: "0.02em",
-  },
-  badge: {
-    textAlign: "center",
-    padding: "4px",
-    borderTop: "1px solid #9aafcf",
-    borderBottom: "1px solid #9aafcf",
-    fontStyle: "italic",
-    fontSize: "0.8rem",
-    fontWeight: 600,
-    color: "#1e3a5f",
-    backgroundColor: "#d0ddf0",
-  },
   parentLine: {
     textAlign: "center",
     padding: "5px 10px",
     fontSize: "0.82rem",
-    color: "#3a3a3a",
-    borderBottom: "1px solid #9aafcf",
-    backgroundColor: "#e2e9f2",
+    color: "rgb(var(--color-text-muted))",
+    borderBottom: "1px solid rgb(var(--color-border))",
+    backgroundColor: "rgb(var(--color-surface-hover))",
   },
   sectionHeader: {
-    backgroundColor: "#c5d3e8",
-    color: "#0f2040",
     fontWeight: 700,
     fontSize: "0.78rem",
     textAlign: "center",
     padding: "4px 8px",
-    borderTop: "1px solid #9aafcf",
-    borderBottom: "1px solid #9aafcf",
+    borderTop: "1px solid rgb(var(--color-border))",
+    borderBottom: "1px solid rgb(var(--color-border))",
     letterSpacing: "0.04em",
     textTransform: "uppercase",
-  },
-  table: { width: "100%", borderCollapse: "collapse" },
-  label: {
-    padding: "5px 10px",
-    fontWeight: 600,
-    color: "#1a1a1a",
-    borderBottom: "1px solid #9aafcf",
-    whiteSpace: "nowrap",
-    verticalAlign: "top",
-    width: "45%",
-  },
-  value: {
-    padding: "5px 10px",
-    color: "#3a3a3a",
-    borderBottom: "1px solid #9aafcf",
   },
   list: {
     margin: "0",
     paddingLeft: "1.1rem",
     lineHeight: "1.6",
-  },
-  advantage: {
-    color: "#1a4a1a",
-  },
-  disadvantage: {
-    color: "#4a1a1a",
   },
 };
