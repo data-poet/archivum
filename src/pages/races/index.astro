@@ -8,6 +8,7 @@ import { getCollection } from 'astro:content';
 import SiteHeader from '@/components/SiteHeader.astro';
 import { FOCUS_RING } from '@/shared/a11y';
 import { NO_FLASH_THEME_SCRIPT } from '@/shared/theme';
+import { categoryPaletteVars } from '@/shared/content/categoryPalette';
 import '../../styles/global.css';
 
 const all = await getCollection('races', ({ data }) => !data.draft);
@@ -54,8 +55,8 @@ function subtitle(data: any): string | null {
         return (
           <a
             href={`#${type}`}
-            class={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-sans font-semibold border transition-opacity hover:opacity-70 ${FOCUS_RING}`}
-            style={`color:${color}; background-color:${bg}; border-color:${color}40`}
+            class={`cat-pill inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-sans font-semibold border transition-opacity hover:opacity-70 ${FOCUS_RING}`}
+            style={categoryPaletteVars({ color, bg })}
           >
             {label}
             <span class="text-xs opacity-70">({c})</span>

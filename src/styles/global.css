@@ -65,4 +65,30 @@
   html[data-font-size="large"] {
     --wiki-font-size: 1.0625rem;
   }
+
+  /*
+   * Per-category colors (religion/race subtypes, etc.) — light/dark values
+   * are computed by shared/content/categoryPalette.ts and passed in as
+   * inline --cat-fg-light/--cat-fg-dark(/--cat-bg-*) custom properties, so
+   * the theme switch is a pure CSS attribute-selector flip with no flash and
+   * no per-element JS. See categoryPalette.ts for why these vary by theme
+   * while solid "header bar + white text" category colors don't.
+   */
+  .cat-fg {
+    color: var(--cat-fg-light);
+  }
+  html[data-theme="dark"] .cat-fg {
+    color: var(--cat-fg-dark);
+  }
+
+  .cat-pill {
+    color: var(--cat-fg-light);
+    background-color: var(--cat-bg-light);
+    border-color: color-mix(in srgb, var(--cat-fg-light) 25%, transparent);
+  }
+  html[data-theme="dark"] .cat-pill {
+    color: var(--cat-fg-dark);
+    background-color: var(--cat-bg-dark);
+    border-color: color-mix(in srgb, var(--cat-fg-dark) 35%, transparent);
+  }
 }

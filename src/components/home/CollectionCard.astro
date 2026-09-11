@@ -7,6 +7,7 @@
  */
 import { gridColsFor } from '@/components/home/grid';
 import { FOCUS_RING } from '@/shared/a11y';
+import { categoryForegroundVars } from '@/shared/content/categoryPalette';
 import type { HomeCollectionData } from './homeData';
 
 interface Props {
@@ -73,8 +74,8 @@ const { collection } = Astro.props;
             >
 
               <div
-                class="font-sans text-xs font-semibold mb-0.5"
-                style={`color: ${color}`}
+                class="cat-fg font-sans text-xs font-semibold mb-0.5"
+                style={categoryForegroundVars(color)}
               >
                 {label}
               </div>
