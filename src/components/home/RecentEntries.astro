@@ -5,6 +5,7 @@
  * collection, computed by homeData.ts.
  */
 import { typeLabel } from '@/content/meta';
+import { FOCUS_RING } from '@/shared/a11y';
 import type { RecentEntry } from './homeData';
 
 interface Props {
@@ -22,7 +23,7 @@ const { recent } = Astro.props;
 
     <!-- Expandable header -->
     <summary
-      class="list-none cursor-pointer select-none"
+      class={`list-none cursor-pointer select-none ${FOCUS_RING}`}
     >
 
       <div
@@ -59,7 +60,7 @@ const { recent } = Astro.props;
 
             <a
               href={`${entry.collectionHref}/${entry.slug}`}
-              class="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-4 py-2 hover:bg-parchment-200 transition-colors"
+              class={`flex flex-wrap items-baseline gap-x-3 gap-y-1 px-4 py-2 hover:bg-parchment-200 transition-colors ${FOCUS_RING}`}
             >
 
               <span class="font-serif text-sm font-bold text-accent">

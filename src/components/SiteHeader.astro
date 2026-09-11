@@ -28,6 +28,7 @@
 import { collections as collectionConfig } from '@/content/config';
 import { metaFor } from '@/content/meta';
 import { FEATURES, featureFor } from '@/shared/features';
+import { FOCUS_RING } from '@/shared/a11y';
 
 interface Props {
   /** Collection key to highlight as the current content type, if any. */
@@ -49,13 +50,13 @@ const activeFeatureMeta = activeFeature ? featureFor(activeFeature) : undefined;
 const featureTriggerLabel = activeFeatureMeta?.label ?? 'Recursos';
 
 const summaryBaseClass =
-  'list-none [&::-webkit-details-marker]:hidden cursor-pointer select-none px-2 py-1 rounded flex items-center gap-1 hover:text-accent transition-colors';
+  `list-none [&::-webkit-details-marker]:hidden cursor-pointer select-none px-2 py-1 rounded flex items-center gap-1 hover:text-accent transition-colors ${FOCUS_RING}`;
 
 const menuPanelClass =
   'absolute left-0 top-full mt-1 min-w-[10rem] bg-white border border-border rounded shadow-lg py-1 z-50';
 
 const menuItemClass =
-  'block px-3 py-1.5 whitespace-nowrap hover:bg-parchment-100 hover:text-accent transition-colors';
+  `block px-3 py-1.5 whitespace-nowrap hover:bg-parchment-100 hover:text-accent transition-colors ${FOCUS_RING}`;
 ---
 
 <header class="border-b border-border bg-white/70 backdrop-blur sticky top-0 z-50">
@@ -63,7 +64,7 @@ const menuItemClass =
 
     <a
       href="/"
-      class="shrink-0 font-serif font-bold text-accent text-lg tracking-tight no-underline hover:no-underline"
+      class={`shrink-0 font-serif font-bold text-accent text-lg tracking-tight no-underline hover:no-underline rounded ${FOCUS_RING}`}
     >
       📜 Archivum
     </a>
@@ -128,11 +129,11 @@ const menuItemClass =
           name="q"
           type="search"
           placeholder="Buscar…"
-          class="w-full min-w-0 sm:w-48 border border-border rounded-l px-3 py-1 text-sm font-sans bg-parchment-50 focus:outline-none focus:ring-1 focus:ring-accent"
+          class={`w-full min-w-0 sm:w-48 border border-border rounded-l px-3 py-1 text-sm font-sans bg-parchment-50 focus:outline-none focus:ring-1 focus:ring-accent ${FOCUS_RING}`}
         />
         <button
           type="submit"
-          class="shrink-0 border border-l-0 border-border rounded-r px-3 py-1 text-sm font-sans bg-parchment-100 hover:bg-parchment-200 transition-colors"
+          class={`shrink-0 border border-l-0 border-border rounded-r px-3 py-1 text-sm font-sans bg-parchment-100 hover:bg-parchment-200 transition-colors ${FOCUS_RING}`}
         >
           Ir
         </button>

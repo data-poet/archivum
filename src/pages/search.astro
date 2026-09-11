@@ -1,5 +1,6 @@
 ---
 import SiteHeader from '@/components/SiteHeader.astro';
+import { FOCUS_RING } from '@/shared/a11y';
 import '../styles/global.css';
 
 // Read initial query from URL so it can be pre-filled in the input
@@ -34,11 +35,11 @@ const rawQ = Astro.url.searchParams.get('q') ?? '';
         placeholder="O que você procura? (ex: tag:dragoes)"
         value={rawQ}
         autofocus
-        class="flex-1 border border-border rounded px-4 py-2 text-base font-sans bg-parchment-50 focus:outline-none focus:ring-2 focus:ring-accent"
+        class={`flex-1 border border-border rounded px-4 py-2 text-base font-sans bg-parchment-50 focus:outline-none focus:ring-2 focus:ring-accent ${FOCUS_RING}`}
       />
       <button
         type="submit"
-        class="border border-border rounded px-5 py-2 text-sm font-sans font-semibold bg-accent text-white hover:opacity-90 transition-opacity"
+        class={`border border-border rounded px-5 py-2 text-sm font-sans font-semibold bg-accent text-white hover:opacity-90 transition-opacity ${FOCUS_RING}`}
       >
         Buscar
       </button>

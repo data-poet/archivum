@@ -6,6 +6,7 @@
  * (each showing its own count) when expanded.
  */
 import { gridColsFor } from '@/components/home/grid';
+import { FOCUS_RING } from '@/shared/a11y';
 import type { HomeCollectionData } from './homeData';
 
 interface Props {
@@ -21,7 +22,7 @@ const { collection } = Astro.props;
 
   <!-- Expandable header -->
   <summary
-    class="list-none cursor-pointer select-none"
+    class={`list-none cursor-pointer select-none ${FOCUS_RING}`}
   >
 
     <div
@@ -37,7 +38,7 @@ const { collection } = Astro.props;
       <!-- Collection link -->
       <a
         href={collection.href}
-        class="hover:underline"
+        class={`hover:underline rounded ${FOCUS_RING}`}
         onclick="event.stopPropagation()"
       >
         ✦ {collection.label}
@@ -68,7 +69,7 @@ const { collection } = Astro.props;
           return (
             <a
               href={`${collection.href}#${type}`}
-              class="block px-4 py-3 hover:bg-parchment-200 transition-colors border-r border-b border-border"
+              class={`block px-4 py-3 hover:bg-parchment-200 transition-colors border-r border-b border-border ${FOCUS_RING}`}
             >
 
               <div

@@ -6,6 +6,7 @@
 import { COLLECTION_META, TYPE_LABELS } from '@/content/meta';
 import { normalise } from '@/utils/text';
 import { OPEN_CONTENT_LINKS_IN_NEW_TAB } from '@/shared/linkBehavior';
+import { FOCUS_RING } from '@/shared/a11y';
 
 export interface SearchRecord {
   slug: string;
@@ -96,7 +97,7 @@ export function renderGroupedResults(scored: ScoredRecord[], hrefFor: (record: S
     const meta = COLLECTION_META[col] ?? { label: col, color: '#555' };
     html += `
       <details class="border border-border rounded overflow-hidden mb-6 group" open>
-        <summary class="list-none cursor-pointer select-none">
+        <summary class="list-none cursor-pointer select-none ${FOCUS_RING}">
           <div class="px-4 py-2 font-serif font-bold text-white text-base flex items-center gap-2"
                style="background-color: ${meta.color}">
             <span class="transition-transform group-open:rotate-90">▶</span>
@@ -108,7 +109,7 @@ export function renderGroupedResults(scored: ScoredRecord[], hrefFor: (record: S
           ${entries.map((e) => `
             <li>
               <a href="${hrefFor(e)}"${target}
-                 class="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-5 py-3 hover:bg-parchment-200 transition-colors no-underline">
+                 class="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-5 py-3 hover:bg-parchment-200 transition-colors no-underline ${FOCUS_RING}">
                 <span class="font-serif font-bold text-accent">${e.title}</span>
                 <span class="font-sans text-xs text-ink-light">${TYPE_LABELS[e.type] ?? e.type}</span>
                 ${e.description

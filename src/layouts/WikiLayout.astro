@@ -7,6 +7,7 @@
  */
 import '../styles/global.css';
 import SiteHeader from '@/components/SiteHeader.astro';
+import { FOCUS_RING } from '@/shared/a11y';
 
 interface Props {
   title:         string;
@@ -95,7 +96,7 @@ function formatDate(dateInput: string | Date) {
     {section && (
       <p class="text-sm font-sans text-ink-light mb-1">
 
-        <a href="/" class="text-accent hover:underline">
+        <a href="/" class={`text-accent hover:underline rounded ${FOCUS_RING}`}>
           Página Principal
         </a>
 
@@ -103,7 +104,7 @@ function formatDate(dateInput: string | Date) {
 
         <a
           href={`/${section}`}
-          class="text-accent hover:underline"
+          class={`text-accent hover:underline rounded ${FOCUS_RING}`}
         >
           {sectionLabel ?? section}
         </a>
@@ -126,7 +127,7 @@ function formatDate(dateInput: string | Date) {
 
       <div class="mt-1 flex items-center gap-4">
         {graphHref && (
-          <a href={graphHref} class="text-sm font-sans text-accent hover:underline">
+          <a href={graphHref} class={`text-sm font-sans text-accent hover:underline rounded ${FOCUS_RING}`}>
             Ver grafos
           </a>
         )}
@@ -137,9 +138,9 @@ function formatDate(dateInput: string | Date) {
           aria-label="Tamanho do texto"
           class="ml-auto flex items-center gap-1"
         >
-          <button type="button" data-font-size-option="small" aria-label="Texto pequeno" class="font-size-option w-6 h-6 flex items-center justify-center rounded border border-border text-xs text-ink-light hover:bg-parchment-100">A</button>
-          <button type="button" data-font-size-option="medium" aria-label="Texto médio" class="font-size-option w-6 h-6 flex items-center justify-center rounded border border-border text-sm text-ink-light hover:bg-parchment-100">A</button>
-          <button type="button" data-font-size-option="large" aria-label="Texto grande" class="font-size-option w-6 h-6 flex items-center justify-center rounded border border-border text-base text-ink-light hover:bg-parchment-100">A</button>
+          <button type="button" data-font-size-option="small" aria-label="Texto pequeno" class={`font-size-option w-6 h-6 flex items-center justify-center rounded border border-border text-xs text-ink-light hover:bg-parchment-100 ${FOCUS_RING}`}>A</button>
+          <button type="button" data-font-size-option="medium" aria-label="Texto médio" class={`font-size-option w-6 h-6 flex items-center justify-center rounded border border-border text-sm text-ink-light hover:bg-parchment-100 ${FOCUS_RING}`}>A</button>
+          <button type="button" data-font-size-option="large" aria-label="Texto grande" class={`font-size-option w-6 h-6 flex items-center justify-center rounded border border-border text-base text-ink-light hover:bg-parchment-100 ${FOCUS_RING}`}>A</button>
         </div>
       </div>
     </div>

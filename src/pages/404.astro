@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import SiteHeader from '@/components/SiteHeader.astro';
+import { FOCUS_RING } from '@/shared/a11y';
 ---
 
 <!doctype html>
@@ -26,7 +27,7 @@ import SiteHeader from '@/components/SiteHeader.astro';
     </p>
     <a
       href="/"
-      class="inline-block font-sans text-sm text-white bg-accent hover:bg-accent-hover px-4 py-2 rounded transition-colors"
+      class={`inline-block font-sans text-sm text-white bg-accent hover:bg-accent-hover px-4 py-2 rounded transition-colors ${FOCUS_RING}`}
     >
       Voltar à Página Principal
     </a>

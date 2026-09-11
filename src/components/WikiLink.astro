@@ -37,6 +37,7 @@ const { href } = Astro.props;
 
 import { resolveWikiTarget } from '@/shared/content/contentRegistry';
 import { OPEN_CONTENT_LINKS_IN_NEW_TAB } from '@/shared/linkBehavior';
+import { FOCUS_RING } from '@/shared/a11y';
 
 const { exists } = await resolveWikiTarget(href);
 const isDead = !exists;
@@ -52,7 +53,7 @@ const isDead = !exists;
 ) : (
   <a
     href={href}
-    class="text-accent hover:underline"
+    class={`text-accent hover:underline rounded ${FOCUS_RING}`}
     target={OPEN_CONTENT_LINKS_IN_NEW_TAB ? '_blank' : undefined}
     rel={OPEN_CONTENT_LINKS_IN_NEW_TAB ? 'noopener noreferrer' : undefined}
   >

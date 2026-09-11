@@ -6,6 +6,7 @@
  */
 import { getCollection } from 'astro:content';
 import SiteHeader from '@/components/SiteHeader.astro';
+import { FOCUS_RING } from '@/shared/a11y';
 import '../../styles/global.css';
 
 const all = await getCollection('religions', ({ data }) => !data.draft);
@@ -65,7 +66,7 @@ function subtitle(data: any): string | null {
         return (
           <a
             href={`#${type}`}
-            class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-sans font-semibold border transition-opacity hover:opacity-70"
+            class={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-sm font-sans font-semibold border transition-opacity hover:opacity-70 ${FOCUS_RING}`}
             style={`color:${color}; background-color:${bg}; border-color:${color}40`}
           >
             {label}
@@ -92,7 +93,7 @@ function subtitle(data: any): string | null {
 
             <!-- Expandable Header -->
             <summary
-              class="list-none cursor-pointer select-none"
+              class={`list-none cursor-pointer select-none ${FOCUS_RING}`}
             >
 
               <div
@@ -129,7 +130,7 @@ function subtitle(data: any): string | null {
 
                     <a
                       href={`/religions/${entry.slug}`}
-                      class="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-5 py-3 hover:bg-parchment-200 transition-colors"
+                      class={`flex flex-wrap items-baseline gap-x-3 gap-y-1 px-5 py-3 hover:bg-parchment-200 transition-colors ${FOCUS_RING}`}
                     >
 
                       <span class="font-serif font-bold text-accent">

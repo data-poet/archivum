@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import { metaFor, typeLabel } from '../../content/meta';
 import SiteHeader from '@/components/SiteHeader.astro';
+import { FOCUS_RING } from '@/shared/a11y';
 import '../../styles/global.css';
 
 // ── Static path generation ────────────────────────────────────────────────────
@@ -69,7 +70,7 @@ for (const m of matching) {
 
     <!-- Breadcrumb -->
     <p class="text-sm font-sans text-ink-light mb-2">
-      <a href="/" class="text-accent hover:underline">Página Principal</a>
+      <a href="/" class={`text-accent hover:underline rounded ${FOCUS_RING}`}>Página Principal</a>
       {' › '}
       <span>Categoria</span>
       {' › '}
@@ -90,7 +91,7 @@ for (const m of matching) {
         return (
           <details class="border border-border rounded overflow-hidden group" open>
 
-            <summary class="list-none cursor-pointer select-none">
+            <summary class={`list-none cursor-pointer select-none ${FOCUS_RING}`}>
               <div
                 class="px-4 py-2 font-serif font-bold text-white text-base flex items-center gap-2"
                 style={`background-color: ${meta.color}`}
@@ -98,7 +99,7 @@ for (const m of matching) {
                 <span class="transition-transform group-open:rotate-90">▶</span>
                 <a
                   href={meta.href}
-                  class="hover:underline"
+                  class={`hover:underline rounded ${FOCUS_RING}`}
                   onclick="event.stopPropagation()"
                 >
                   {meta.label}
@@ -112,7 +113,7 @@ for (const m of matching) {
                 <li>
                   <a
                     href={`/${col}/${entry.slug}`}
-                    class="flex flex-wrap items-baseline gap-x-3 gap-y-1 px-5 py-3 hover:bg-parchment-200 transition-colors no-underline"
+                    class={`flex flex-wrap items-baseline gap-x-3 gap-y-1 px-5 py-3 hover:bg-parchment-200 transition-colors no-underline ${FOCUS_RING}`}
                   >
                     <span class="font-serif font-bold text-accent">
                       {entry.data.title}
