@@ -4,6 +4,8 @@
  * beneath it. (The small search box in SiteHeader is separate — this is
  * the "main" search entry point front and center on the page.)
  */
+import { SITE_DESCRIPTION, SITE_TITLE } from '@/shared/siteMeta';
+
 interface Props {
   totalArticles: number;
 }
@@ -14,13 +16,11 @@ const { totalArticles } = Astro.props;
 <div class="text-center mb-10 border-b border-border pb-8">
 
   <h1 class="font-serif text-4xl font-bold text-ink mb-3">
-    Archivum
+    {SITE_TITLE}
   </h1>
 
   <p class="font-sans text-ink-muted text-lg">
-    Toda lenda precisa de um guardião. O Archivum preserva as histórias,
-    os segredos e a alma do meu universo - porque conhecimento é poder.
-    Arquive-o.
+    {SITE_DESCRIPTION}
   </p>
 
   <p class="font-sans text-sm text-ink-light mt-2">
