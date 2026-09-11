@@ -85,10 +85,18 @@ const { center, neighbors }: GraphPayload = JSON.parse(document.getElementById('
 
 const GRID_SIZE = 40;
 const GROUP_RADIUS = 220;
-const ACCENT = '#8b1a1a';
-const BORDER = '#c8c0a8';
-const INK = '#2a2418';
-const INK_LIGHT = '#8a8272';
+
+// Canvas drawing is plain JS, invisible to CSS/dark: variants, so the active
+// theme has to be read directly — see NO_FLASH_THEME_SCRIPT in shared/theme.ts
+// for how `<html data-theme>` gets set. Called fresh each frame (cheap) rather
+// than cached, so an in-session theme toggle repaints correctly (paired with
+// the MutationObserver below, which forces a repaint while the sim is idle).
+function palette() {
+  const dark = document.documentElement.dataset.theme === 'dark';
+  return dark
+    ? { ACCENT: '#e0625d', BORDER: '#4a4030', INK: '#ede4d0', INK_LIGHT: '#8a7f68', GRID: '#ffffff0d', NODE_FILL: '#2b2419' }
+    : { ACCENT: '#8b1a1a', BORDER: '#c8c0a8', INK: '#2a2418', INK_LIGHT: '#8a8272', GRID: '#00000008', NODE_FILL: '#faf6ec' };
+}
 
 // Groups by path-prefix, not schema type — "religions/draconic-faith/gods/x"
 // and "religions/demonic-faith/gods/y" share a `type` ("god") but shouldn't
@@ -149,7 +157,7 @@ const graph = new ForceGraph<GNode, GLink>(container)
   .onRenderFramePre((ctx, globalScale) => {
     // Cover comfortably more than the viewport so panning doesn't reveal gaps.
     const span = 4000;
-    ctx.strokeStyle = '#00000008';
+    ctx.strokeStyle = palette().GRID;
     ctx.lineWidth = 1 / globalScale;
     for (let x = -span; x <= span; x += GRID_SIZE) {
       ctx.beginPath();
@@ -170,10 +178,11 @@ const graph = new ForceGraph<GNode, GLink>(container)
   // plus a little padding — keeps boxes from overlapping/hiding each other,
   // on top of (not instead of) the group/link/charge forces above.
   .d3Force('collide', forceCollide((n: GNode) => Math.hypot(n.boxWidth, n.boxHeight) / 2 + 6).iterations(2))
-  .linkColor((link) => (link.exists ? ACCENT : INK_LIGHT))
+  .linkColor((link) => (link.exists ? palette().ACCENT : palette().INK_LIGHT))
   .linkLineDash((link) => (link.exists ? null : [4, 3]))
   .linkWidth(1.5)
   .nodeCanvasObject((node, ctx) => {
+    const { ACCENT, BORDER, INK, INK_LIGHT, NODE_FILL } = palette();
     const { boxWidth: width, boxHeight: height } = node;
     const nx = node.x ?? 0;
     const ny = node.y ?? 0;
@@ -184,7 +193,7 @@ const graph = new ForceGraph<GNode, GLink>(container)
     ctx.setLineDash(node.exists ? [] : [3, 2]);
     ctx.lineWidth = node.isCenter ? 2 : 1;
     ctx.strokeStyle = node.isCenter ? ACCENT : node.exists ? BORDER : INK_LIGHT;
-    ctx.fillStyle = '#faf6ec';
+    ctx.fillStyle = NODE_FILL;
     ctx.beginPath();
     ctx.roundRect(x, y, width, height, 6);
     ctx.fill();
@@ -236,4 +245,13 @@ function resize() {
 }
 resize();
 window.addEventListener('resize', resize);
+
+// The canvas only repaints during simulation/interaction — once it settles,
+// toggling the theme wouldn't otherwise trigger a redraw with the new
+// palette() values. Reusing resize() (same width/height) is a cheap way to
+// force one frame without a dedicated force-graph "refresh" call.
+new MutationObserver(resize).observe(document.documentElement, {
+  attributes: true,
+  attributeFilter: ['data-theme'],
+});
 </script>
