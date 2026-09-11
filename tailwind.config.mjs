@@ -36,7 +36,7 @@ export default {
             "--tw-prose-hr": theme("colors.border"),
 
             color: theme("colors.ink.DEFAULT"),
-            fontSize: "0.9375rem",
+            fontSize: "var(--wiki-font-size, 0.9375rem)",
             lineHeight: "1.65",
             fontFamily: theme("fontFamily.serif").join(", "),
 

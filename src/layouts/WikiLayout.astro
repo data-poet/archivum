@@ -67,6 +67,16 @@ function formatDate(dateInput: string | Date) {
   )}
 
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+  {/* Runs before first paint so the saved font-size preference doesn't flash at the default size. */}
+  <script is:inline>
+    (function () {
+      var stored = localStorage.getItem('archivum:font-size');
+      if (stored === 'small' || stored === 'large') {
+        document.documentElement.dataset.fontSize = stored;
+      }
+    })();
+  </script>
 </head>
 
 <body>
@@ -113,11 +123,24 @@ function formatDate(dateInput: string | Date) {
         {title}
       </h1>
 
-      {graphHref && (
-        <a href={graphHref} class="inline-block mt-1 text-sm font-sans text-accent hover:underline">
-          Ver grafos
-        </a>
-      )}
+      <div class="mt-1 flex items-center gap-4">
+        {graphHref && (
+          <a href={graphHref} class="text-sm font-sans text-accent hover:underline">
+            Ver grafos
+          </a>
+        )}
+
+        <div
+          id="font-size-toggle"
+          role="group"
+          aria-label="Tamanho do texto"
+          class="ml-auto flex items-center gap-1"
+        >
+          <button type="button" data-font-size-option="small" aria-label="Texto pequeno" class="font-size-option w-6 h-6 flex items-center justify-center rounded border border-border text-xs text-ink-light hover:bg-parchment-100">A</button>
+          <button type="button" data-font-size-option="medium" aria-label="Texto médio" class="font-size-option w-6 h-6 flex items-center justify-center rounded border border-border text-sm text-ink-light hover:bg-parchment-100">A</button>
+          <button type="button" data-font-size-option="large" aria-label="Texto grande" class="font-size-option w-6 h-6 flex items-center justify-center rounded border border-border text-base text-ink-light hover:bg-parchment-100">A</button>
+        </div>
+      </div>
     </div>
 
     <!-- Article Metadata -->
@@ -195,3 +218,37 @@ function formatDate(dateInput: string | Date) {
 
 </body>
 </html>
+
+<style>
+  .font-size-option[aria-pressed="true"] {
+    @apply border-accent text-accent bg-parchment-100;
+  }
+</style>
+
+<script>
+  const STORAGE_KEY = 'archivum:font-size';
+  const container = document.getElementById('font-size-toggle');
+  const buttons = container?.querySelectorAll<HTMLButtonElement>('.font-size-option');
+
+  function applySize(size: string) {
+    if (size === 'medium') {
+      delete document.documentElement.dataset.fontSize;
+    } else {
+      document.documentElement.dataset.fontSize = size;
+    }
+    buttons?.forEach((button) => {
+      button.setAttribute('aria-pressed', String(button.dataset.fontSizeOption === size));
+    });
+  }
+
+  const stored = localStorage.getItem(STORAGE_KEY);
+  applySize(stored === 'small' || stored === 'large' ? stored : 'medium');
+
+  container?.addEventListener('click', (event) => {
+    const button = (event.target as Element).closest<HTMLButtonElement>('.font-size-option');
+    if (!button?.dataset.fontSizeOption) return;
+
+    localStorage.setItem(STORAGE_KEY, button.dataset.fontSizeOption);
+    applySize(button.dataset.fontSizeOption);
+  });
+</script>

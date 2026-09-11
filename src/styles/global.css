@@ -24,4 +24,12 @@
   h6 {
     scroll-margin-top: 6rem;
   }
+
+  html[data-font-size="small"] {
+    --wiki-font-size: 0.8125rem;
+  }
+
+  html[data-font-size="large"] {
+    --wiki-font-size: 1.0625rem;
+  }
 }
